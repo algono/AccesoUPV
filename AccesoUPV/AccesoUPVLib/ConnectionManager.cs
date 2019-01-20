@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Lib
 {
-    public class AccesoUPV
+    public interface ConnectionManager<T>
     {
+        bool Connected { get; }
+
+        Task<T> connect();
+        Task<T> disconnect();
     }
 }
