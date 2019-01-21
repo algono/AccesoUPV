@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Management.Automation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,49 +10,90 @@ namespace AccesoUPV.Lib
 {
     public abstract class VPNManager : ConnectionManager<bool>
     {
-        public VPN ConnectedVPN { get; protected set; }
-        public VPN ManagedVPN { get; set; }
-        public bool Connected { get { return ConnectedVPN != null; } }
-        
-        protected Process proc;
-        protected ProcessStartInfo conInfo, disInfo;
-
-        public VPNManager()
-        { 
-            proc = new Process();
-
-            conInfo = new ProcessStartInfo("rasphone.exe");
-            conInfo.CreateNoWindow = true;
-
-            disInfo = new ProcessStartInfo("rasdial.exe");
-            disInfo.CreateNoWindow = true;
+        public static int TEST_PING_TIMEOUT = 4000;
+        public string ConnectedName { get; private set; }
+        public string Name { get; set; }
+        public string Server { get; }
+        public string TestServer { get; }
+        public override bool Connected
+        {
+            get { return ConnectedName != null; }
+            protected set
+            {
+                if (value) ConnectedName = Name;
+                else ConnectedName = null;
+            }
         }
 
-        public Task ExitedAsync()
+        protected ProcessStartInfo pingInfo;
+
+        public VPNManager(string name, string server, string testServer) : base()
         {
-            var tcs = new TaskCompletionSource<object>();
-            proc.Exited += (s, e) => tcs.TrySetResult(null);
-            if (proc.HasExited) tcs.TrySetResult(null);
-            return tcs.Task;
+            Name = name;
+            Server = server;
+            TestServer = testServer;
+
+            conInfo.FileName = "rasphone.exe";
+            disInfo.FileName = "rasdial.exe";
+
+            pingInfo = new ProcessStartInfo("ping.exe");
+            pingInfo.CreateNoWindow = true;
+            pingInfo.UseShellExecute = false;
+        }
+        public bool IsReachable(int timeout = 500)
+        {
+            pingInfo.Arguments = $"-n 1 -w {timeout} {TestServer}";
+            Process p = Process.Start(pingInfo);
+            p.WaitForExit();
+            return p.ExitCode == 0;
         }
 
-        public async Task<bool> connect()
+        public override bool Connect()
         {
-            conInfo.Arguments = $"-d \"{ManagedVPN.Name}\"";
-            proc.StartInfo = conInfo;
-            proc.Start();
-            await ExitedAsync();
-            if (proc.ExitCode == 0) ConnectedVPN = ManagedVPN;
-            return proc.ExitCode == 0;
+            conInfo.Arguments = $"-d \"{Name}\"";
+            Process proc = Process.Start(conInfo);
+            CheckProcess(proc);
+            return Connected;
         }
 
-        public async Task<bool> disconnect()
+        public override bool Disconnect()
         {
-            disInfo.Arguments = $"\"{ConnectedVPN.Name}\" /DISCONNECT";
-            proc.StartInfo = disInfo;
-            proc.Start();
-            await ExitedAsync();
-            return proc.ExitCode == 0;
+            disInfo.Arguments = $"\"{ConnectedName}\" /DISCONNECT";
+            Process proc = Process.Start(disInfo);
+            CheckProcess(proc);
+            return Connected;
+        }
+
+        public override Task<bool> ConnectAsync()
+        {
+            conInfo.Arguments = $"-d \"{Name}\"";
+            Process proc = Process.Start(conInfo);
+
+            return CheckProcessAsync(proc);
+        }
+
+        public override Task<bool> DisconnectAsync()
+        {
+            disInfo.Arguments = $"\"{ConnectedName}\" /DISCONNECT";
+            Process proc = Process.Start(disInfo);
+
+            return CheckProcessAsync(proc);
+        }
+
+        protected abstract PowerShell CreateShell();
+
+        public bool Create()
+        {
+            using (PowerShell shell = CreateShell())
+            {
+                shell.Invoke();
+                return !shell.HadErrors;
+            }
+        }
+        public Task CreateAsync()
+        {
+            PowerShell shell = CreateShell();
+            return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) => shell.Dispose());
         }
     }
 }
