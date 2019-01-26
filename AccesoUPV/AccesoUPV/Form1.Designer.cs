@@ -1,4 +1,4 @@
-﻿namespace AccesoUPV
+﻿namespace AccesoUPV.GUI
 {
     partial class Form1
     {

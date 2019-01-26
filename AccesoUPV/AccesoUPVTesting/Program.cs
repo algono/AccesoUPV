@@ -1,9 +1,5 @@
 ﻿using AccesoUPV.Lib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AccesoUPVTesting
 {
@@ -11,7 +7,7 @@ namespace AccesoUPVTesting
     {
         static void Main(string[] args)
         {
-            VPNManager Manager = new UPVManager("Test");
+            VPNManager Manager = DSICManager.Create("DSIC");
 
             CreateTest(Manager);
             ConnectTest(Manager);
@@ -25,13 +21,15 @@ namespace AccesoUPVTesting
         {
             Console.WriteLine("Press any key to create...");
             Console.ReadKey();
+            Console.WriteLine("Creating...");
             Manager.Create();
         }
         static void ConnectTest(VPNManager Manager)
         {
+            Console.WriteLine("Reachable before connecting: {0}", Manager.IsReachable());
             Console.WriteLine("Press any key to connect...");
             Console.ReadKey();
-            Console.WriteLine("Reachable before connecting: {0}", Manager.IsReachable());
+            Console.WriteLine("Connecting...");
             Manager.Connect();
             Console.WriteLine("Reachable after connecting: {0}", Manager.IsReachable(4000));
         }
@@ -39,6 +37,7 @@ namespace AccesoUPVTesting
         {
             Console.WriteLine("Press any key to disconnect...");
             Console.ReadKey();
+            Console.WriteLine("Disonnecting...");
             Manager.Disconnect();
             Console.WriteLine("Reachable after disconnecting: {0}", Manager.IsReachable());
         }

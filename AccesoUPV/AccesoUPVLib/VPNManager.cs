@@ -1,16 +1,15 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Management.Automation;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AccesoUPV.Lib
 {
-    public abstract class VPNManager : ConnectionManager<bool>
+    public class VPNManager : ConnectionManager<bool>
     {
-        public static int TEST_PING_TIMEOUT = 4000;
+        //public static int TEST_PING_TIMEOUT = 4000;
         public string ConnectedName { get; private set; }
         public string Name { get; set; }
         public string Server { get; }
@@ -26,12 +25,14 @@ namespace AccesoUPV.Lib
         }
 
         protected ProcessStartInfo pingInfo;
+        protected IDictionary creationParams;
 
-        public VPNManager(string name, string server, string testServer) : base()
+        public VPNManager(string server, string name = null, string testServer = null, IDictionary creationParameters = null) : base()
         {
             Name = name;
             Server = server;
-            TestServer = testServer;
+            TestServer = testServer ?? server;
+            creationParams = creationParameters;
 
             conInfo.FileName = "rasphone.exe";
             disInfo.FileName = "rasdial.exe";
@@ -80,7 +81,15 @@ namespace AccesoUPV.Lib
             return CheckProcessAsync(proc);
         }
 
-        protected abstract PowerShell CreateShell();
+        protected PowerShell CreateShell()
+        {
+            PowerShell shell = PowerShell.Create();
+            shell.AddCommand("Add-VpnConnection");
+            shell.AddParameter("Name", Name);
+            shell.AddParameter("ServerAddress", Server);
+            if (creationParams != null) shell.AddParameters(creationParams);
+            return shell;
+        }
 
         public bool Create()
         {
@@ -94,6 +103,18 @@ namespace AccesoUPV.Lib
         {
             PowerShell shell = CreateShell();
             return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) => shell.Dispose());
+        }
+
+        public List<PSObject> Find() => Find(Server);
+        public static List<PSObject> Find(string Server)
+        {
+            using (PowerShell shell = PowerShell.Create())
+            {
+                shell.AddCommand("Get-VpnConnection | Where-Object {$_.ServerAddress -eq '" + Server + "'}");
+                List<PSObject> PSOutput = shell.Invoke().ToList();
+                PSOutput.RemoveAll(item => item == null);
+                return PSOutput;
+            }
         }
     }
 }

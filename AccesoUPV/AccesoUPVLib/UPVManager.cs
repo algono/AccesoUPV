@@ -1,22 +1,28 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Management.Automation;
 
 namespace AccesoUPV.Lib
 {
-    public class UPVManager : VPNManager
+    public static class UPVManager
     {
-        public UPVManager(string name) : base(name, "vpn.upv.es", "www.upv.es") { }
+        public const string Server = "vpn.upv.es";
+        public const string TestServer = "www.upv.es";
 
-        protected override PowerShell CreateShell()
+        public static readonly Dictionary<string, object> creationParameters;
+
+        static UPVManager()
         {
-            PowerShell shell = PowerShell.Create();
-            shell.AddScript($"param([System.Xml.XmlDocument]$importXml) Add-VpnConnection -Name \"{Name}\" -ServerAddress \"{Server}\" -AuthenticationMethod Eap -EncryptionLevel Required -RememberCredential -TunnelType Sstp -EapConfigXmlStream $importXml;");
+            creationParameters = new Dictionary<string, object>();
+            creationParameters.Add("AuthenticationMethod", "Eap");
+            creationParameters.Add("EncryptionLevel", "Required");
+            creationParameters.Add("TunnelType", "Sstp");
 
             System.Xml.XmlDocument ConfigXml = new System.Xml.XmlDocument();
             ConfigXml.Load("Resources/UPV_Config.xml");
-            shell.AddParameter("importXml", ConfigXml);
-
-            return shell;
+            creationParameters.Add("EapConfigXmlStream", ConfigXml);
         }
+        public static VPNManager Create(string name = null) => new VPNManager(Server, name, TestServer, creationParameters);
+
+        public static List<PSObject> Find() => VPNManager.Find(Server);
     }
 }

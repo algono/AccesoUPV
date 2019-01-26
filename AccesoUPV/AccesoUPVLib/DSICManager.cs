@@ -1,22 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Management.Automation;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 
 namespace AccesoUPV.Lib
 {
-    public class DSICManager : VPNManager
+    public static class DSICManager
     {
-        public DSICManager(string name) : base(name, "r1-vpn.dsic.upv.es", "portal-ng.dsic.cloud") { }
+        public const string Server = "r1-vpn.dsic.upv.es";
+        public const string TestServer = "portal-ng.dsic.cloud";
 
-        protected override PowerShell CreateShell()
+        public static readonly Dictionary<string, object> creationParameters;
+
+        static DSICManager()
         {
-            PowerShell shell = PowerShell.Create();
-            shell.AddScript($"Add-VpnConnection -Name \"{Name}\" -ServerAddress \"{Server}\" -AuthenticationMethod MSChapv2 -EncryptionLevel Optional -L2tpPsk dsic -RememberCredential -TunnelType L2tp -Force;");
-            return shell;
+            creationParameters = new Dictionary<string, object>();
+            creationParameters.Add("AuthenticationMethod", "MSChapv2");
+            creationParameters.Add("EncryptionLevel", "Optional");
+            creationParameters.Add("L2tpPsk", "dsic");
+            creationParameters.Add("TunnelType", "L2tp");
+            creationParameters.Add("Force", true);
         }
+        public static VPNManager Create(string name = null) => new VPNManager(Server, name, TestServer, creationParameters);
+
+        public static List<PSObject> Find() => VPNManager.Find(Server);
     }
 }
