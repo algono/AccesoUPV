@@ -1,4 +1,4 @@
-﻿using AccesoUPV.Lib;
+﻿using AccesoUPV.Lib.Managers.VPN;
 using System;
 
 namespace AccesoUPVTesting
@@ -9,7 +9,9 @@ namespace AccesoUPVTesting
         {
             VPNManager Manager = DSICManager.Create("DSIC");
 
-            CreateTest(Manager);
+            Console.WriteLine("Checking if the VPN exists...");
+            if (Manager.Exists()) Console.WriteLine("The VPN already exists. Next step.");
+            else CreateTest(Manager);
             ConnectTest(Manager);
             DisconnectTest(Manager);
             

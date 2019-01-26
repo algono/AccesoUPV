@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Management.Automation;
 
-namespace AccesoUPV.Lib
+namespace AccesoUPV.Lib.Managers.VPN
 {
     public static class DSICManager
     {

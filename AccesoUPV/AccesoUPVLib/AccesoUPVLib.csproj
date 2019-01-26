@@ -44,10 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DSICManager.cs" />
-    <Compile Include="UPVManager.cs" />
-    <Compile Include="VPNManager.cs" />
-    <Compile Include="ConnectionManager.cs" />
+    <Compile Include="Managers\DriveManager.cs" />
+    <Compile Include="Managers\VPN\DSICManager.cs" />
+    <Compile Include="Managers\VPN\UPVManager.cs" />
+    <Compile Include="Managers\VPN\VPNManager.cs" />
+    <Compile Include="Managers\ConnectionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

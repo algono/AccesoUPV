@@ -5,7 +5,7 @@ using System.Linq;
 using System.Management.Automation;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Lib
+namespace AccesoUPV.Lib.Managers.VPN
 {
     public class VPNManager : ConnectionManager<bool>
     {
@@ -53,7 +53,7 @@ namespace AccesoUPV.Lib
         {
             conInfo.Arguments = $"-d \"{Name}\"";
             Process proc = Process.Start(conInfo);
-            CheckProcess(proc);
+            CheckProcess(proc, true);
             return Connected;
         }
 
@@ -61,7 +61,7 @@ namespace AccesoUPV.Lib
         {
             disInfo.Arguments = $"\"{ConnectedName}\" /DISCONNECT";
             Process proc = Process.Start(disInfo);
-            CheckProcess(proc);
+            CheckProcess(proc, false);
             return Connected;
         }
 
@@ -105,12 +105,12 @@ namespace AccesoUPV.Lib
             return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) => shell.Dispose());
         }
 
-        public List<PSObject> Find() => Find(Server);
+        public bool Exists() => Find(Server).Exists(e => ((string) e.Properties["Name"].Value) == Name);
         public static List<PSObject> Find(string Server)
         {
             using (PowerShell shell = PowerShell.Create())
             {
-                shell.AddCommand("Get-VpnConnection | Where-Object {$_.ServerAddress -eq '" + Server + "'}");
+                shell.AddScript("Get-VpnConnection | Where-Object {$_.ServerAddress -eq '" + Server + "'}");
                 List<PSObject> PSOutput = shell.Invoke().ToList();
                 PSOutput.RemoveAll(item => item == null);
                 return PSOutput;

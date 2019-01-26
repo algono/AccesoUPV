@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Lib
+namespace AccesoUPV.Lib.Managers
 {
     public abstract class ConnectionManager<T>
     {
@@ -23,10 +19,10 @@ namespace AccesoUPV.Lib
             disInfo.UseShellExecute = false;
         }
 
-        protected void CheckProcess(Process proc)
+        protected void CheckProcess(Process proc, bool shouldBeConnectedAfter)
         {
             proc.WaitForExit();
-            Connected = proc.ExitCode == 0;
+            if (proc.ExitCode == 0) Connected = shouldBeConnectedAfter;
         }
 
         protected Task<bool> CheckProcessAsync(Process proc)
