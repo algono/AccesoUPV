@@ -3,14 +3,17 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Lib.Managers
+namespace AccesoUPV.Lib.Managers.Drive
 {
-    public class DriveManager : ConnectionManager<bool>
+    public abstract class DriveManager : ConnectionManager<bool>
     {
         public string ConnectedDrive { get; private set; }
-        public string User { get; set; }
         public string Drive { get; set; }
-        public string Address { get; }
+        public abstract string Address { get; }
+        public string User { get; set; }
+        public string Password { get; set; }
+        public string Domain { get; protected set; }
+        public bool UseCredentials { get; set; }
 
         public override bool Connected
         {
@@ -22,11 +25,11 @@ namespace AccesoUPV.Lib.Managers
             }
         }
 
-        public DriveManager(string address, string user = null, string drive = null) : base()
+        public DriveManager(string drive = null, string user = null, string password = null, string domain = null, bool useCredentials = false) : base()
         {
-            Address = address;
-            User = user;
             Drive = drive;
+            User = user;
+            Password = password;
 
             conInfo.FileName = "net.exe";
             disInfo.FileName = "net.exe";
@@ -47,7 +50,7 @@ namespace AccesoUPV.Lib.Managers
 
         public override bool Connect()
         {
-            conInfo.Arguments = $"use {Drive ?? GetAvailableDrives()[0]} {Address}";
+            conInfo.Arguments = $"use {Drive ?? GetAvailableDrives()[0]} {Address}" + (UseCredentials ? $"{Password} /USER:{Domain}\\{User}" : "");
             Process proc = Process.Start(conInfo);
             CheckProcess(proc, true);
             return Connected;

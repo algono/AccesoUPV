@@ -44,7 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Managers\DriveManager.cs" />
+    <Compile Include="Managers\Drive\DriveManager.cs" />
+    <Compile Include="Managers\Drive\WDriveManager.cs" />
     <Compile Include="Managers\VPN\DSICManager.cs" />
     <Compile Include="Managers\VPN\UPVManager.cs" />
     <Compile Include="Managers\VPN\VPNManager.cs" />
