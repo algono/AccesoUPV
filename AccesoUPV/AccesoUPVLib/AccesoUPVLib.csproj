@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Managers\Drive\DriveManager.cs" />
+    <Compile Include="Managers\Drive\DSICDriveManager.cs" />
     <Compile Include="Managers\Drive\WDriveManager.cs" />
     <Compile Include="Managers\VPN\DSICManager.cs" />
     <Compile Include="Managers\VPN\UPVManager.cs" />

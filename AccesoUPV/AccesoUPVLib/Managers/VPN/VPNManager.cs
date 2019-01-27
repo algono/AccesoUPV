@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Lib.Managers.VPN
 {
-    public class VPNManager : ConnectionManager<bool>
+    public class VPNManager : ConnectionManager
     {
         //public static int TEST_PING_TIMEOUT = 4000;
         public string ConnectedName { get; private set; }
@@ -53,16 +53,14 @@ namespace AccesoUPV.Lib.Managers.VPN
         {
             conInfo.Arguments = $"-d \"{Name}\"";
             Process proc = Process.Start(conInfo);
-            CheckProcess(proc, true);
-            return Connected;
+            return CheckProcess(proc, true);
         }
 
         public override bool Disconnect()
         {
             disInfo.Arguments = $"\"{ConnectedName}\" /DISCONNECT";
             Process proc = Process.Start(disInfo);
-            CheckProcess(proc, false);
-            return Connected;
+            return CheckProcess(proc, false);
         }
 
         public override Task<bool> ConnectAsync()
@@ -87,6 +85,7 @@ namespace AccesoUPV.Lib.Managers.VPN
             shell.AddCommand("Add-VpnConnection");
             shell.AddParameter("Name", Name);
             shell.AddParameter("ServerAddress", Server);
+            shell.AddParameter("RememberCredential"); //Se asegura de que las credenciales se guarden cuando toca (si el usuario lo indica en rasphone)
             if (creationParams != null) shell.AddParameters(creationParams);
             return shell;
         }

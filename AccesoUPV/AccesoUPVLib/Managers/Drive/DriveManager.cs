@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace AccesoUPV.Lib.Managers.Drive
 {
-    public abstract class DriveManager : ConnectionManager<bool>
+    public abstract class DriveManager : ConnectionManager
     {
         public string ConnectedDrive { get; private set; }
         public string Drive { get; set; }
@@ -30,6 +31,8 @@ namespace AccesoUPV.Lib.Managers.Drive
             Drive = drive;
             User = user;
             Password = password;
+            Domain = domain;
+            UseCredentials = useCredentials;
 
             conInfo.FileName = "net.exe";
             disInfo.FileName = "net.exe";
@@ -50,18 +53,16 @@ namespace AccesoUPV.Lib.Managers.Drive
 
         public override bool Connect()
         {
-            conInfo.Arguments = $"use {Drive ?? GetAvailableDrives()[0]} {Address}" + (UseCredentials ? $"{Password} /USER:{Domain}\\{User}" : "");
+            conInfo.Arguments = $"use {Drive ?? GetAvailableDrives()[0]} {Address}" + (UseCredentials ? $" {Password} /USER:{Domain}\\{User}" : "");
             Process proc = Process.Start(conInfo);
-            CheckProcess(proc, true);
-            return Connected;
+            return CheckProcess(proc, true);
         }
 
         public override bool Disconnect()
         {
             disInfo.Arguments = $"use {ConnectedDrive} /delete";
             Process proc = Process.Start(disInfo);
-            CheckProcess(proc, false);
-            return Connected;
+            return CheckProcess(proc, false);
         }
 
         public override Task<bool> ConnectAsync()

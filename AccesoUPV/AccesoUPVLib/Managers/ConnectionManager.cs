@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Lib.Managers
 {
-    public abstract class ConnectionManager<T>
+    public abstract class ConnectionManager
     {
         public abstract bool Connected { get; protected set; }
         protected ProcessStartInfo conInfo, disInfo;
@@ -19,10 +19,18 @@ namespace AccesoUPV.Lib.Managers
             disInfo.UseShellExecute = false;
         }
 
-        protected void CheckProcess(Process proc, bool shouldBeConnectedAfter)
+        protected bool CheckProcess(Process proc, bool shouldBeConnectedAfter)
         {
             proc.WaitForExit();
-            if (proc.ExitCode == 0) Connected = shouldBeConnectedAfter;
+            if (proc.ExitCode == 0)
+            {
+                Connected = shouldBeConnectedAfter;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         protected Task<bool> CheckProcessAsync(Process proc)
@@ -37,9 +45,9 @@ namespace AccesoUPV.Lib.Managers
             return tcs.Task;
         }
 
-        public abstract T Connect();
-        public abstract T Disconnect();
-        public abstract Task<T> ConnectAsync();
-        public abstract Task<T> DisconnectAsync();
+        public abstract bool Connect();
+        public abstract bool Disconnect();
+        public abstract Task<bool> ConnectAsync();
+        public abstract Task<bool> DisconnectAsync();
     }
 }
