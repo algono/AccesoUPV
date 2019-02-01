@@ -10,14 +10,17 @@ namespace AccesoUPVTesting
         {
             //VPN test calls
 
-            VPNTest(UPVManager.Create("UPV"));
-            VPNTest(DSICManager.Create("DSIC"));
+            //VPNTest(UPVManager.Create("UPV"));
+            //VPNTest(DSICManager.Create("DSIC"));
+
+            //ConnectTest(UPVManager.Create("UPV"));
 
             //Drive test calls
 
-            //DriveManager Manager = new WDriveManager("W:", "algono");
-            //DriveManager Manager = new DSICDriveManager("W:", "algono", "INSERT PASS HERE");
-            //DriveTest();
+            //DriveManager WManager = new WDriveManager("W:", "algono");
+            //DriveTest(WManager);
+            //DriveManager DSICManager = new DSICDriveManager("W:", "algono", "INSERT PASS HERE");
+            //DriveTest(DSICManager);
 
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();

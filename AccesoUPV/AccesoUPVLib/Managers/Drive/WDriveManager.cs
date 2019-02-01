@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Lib.Managers.Drive
 {
+    public enum UPVDomain
+    {
+        Alumno, UPVNET
+    }
     public class WDriveManager : DriveManager
     {
-        public enum UPVDomain
-        {
-            Alumno, UPVNET
-        }
         public override string Address
         {
             get
