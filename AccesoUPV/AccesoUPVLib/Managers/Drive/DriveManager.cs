@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Lib.Managers.Drive
 {
+    // Custom Exceptions
+    // (Not having constructors defined creates an empty constructor automatically, and it calls its parent constructor as well)
+    public class InvalidUserException : InvalidOperationException { }
+    public class NoAvailableDriveException : IOException { }
+    public class OpenedFilesException : IOException { }
     public abstract class DriveManager : ConnectionManager
     {
         public string ConnectedDrive { get; private set; }
@@ -15,6 +20,7 @@ namespace AccesoUPV.Lib.Managers.Drive
         public string Password { get; set; }
         public string Domain { get; protected set; }
         public bool UseCredentials { get; set; }
+        public bool SayYesToAll { get; set; }
 
         public override bool Connected
         {
@@ -26,13 +32,14 @@ namespace AccesoUPV.Lib.Managers.Drive
             }
         }
 
-        public DriveManager(string drive = null, string user = null, string password = null, string domain = null, bool useCredentials = false) : base()
+        public DriveManager(string drive = null, string user = null, string password = null, string domain = null, bool useCredentials = false, bool sayYesToAll = false) : base()
         {
             Drive = drive;
             User = user;
             Password = password;
             Domain = domain;
             UseCredentials = useCredentials;
+            SayYesToAll = sayYesToAll;
 
             conInfo.FileName = "net.exe";
             disInfo.FileName = "net.exe";
@@ -51,34 +58,42 @@ namespace AccesoUPV.Lib.Managers.Drive
             return drives;
         }
 
-        public override bool Connect()
+        protected override Process ConnectProcess()
         {
-            conInfo.Arguments = $"use {Drive ?? GetAvailableDrives()[0]} {Address}" + (UseCredentials ? $" {Password} /USER:{Domain}\\{User}" : "");
-            Process proc = Process.Start(conInfo);
-            return CheckProcess(proc, true);
+            if (Drive == null)
+            {
+                List<string> availableDrives = GetAvailableDrives();
+                if (availableDrives.Count == 0) throw new NoAvailableDriveException();
+                Drive = availableDrives[0];
+            }
+            conInfo.Arguments = $"use {Drive} {Address}";
+            if (UseCredentials) conInfo.Arguments += $" {Password} /USER:{Domain}\\{User}";
+            return Process.Start(conInfo);
         }
 
-        public override bool Disconnect()
+        protected override void ConnectionHandler(string output, string err)
+        {
+            // 55 - Error del sistema "El recurso no se encuentra disponible" (es decir, la dir no existe, por tanto, el usuario no es válido).
+            if (output.Contains("55") || err.Contains("55"))
+            {
+                throw new InvalidUserException();
+            }
+        }
+
+        protected override Process DisconnectProcess()
         {
             disInfo.Arguments = $"use {ConnectedDrive} /delete";
-            Process proc = Process.Start(disInfo);
-            return CheckProcess(proc, false);
+            if (SayYesToAll) disInfo.Arguments += "/y";
+            return Process.Start(disInfo);
         }
 
-        public override Task<bool> ConnectAsync()
+        protected override void DisconnectionHandler(string output, string err)
         {
-            conInfo.Arguments = $"use {Drive ?? GetAvailableDrives()[0]} {Address}";
-            Process proc = Process.Start(conInfo);
-
-            return CheckProcessAsync(proc);
+            //Esa secuencia es parte de "(S/N)", con lo que deducimos que nos pide confirmación (porque tenemos archivos abiertos)
+            if (output.Contains("/N)") || err.Contains("/N)")) {
+                throw new OpenedFilesException();
+            }
         }
 
-        public override Task<bool> DisconnectAsync()
-        {
-            disInfo.Arguments = $"use {ConnectedDrive} /delete";
-            Process proc = Process.Start(disInfo);
-
-            return CheckProcessAsync(proc);
-        }
     }
 }

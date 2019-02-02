@@ -1,5 +1,6 @@
 ﻿using AccesoUPV.Lib.Managers.Drive;
 using AccesoUPV.Lib.Managers.VPN;
+using AccesoUPV.Lib.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,10 +36,10 @@ namespace AccesoUPV.Lib
 
         public AccesoUPVService()
         {
-            User = Properties.Settings.Default.User;
+            User = Settings.Default.User;
             UPV_VPN = UPVManager.Create();
             DSIC_VPN = DSICManager.Create();
-            WDrive = new WDriveManager(Properties.Settings.Default.WDriveLetter + ":", User, GetSetting_WDriveDomain());
+            WDrive = new WDriveManager(Settings.Default.WDriveLetter + ":", User, GetSetting_WDriveDomain());
             DSICDrive = new DSICDriveManager();
         }
 
@@ -48,7 +49,7 @@ namespace AccesoUPV.Lib
             Array domains = Enum.GetValues(typeof(UPVDomain));
             foreach (UPVDomain domain in domains)
             {
-                if (domain.ToString() == Properties.Settings.Default.WDriveDomain)
+                if (domain.ToString() == Settings.Default.WDriveDomain)
                 {
                     result = domain;
                     break;
@@ -59,15 +60,23 @@ namespace AccesoUPV.Lib
 
         public void SaveChanges()
         {
-            Properties.Settings.Default.User = User;
+            Settings.Default.User = User;
 
-            Properties.Settings.Default.VPN_UPVName = UPV_VPN.Name;
-            Properties.Settings.Default.VPN_DSICName = DSIC_VPN.Name;
+            Settings.Default.VPN_UPVName = UPV_VPN.Name;
+            Settings.Default.VPN_DSICName = DSIC_VPN.Name;
 
-            Properties.Settings.Default.WDriveLetter = WDrive.Drive[0];
-            Properties.Settings.Default.WDriveDomain = WDrive.Domain.ToString();
+            Settings.Default.WDriveLetter = WDrive.Drive[0];
+            Settings.Default.WDriveDomain = WDrive.Domain.ToString();
 
-            Properties.Settings.Default.DSICDriveLetter = DSICDrive.Drive[0];
+            Settings.Default.DSICDriveLetter = DSICDrive.Drive[0];
+
+            Settings.Default.Save();
         }
+
+        public Task<bool> ConnectToUPV()
+        {
+            return UPV_VPN.ConnectAsync();
+        }
+
     }
 }

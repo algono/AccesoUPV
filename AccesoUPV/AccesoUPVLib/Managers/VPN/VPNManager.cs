@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -49,34 +50,26 @@ namespace AccesoUPV.Lib.Managers.VPN
             return p.ExitCode == 0;
         }
 
-        public override bool Connect()
+        protected override Process ConnectProcess()
         {
             conInfo.Arguments = $"-d \"{Name}\"";
-            Process proc = Process.Start(conInfo);
-            return CheckProcess(proc, true);
+            return Process.Start(conInfo);
         }
 
-        public override bool Disconnect()
+        protected override void ConnectionHandler(string output, string err)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override Process DisconnectProcess()
         {
             disInfo.Arguments = $"\"{ConnectedName}\" /DISCONNECT";
-            Process proc = Process.Start(disInfo);
-            return CheckProcess(proc, false);
+            return Process.Start(disInfo);
         }
 
-        public override Task<bool> ConnectAsync()
+        protected override void DisconnectionHandler(string output, string err)
         {
-            conInfo.Arguments = $"-d \"{Name}\"";
-            Process proc = Process.Start(conInfo);
-
-            return CheckProcessAsync(proc);
-        }
-
-        public override Task<bool> DisconnectAsync()
-        {
-            disInfo.Arguments = $"\"{ConnectedName}\" /DISCONNECT";
-            Process proc = Process.Start(disInfo);
-
-            return CheckProcessAsync(proc);
+            throw new NotImplementedException();
         }
 
         protected PowerShell CreateShell()
