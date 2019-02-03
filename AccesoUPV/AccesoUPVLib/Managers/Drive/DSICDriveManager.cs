@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Lib.Managers.Drive
 {
-    class InvalidCredentials : InvalidOperationException { }
+    class InvalidCredentials : ArgumentException { }
     public class DSICDriveManager : DriveManager
     {
         public override string Address
@@ -18,19 +18,23 @@ namespace AccesoUPV.Lib.Managers.Drive
             }
         }
 
-        public DSICDriveManager(string drive = null, string user = null, string password = null) : base(drive, user, password, "DSIC", true)
+        public DSICDriveManager(char? drive = null, string user = null, string password = null) : base(drive, user, password, "DSIC", true)
         {
         }
 
-        protected override void ConnectionHandler(string output, string err)
+        protected override void ConnectionHandler(bool succeeded, string output, string error)
         {
-            base.ConnectionHandler(output, err);
+            base.ConnectionHandler(succeeded, output, error);
 
-            // 86 - Error del sistema "La contraseña de red es incorrecta"
-            // 1326 - Error del sistema "El usuario o la contraseña son incorrectos"
-            //Cuando las credenciales son erróneas, da uno de estos dos errores de forma arbitraria.
-            if (output.Contains("86") || err.Contains("86") || output.Contains("1326") || err.Contains("1326")) {
-                throw new InvalidCredentials();
+            if (!succeeded)
+            {
+                // 86 - Error del sistema "La contraseña de red es incorrecta"
+                // 1326 - Error del sistema "El usuario o la contraseña son incorrectos"
+                //Cuando las credenciales son erróneas, da uno de estos dos errores de forma arbitraria.
+                if (output.Contains("86") || error.Contains("86") || output.Contains("1326") || error.Contains("1326"))
+                {
+                    throw new InvalidCredentials();
+                }
             }
         }
     }

@@ -10,7 +10,7 @@ namespace AccesoUPV.Lib.Managers.VPN
 {
     public class VPNManager : ConnectionManager
     {
-        //public static int TEST_PING_TIMEOUT = 4000;
+        public static int TEST_PING_TIMEOUT = 4000;
         public string ConnectedName { get; private set; }
         public string Name { get; set; }
         public string Server { get; }
@@ -38,9 +38,7 @@ namespace AccesoUPV.Lib.Managers.VPN
             conInfo.FileName = "rasphone.exe";
             disInfo.FileName = "rasdial.exe";
 
-            pingInfo = new ProcessStartInfo("ping.exe");
-            pingInfo.CreateNoWindow = true;
-            pingInfo.UseShellExecute = false;
+            pingInfo = CreateProcessInfo("ping.exe");
         }
         public bool IsReachable(int timeout = 500)
         {
@@ -56,20 +54,31 @@ namespace AccesoUPV.Lib.Managers.VPN
             return Process.Start(conInfo);
         }
 
-        protected override void ConnectionHandler(string output, string err)
+        protected override void ConnectionHandler(bool succeeded, string output, string error)
         {
-            throw new NotImplementedException();
+            if (succeeded)
+            {
+                Process checkingProcess = Process.Start(CreateProcessInfo("rasdial.exe"));
+                succeeded = CheckProcess(checkingProcess, (s, o, e) => 
+                {
+                    if (s && !o.Contains(Name)) throw new OperationCanceledException();
+                });
+                if (succeeded && !IsReachable(TEST_PING_TIMEOUT))
+                {
+                    disInfo.Arguments = $"\"{Name}\" /DISCONNECT";
+                    CheckProcess(Process.Start(disInfo));
+                    throw new ArgumentException(); //VPN no valida para acceder al TestServer
+                }
+            }
+            
+            base.ConnectionHandler(succeeded, output, error);
+
         }
 
         protected override Process DisconnectProcess()
         {
             disInfo.Arguments = $"\"{ConnectedName}\" /DISCONNECT";
             return Process.Start(disInfo);
-        }
-
-        protected override void DisconnectionHandler(string output, string err)
-        {
-            throw new NotImplementedException();
         }
 
         protected PowerShell CreateShell()

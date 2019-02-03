@@ -8,13 +8,13 @@ namespace AccesoUPV.Lib.Managers.Drive
 {
     // Custom Exceptions
     // (Not having constructors defined creates an empty constructor automatically, and it calls its parent constructor as well)
-    public class InvalidUserException : InvalidOperationException { }
+    public class InvalidUserException : ArgumentException { }
     public class NoAvailableDriveException : IOException { }
     public class OpenedFilesException : IOException { }
     public abstract class DriveManager : ConnectionManager
     {
-        public string ConnectedDrive { get; private set; }
-        public string Drive { get; set; }
+        public char? ConnectedDrive { get; private set; }
+        public char? Drive { get; set; }
         public abstract string Address { get; }
         public string User { get; set; }
         public string Password { get; set; }
@@ -32,7 +32,7 @@ namespace AccesoUPV.Lib.Managers.Drive
             }
         }
 
-        public DriveManager(string drive = null, string user = null, string password = null, string domain = null, bool useCredentials = false, bool sayYesToAll = false) : base()
+        public DriveManager(char? drive = null, string user = null, string password = null, string domain = null, bool useCredentials = false, bool sayYesToAll = false) : base()
         {
             Drive = drive;
             User = user;
@@ -45,14 +45,13 @@ namespace AccesoUPV.Lib.Managers.Drive
             disInfo.FileName = "net.exe";
         }
 
-        public static List<string> GetAvailableDrives()
+        public static List<char> GetAvailableDrives()
         {
-            List<string> drives = new List<string>();
+            List<char> drives = new List<char>();
             
             for (char letter = 'Z'; letter >= 'D'; letter--)
             {
-                string d = letter + ":";
-                if (!File.Exists(d)) drives.Add(d);
+                if (!File.Exists(letter + ":")) drives.Add(letter);
             }
 
             return drives;
@@ -62,36 +61,47 @@ namespace AccesoUPV.Lib.Managers.Drive
         {
             if (Drive == null)
             {
-                List<string> availableDrives = GetAvailableDrives();
+                List<char> availableDrives = GetAvailableDrives();
                 if (availableDrives.Count == 0) throw new NoAvailableDriveException();
                 Drive = availableDrives[0];
             }
-            conInfo.Arguments = $"use {Drive} {Address}";
+            conInfo.Arguments = $"use {Drive}: {Address}";
             if (UseCredentials) conInfo.Arguments += $" {Password} /USER:{Domain}\\{User}";
             return Process.Start(conInfo);
         }
 
-        protected override void ConnectionHandler(string output, string err)
+        protected override void ConnectionHandler(bool succeeded, string output, string error)
         {
-            // 55 - Error del sistema "El recurso no se encuentra disponible" (es decir, la dir no existe, por tanto, el usuario no es válido).
-            if (output.Contains("55") || err.Contains("55"))
-            {
-                throw new InvalidUserException();
+            base.ConnectionHandler(succeeded, output, error);
+
+            if (!succeeded)
+            { 
+                // 55 - Error del sistema "El recurso no se encuentra disponible" (es decir, la dir no existe, por tanto, el usuario no es válido).
+                if (output.Contains("55") || error.Contains("55"))
+                {
+                    throw new InvalidUserException();
+                }
             }
         }
 
         protected override Process DisconnectProcess()
         {
-            disInfo.Arguments = $"use {ConnectedDrive} /delete";
+            disInfo.Arguments = $"use {ConnectedDrive}: /delete";
             if (SayYesToAll) disInfo.Arguments += "/y";
             return Process.Start(disInfo);
         }
 
-        protected override void DisconnectionHandler(string output, string err)
+        protected override void DisconnectionHandler(bool succeeded, string output, string error)
         {
-            //Esa secuencia es parte de "(S/N)", con lo que deducimos que nos pide confirmación (porque tenemos archivos abiertos)
-            if (output.Contains("/N)") || err.Contains("/N)")) {
-                throw new OpenedFilesException();
+            base.DisconnectionHandler(succeeded, output, error);
+
+            if (!succeeded)
+            {
+                //Esa secuencia es parte de "(S/N)", con lo que deducimos que nos pide confirmación (porque tenemos archivos abiertos)
+                if (output.Contains("/N)") || error.Contains("/N)"))
+                {
+                    throw new OpenedFilesException();
+                }
             }
         }
 

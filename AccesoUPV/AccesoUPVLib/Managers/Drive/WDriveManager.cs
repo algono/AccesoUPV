@@ -42,17 +42,20 @@ namespace AccesoUPV.Lib.Managers.Drive
             }
         }
 
-        public WDriveManager(string drive = null, string user = null, UPVDomain domain = UPVDomain.Alumno) : base(drive, user)
+        public WDriveManager(char? drive = null, string user = null, UPVDomain domain = UPVDomain.Alumno) : base(drive, user)
         {
             Domain = domain;
         }
 
-        protected override void ConnectionHandler(string output, string err)
+        protected override void ConnectionHandler(bool succeeded, string output, string err)
         {
-            base.ConnectionHandler(output, err);
-            
-            if (output.Contains("1223") || err.Contains("1223")) {
-                throw new CredentialsBugException();
+            base.ConnectionHandler(succeeded, output, err);
+            if (!succeeded)
+            {
+                if (output.Contains("1223") || err.Contains("1223"))
+                {
+                    throw new CredentialsBugException();
+                }
             }
         }
     }
