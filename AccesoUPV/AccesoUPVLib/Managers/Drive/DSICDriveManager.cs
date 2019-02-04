@@ -18,7 +18,7 @@ namespace AccesoUPV.Lib.Managers.Drive
             }
         }
 
-        public DSICDriveManager(char? drive = null, string user = null, string password = null) : base(drive, user, password, "DSIC", true)
+        public DSICDriveManager(string user = null, string password = null, char? drive = null) : base(drive, user, password, "DSIC", true)
         {
         }
 

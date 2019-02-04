@@ -42,7 +42,7 @@ namespace AccesoUPV.Lib.Managers.Drive
             }
         }
 
-        public WDriveManager(char? drive = null, string user = null, UPVDomain domain = UPVDomain.Alumno) : base(drive, user)
+        public WDriveManager(string user = null, char? drive = null, UPVDomain domain = UPVDomain.Alumno) : base(drive, user)
         {
             Domain = domain;
         }

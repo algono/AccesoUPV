@@ -28,44 +28,6 @@ namespace AccesoUPV.Lib.Managers
             };
         }
 
-        protected bool CheckProcess(Process process, Action<bool, string, string> handler = null)
-        {
-            string output = process.StandardOutput.ReadToEnd();
-            string err = process.StandardError.ReadToEnd();
-
-            process.WaitForExit();
-
-            bool succeeded = process.ExitCode == 0;
-
-            handler?.Invoke(succeeded, output, err);
-
-            process.Close();
-
-            return succeeded;
-        }
-
-        protected async Task<bool> CheckProcessAsync(Process process, Action<bool, string, string> handler = null)
-        {
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-
-            Task<string> output = process.StandardOutput.ReadToEndAsync();
-            Task<string> error = process.StandardError.ReadToEndAsync();
-
-            process.Exited += (s, e) => tcs.TrySetResult(process.ExitCode == 0);
-            if (process.HasExited) tcs.TrySetResult(process.ExitCode == 0);
-
-            await Task.WhenAll(output, error, tcs.Task);
-            process.Close();
-
-            bool succeeded = tcs.Task.Result;
-
-            if (handler != null) await Task.Run(() => handler(succeeded, output.Result, error.Result));
-
-            if (!succeeded) throw new IOException($"Output:\n{output}\n\nError:\n{error}");
-
-            return succeeded;
-        }
-
         protected abstract Process ConnectProcess();
         protected virtual void ConnectionHandler(bool succeeded, string output, string error)
         {
@@ -77,17 +39,17 @@ namespace AccesoUPV.Lib.Managers
             if (succeeded) Connected = false;
         }
 
-        public void Connect() => CheckProcess(ConnectProcess(), ConnectionHandler);
+        public void Connect() => ConnectProcess().WaitAndCheck(ConnectionHandler);
         public async Task ConnectAsync()
         {
             Process process = await Task.Factory.StartNew(ConnectProcess);
-            await CheckProcessAsync(process, ConnectionHandler);
+            await process.WaitAndCheckAsync(ConnectionHandler);
         }
-        public void Disconnect() => CheckProcess(DisconnectProcess(), DisconnectionHandler);
+        public void Disconnect() => DisconnectProcess().WaitAndCheck(DisconnectionHandler);
         public async Task DisconnectAsync()
         {
             Process process = await Task.Factory.StartNew(ConnectProcess);
-            await CheckProcessAsync(process, DisconnectionHandler);
+            await process.WaitAndCheckAsync(DisconnectionHandler);
         }
     }
 }

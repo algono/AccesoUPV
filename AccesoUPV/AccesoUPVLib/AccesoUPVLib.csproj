@@ -44,7 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccesoUPVService.cs" />
+    <Compile Include="ProcessUtils.cs" />
+    <Compile Include="Services\AccesoUPVService.cs" />
     <Compile Include="Managers\Drive\DriveManager.cs" />
     <Compile Include="Managers\Drive\DSICDriveManager.cs" />
     <Compile Include="Managers\Drive\WDriveManager.cs" />

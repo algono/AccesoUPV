@@ -1,4 +1,5 @@
-﻿using AccesoUPV.Lib.Managers.Drive;
+﻿using AccesoUPV.Lib.Services;
+using AccesoUPV.Lib.Managers.Drive;
 using AccesoUPV.Lib.Managers.VPN;
 using System;
 
@@ -8,6 +9,14 @@ namespace AccesoUPVTesting
     {
         static void Main(string[] args)
         {
+            //Service test calls
+
+            //Console.WriteLine("Creating Service...");
+            //AccesoUPVService Service = new AccesoUPVService();
+            //Console.WriteLine("Service created.");
+            //Console.WriteLine("Connecting to Linux Desktop...");
+            //Service.ConnectToLinuxDesktop();
+
             //VPN test calls
 
             //VPNTest(UPVManager.Create("UPV"));
@@ -17,39 +26,15 @@ namespace AccesoUPVTesting
 
             //Drive test calls
 
-            //DriveManager WManager = new WDriveManager("W:", "algono");
+            //DriveManager WManager = new WDriveManager("algono", 'W');
             //DriveTest(WManager);
-            //DriveManager DSICManager = new DSICDriveManager("W:", "algono", "INSERT PASS HERE");
-            //DriveTest(DSICManager);
+            //DriveManager DSICDriveManager = new DSICDriveManager("algono", "INSERT PASSWORD HERE");
+            //DriveTest(DSICDriveManager);
 
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
         }
-        //Drive tests
-        static void DriveTest(DriveManager Manager)
-        {
-            Console.WriteLine("--------- DRIVE TEST ({0}) ---------", Manager.Address);
 
-            ConnectTest(Manager);
-            DisconnectTest(Manager);
-
-            Console.WriteLine("--------- DRIVE TEST ENDED ---------");
-
-        }
-        static void ConnectTest(DriveManager Manager)
-        {
-            Console.WriteLine("Press any key to connect...");
-            Console.ReadKey();
-            Console.WriteLine("Connecting...");
-            Console.WriteLine("Connected: {0}", Manager.Connect());
-        }
-        static void DisconnectTest(DriveManager Manager)
-        {
-            Console.WriteLine("Press any key to disconnect...");
-            Console.ReadKey();
-            Console.WriteLine("Disconnecting...");
-            Console.WriteLine("Disconnected: {0}", Manager.Disconnect());
-        }
         //VPN tests
         static void VPNTest(VPNManager Manager)
         {
@@ -58,8 +43,15 @@ namespace AccesoUPVTesting
             Console.WriteLine("Checking if the VPN exists...");
             if (Manager.Exists()) Console.WriteLine("The VPN already exists. Next step.");
             else CreateTest(Manager);
-            ConnectTest(Manager);
-            DisconnectTest(Manager);
+            try
+            {
+                ConnectTest(Manager);
+                DisconnectTest(Manager);
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("The VPN connection process was canceled by the user.");
+            }
 
             Console.WriteLine("--------- VPN TEST ENDED ---------");
         }
@@ -77,16 +69,46 @@ namespace AccesoUPVTesting
             Console.WriteLine("Press any key to connect...");
             Console.ReadKey();
             Console.WriteLine("Connecting...");
-            Console.WriteLine("Connected: {0}", Manager.Connect());
-            Console.WriteLine("Reachable after connecting: {0}", Manager.IsReachable(4000));
+            Manager.Connect();
+            Console.WriteLine("Connected: {0}", Manager.Connected);
+            Console.WriteLine("Reachable after connecting: {0}", Manager.IsReachable(VPNManager.TEST_PING_TIMEOUT));
         }
         static void DisconnectTest(VPNManager Manager)
         {
             Console.WriteLine("Press any key to disconnect...");
             Console.ReadKey();
             Console.WriteLine("Disconnecting...");
-            Console.WriteLine("Disconnected: {0}", Manager.Disconnect());
+            Manager.Disconnect();
+            Console.WriteLine("Disconnected: {0}", !Manager.Connected);
             Console.WriteLine("Reachable after disconnecting: {0}", Manager.IsReachable());
+        }
+
+        //Drive tests
+        static void DriveTest(DriveManager Manager)
+        {
+            Console.WriteLine("--------- DRIVE TEST ({0}) ---------", Manager.Address);
+
+            ConnectTest(Manager);
+            DisconnectTest(Manager);
+
+            Console.WriteLine("--------- DRIVE TEST ENDED ---------");
+
+        }
+        static void ConnectTest(DriveManager Manager)
+        {
+            Console.WriteLine("Press any key to connect...");
+            Console.ReadKey();
+            Console.WriteLine("Connecting...");
+            Manager.Connect();
+            Console.WriteLine("Connected: {0}", Manager.Connected);
+        }
+        static void DisconnectTest(DriveManager Manager)
+        {
+            Console.WriteLine("Press any key to disconnect...");
+            Console.ReadKey();
+            Console.WriteLine("Disconnecting...");
+            Manager.Disconnect();
+            Console.WriteLine("Disconnected: {0}", !Manager.Connected);
         }
     }
 }

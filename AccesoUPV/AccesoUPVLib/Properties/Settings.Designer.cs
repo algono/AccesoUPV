@@ -92,5 +92,17 @@ namespace AccesoUPV.Lib.Properties {
                 this["User"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DSICPassword {
+            get {
+                return ((string)(this["DSICPassword"]));
+            }
+            set {
+                this["DSICPassword"] = value;
+            }
+        }
     }
 }
