@@ -28,7 +28,7 @@ namespace AccesoUPV.Lib.Managers.VPN
         protected ProcessStartInfo pingInfo;
         protected IDictionary creationParams;
 
-        public VPNManager(string server, string name = null, string testServer = null, IDictionary creationParameters = null) : base()
+        public VPNManager(string server, string testServer = null, IDictionary creationParameters = null, string name = null) : base()
         {
             Name = name;
             Server = server;
@@ -111,6 +111,7 @@ namespace AccesoUPV.Lib.Managers.VPN
         }
 
         public bool Exists() => Find(Server).Exists(e => ((string) e.Properties["Name"].Value) == Name);
+        public List<PSObject> Find() => Find(Server);
         public static List<PSObject> Find(string Server)
         {
             using (PowerShell shell = PowerShell.Create())

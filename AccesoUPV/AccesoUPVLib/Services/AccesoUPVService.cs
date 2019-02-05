@@ -1,7 +1,10 @@
-﻿using AccesoUPV.Lib.Managers.Drive;
+﻿using AccesoUPV.Lib.Managers;
+using AccesoUPV.Lib.Managers.Drive;
 using AccesoUPV.Lib.Managers.VPN;
 using AccesoUPV.Lib.Properties;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace AccesoUPV.Lib.Services
@@ -9,14 +12,10 @@ namespace AccesoUPV.Lib.Services
     public class AccesoUPVService
     {
         //Managers
-        private VPNManager UPV_VPN, DSIC_VPN;
-        private WDriveManager WDrive;
-        private DSICDriveManager DSICDrive;
-
-        //Servers
-        public static string LINUX_DSIC = "linuxdesktop.dsic.upv.es";
-        public static string WIN_DSIC = "windesktop.dsic.upv.es";
-        public static string DISCA_SSH = "home-labs.disca.upv.es", KAHAN_SSH = "kahan.dsic.upv.es";
+        public VPNManager UPV_VPN { get; }
+        public VPNManager DSIC_VPN { get; }
+        public WDriveManager WDrive { get; }
+        public DSICDriveManager DSICDrive { get; }
 
         private string user;
 
@@ -36,9 +35,9 @@ namespace AccesoUPV.Lib.Services
         {
             user = Settings.Default.User;
 
-            UPV_VPN = UPVManager.Create();
-            DSIC_VPN = DSICManager.Create();
-            
+            UPV_VPN = new VPNManager(Servers.VPN_UPV, Servers.WEB_UPV, GetUPVCreationParameters(), Settings.Default.VPN_UPVName);
+            DSIC_VPN = new VPNManager(Servers.VPN_DSIC, Servers.PORTAL_DSIC, GetDSICCreationParameters(), Settings.Default.VPN_DSICName);
+
             WDrive = new WDriveManager(User, GetCharSetting("WDriveLetter"), GetSetting_WDriveDomain());
             
             DSICDrive = new DSICDriveManager(User);
@@ -78,6 +77,34 @@ namespace AccesoUPV.Lib.Services
             return result;
         }
 
+        protected static IDictionary GetUPVCreationParameters()
+        {
+            IDictionary creationParameters = new Dictionary<string, object>();
+
+            creationParameters.Add("AuthenticationMethod", "Eap");
+            creationParameters.Add("EncryptionLevel", "Required");
+            creationParameters.Add("TunnelType", "Sstp");
+
+            System.Xml.XmlDocument ConfigXml = new System.Xml.XmlDocument();
+            ConfigXml.Load("Resources/UPV_Config.xml");
+            creationParameters.Add("EapConfigXmlStream", ConfigXml);
+
+            return creationParameters;
+        }
+
+        protected static IDictionary GetDSICCreationParameters()
+        {
+            IDictionary creationParameters = new Dictionary<string, object>();
+
+            creationParameters.Add("AuthenticationMethod", "MSChapv2");
+            creationParameters.Add("EncryptionLevel", "Optional");
+            creationParameters.Add("L2tpPsk", "dsic");
+            creationParameters.Add("TunnelType", "L2tp");
+            creationParameters.Add("Force", true);
+
+            return creationParameters;
+        }
+
         public void SaveChanges()
         {
             Settings.Default.User = User;
@@ -94,15 +121,15 @@ namespace AccesoUPV.Lib.Services
             Settings.Default.Save();
         }
 
-        public void ConnectToLinuxDesktop()
+        public static void ConnectToLinuxDesktop()
         {
-            ConnectToRemoteDesktop(LINUX_DSIC);
+            ConnectToRemoteDesktop(Servers.LINUX_DSIC);
         }
-        public void ConnectToWindowsDesktop()
+        public static void ConnectToWindowsDesktop()
         {
-            ConnectToRemoteDesktop(WIN_DSIC);
+            ConnectToRemoteDesktop(Servers.WIN_DSIC);
         }
-        protected void ConnectToRemoteDesktop(string server)
+        protected static void ConnectToRemoteDesktop(string server)
         {
             Process.Start("mstsc.exe", $"/v:{server}").WaitAndCheck();
         }

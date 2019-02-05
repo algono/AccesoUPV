@@ -44,13 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\Servers.cs" />
     <Compile Include="ProcessUtils.cs" />
     <Compile Include="Services\AccesoUPVService.cs" />
     <Compile Include="Managers\Drive\DriveManager.cs" />
     <Compile Include="Managers\Drive\DSICDriveManager.cs" />
     <Compile Include="Managers\Drive\WDriveManager.cs" />
-    <Compile Include="Managers\VPN\DSICManager.cs" />
-    <Compile Include="Managers\VPN\UPVManager.cs" />
     <Compile Include="Managers\VPN\VPNManager.cs" />
     <Compile Include="Managers\ConnectionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
