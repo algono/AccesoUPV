@@ -16,9 +16,9 @@ namespace AccesoUPV.Lib
 
             bool succeeded = process.ExitCode == 0;
 
-            handler?.Invoke(succeeded, output, err);
-
             process.Close();
+
+            handler?.Invoke(succeeded, output, err);
 
             return succeeded;
         }

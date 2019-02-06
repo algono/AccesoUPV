@@ -11,25 +11,34 @@ namespace AccesoUPVTesting
         {
             //Service test calls
 
-            //Console.WriteLine("Creating Service...");
-            //AccesoUPVService Service = new AccesoUPVService();
-            //Console.WriteLine("Service created.");
-            //Console.WriteLine("Connecting to Linux Desktop...");
-            //Service.ConnectToLinuxDesktop();
+            Console.WriteLine("Creating Service...");
+            AccesoUPVService Service = new AccesoUPVService();
+            Console.WriteLine("Service created.");
 
             //VPN test calls
+            //Service.VPN_UPV.Name = "UPV";
+            //VPNTest(Service.VPN_UPV);
 
-            //VPNTest(UPVManager.Create("UPV"));
-            //VPNTest(DSICManager.Create("DSIC"));
+            //Service.VPN_DSIC.Name = "DSIC";
+            //VPNTest(Service.VPN_DSIC);
 
-            //ConnectTest(UPVManager.Create("UPV"));
+            //if (!Service.VPN_UPV.IsReachable()) ConnectTest(Service.VPN_UPV);
 
             //Drive test calls
 
-            //DriveManager WManager = new WDriveManager("algono", 'W');
-            //DriveTest(WManager);
-            //DriveManager DSICDriveManager = new DSICDriveManager("algono", "INSERT PASSWORD HERE");
-            //DriveTest(DSICDriveManager);
+            Service.User = "algono";
+
+            Service.WDrive.Drive = 'W';
+            Service.WDrive.Domain = UPVDomain.Alumno;
+            DriveTest(Service.WDrive);
+
+            //Service.DSICDrive.Password = "INSERT PASSWORD HERE";
+            //DriveTest(Service.DSICDrive);
+
+            //Remote desktop test
+
+            //Console.WriteLine("Connecting to Linux Desktop...");
+            //AccesoUPVService.ConnectToLinuxDesktop();
 
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();

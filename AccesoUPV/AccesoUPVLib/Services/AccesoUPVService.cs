@@ -12,8 +12,8 @@ namespace AccesoUPV.Lib.Services
     public class AccesoUPVService
     {
         //Managers
-        public VPNManager UPV_VPN { get; }
-        public VPNManager DSIC_VPN { get; }
+        public VPNManager VPN_UPV { get; }
+        public VPNManager VPN_DSIC { get; }
         public WDriveManager WDrive { get; }
         public DSICDriveManager DSICDrive { get; }
 
@@ -31,12 +31,38 @@ namespace AccesoUPV.Lib.Services
         }
         public bool SavePasswords { get; set; }
 
+        protected static IDictionary UPVCreationParameters { get; }
+        protected static IDictionary DSICCreationParameters { get; }
+
+        static AccesoUPVService()
+        {
+            //UPV creation parameters
+            UPVCreationParameters = new Dictionary<string, object>();
+
+            UPVCreationParameters.Add("AuthenticationMethod", "Eap");
+            UPVCreationParameters.Add("EncryptionLevel", "Required");
+            UPVCreationParameters.Add("TunnelType", "Sstp");
+
+            System.Xml.XmlDocument ConfigXml = new System.Xml.XmlDocument();
+            ConfigXml.Load("Resources/UPV_Config.xml");
+            UPVCreationParameters.Add("EapConfigXmlStream", ConfigXml);
+
+            //DSIC creation parameters
+            DSICCreationParameters = new Dictionary<string, object>();
+
+            DSICCreationParameters.Add("AuthenticationMethod", "MSChapv2");
+            DSICCreationParameters.Add("EncryptionLevel", "Optional");
+            DSICCreationParameters.Add("L2tpPsk", "dsic");
+            DSICCreationParameters.Add("TunnelType", "L2tp");
+            DSICCreationParameters.Add("Force", true);
+        }
+
         public AccesoUPVService()
         {
             user = Settings.Default.User;
 
-            UPV_VPN = new VPNManager(Servers.VPN_UPV, Servers.WEB_UPV, GetUPVCreationParameters(), Settings.Default.VPN_UPVName);
-            DSIC_VPN = new VPNManager(Servers.VPN_DSIC, Servers.PORTAL_DSIC, GetDSICCreationParameters(), Settings.Default.VPN_DSICName);
+            VPN_UPV = new VPNManager(Servers.VPN_UPV, Servers.WEB_UPV, UPVCreationParameters, Settings.Default.VPN_UPVName);
+            VPN_DSIC = new VPNManager(Servers.VPN_DSIC, Servers.PORTAL_DSIC, DSICCreationParameters, Settings.Default.VPN_DSICName);
 
             WDrive = new WDriveManager(User, GetCharSetting("WDriveLetter"), GetSetting_WDriveDomain());
             
@@ -77,40 +103,12 @@ namespace AccesoUPV.Lib.Services
             return result;
         }
 
-        protected static IDictionary GetUPVCreationParameters()
-        {
-            IDictionary creationParameters = new Dictionary<string, object>();
-
-            creationParameters.Add("AuthenticationMethod", "Eap");
-            creationParameters.Add("EncryptionLevel", "Required");
-            creationParameters.Add("TunnelType", "Sstp");
-
-            System.Xml.XmlDocument ConfigXml = new System.Xml.XmlDocument();
-            ConfigXml.Load("Resources/UPV_Config.xml");
-            creationParameters.Add("EapConfigXmlStream", ConfigXml);
-
-            return creationParameters;
-        }
-
-        protected static IDictionary GetDSICCreationParameters()
-        {
-            IDictionary creationParameters = new Dictionary<string, object>();
-
-            creationParameters.Add("AuthenticationMethod", "MSChapv2");
-            creationParameters.Add("EncryptionLevel", "Optional");
-            creationParameters.Add("L2tpPsk", "dsic");
-            creationParameters.Add("TunnelType", "L2tp");
-            creationParameters.Add("Force", true);
-
-            return creationParameters;
-        }
-
         public void SaveChanges()
         {
             Settings.Default.User = User;
 
-            Settings.Default.VPN_UPVName = UPV_VPN.Name;
-            Settings.Default.VPN_DSICName = DSIC_VPN.Name;
+            Settings.Default.VPN_UPVName = VPN_UPV.Name;
+            Settings.Default.VPN_DSICName = VPN_DSIC.Name;
 
             Settings.Default.WDriveLetter = WDrive.Drive.GetValueOrDefault();
             Settings.Default.WDriveDomain = WDrive.Domain.ToString();
