@@ -26,11 +26,11 @@ namespace AccesoUPVTesting
 
             //Drive test calls
 
-            Service.User = "algono";
+            //Service.User = "algono";
 
-            Service.WDrive.Drive = 'W';
-            Service.WDrive.Domain = UPVDomain.Alumno;
-            DriveTest(Service.WDrive);
+            //Service.WDrive.Drive = 'W';
+            //Service.WDrive.Domain = UPVDomain.Alumno;
+            //DriveTest(Service.WDrive);
 
             //Service.DSICDrive.Password = "INSERT PASSWORD HERE";
             //DriveTest(Service.DSICDrive);

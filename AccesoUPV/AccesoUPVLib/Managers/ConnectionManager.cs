@@ -23,6 +23,7 @@ namespace AccesoUPV.Lib.Managers
                 FileName = fileName,
                 CreateNoWindow = true,
                 UseShellExecute = false,
+                RedirectStandardInput = true, //Por si tienes que pasarle algo al proceso
                 RedirectStandardOutput = true,
                 RedirectStandardError = true
             };

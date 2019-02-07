@@ -73,7 +73,9 @@ namespace AccesoUPV.Lib.Managers.Drive
             conInfo.Arguments = $"use {Drive}: {Address}";
             if (UseCredentials) conInfo.Arguments += $" {Password} /USER:{Domain}\\{User}";
 
-            return Process.Start(conInfo);
+            Process process = Process.Start(conInfo);
+            process.StandardInput.Close(); //Para que falle si pide input al usuario
+            return process;
         }
 
         protected override void ConnectionHandler(bool succeeded, string output, string error)
