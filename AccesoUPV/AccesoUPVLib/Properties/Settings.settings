@@ -8,13 +8,13 @@
     <Setting Name="VPN_DSICName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="WDriveLetter" Type="System.Char" Scope="User">
+    <Setting Name="WDriveLetter" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="WDriveDomain" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="DSICDriveLetter" Type="System.Char" Scope="User">
+    <Setting Name="DSICDriveLetter" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="User" Type="System.String" Scope="User">

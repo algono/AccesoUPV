@@ -1,31 +1,45 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Management.Automation;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace AccesoUPV.Lib.Managers.VPN
 {
-    public class UPVManager : VPNManager
+    public class UPVManager : VPNManagerBase
     {
-        protected static IDictionary UPVCreationParameters;
-        protected override IDictionary creationParameters { get { return UPVCreationParameters; } }
-
-        static UPVManager()
+        public override string Server
         {
-            UPVCreationParameters = new Dictionary<string, object>();
+            get
+            {
+                return Servers.VPN_UPV;
+            }
+        }
 
-            UPVCreationParameters.Add("AuthenticationMethod", "Eap");
-            UPVCreationParameters.Add("EncryptionLevel", "Required");
-            UPVCreationParameters.Add("TunnelType", "Sstp");
+        public override string TestServer
+        {
+            get
+            {
+                return Servers.WEB_UPV;
+            }
+        }
+
+        public UPVManager(string name = null) : base(name) { }
+
+        protected override PowerShell CreateShell()
+        {
+            PowerShell shell = base.CreateShell();
+
+            shell.AddParameter("AuthenticationMethod", "Eap");
+            shell.AddParameter("EncryptionLevel", "Required");
+            shell.AddParameter("TunnelType", "Sstp");
 
             System.Xml.XmlDocument ConfigXml = new System.Xml.XmlDocument();
-            ConfigXml.Load("UPVCreationParametersources/UPV_Config.xml");
-            UPVCreationParameters.Add("EapConfigXmlStream", ConfigXml);
-        }
-        public UPVManager(string name = null) : base(Servers.VPN_UPV, Servers.WEB_UPV, name)
-        {
+            ConfigXml.Load("Resources/UPV_Config.xml");
+            shell.AddParameter("EapConfigXmlStream", ConfigXml);
+
+            return shell;
         }
     }
 }

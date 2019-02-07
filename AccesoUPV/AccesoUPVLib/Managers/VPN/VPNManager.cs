@@ -8,119 +8,24 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Lib.Managers.VPN
 {
-    public class VPNManager : ConnectionManager
+    public class VPNManager : VPNManagerBase
     {
-        public static int TEST_PING_TIMEOUT = 4000;
-        public string ConnectedName { get; private set; }
-        public string Name { get; set; }
-        public string Server { get; }
-        public string TestServer { get; }
-        public override bool Connected
-        {
-            get { return ConnectedName != null; }
-            protected set
-            {
-                if (value) ConnectedName = Name;
-                else ConnectedName = null;
-            }
-        }
+        public override string Server { get; }
+        public override string TestServer { get; }
 
-        protected ProcessStartInfo pingInfo;
-        protected IDictionary creationParams;
+        protected readonly IDictionary creationParams;
 
-        public VPNManager(string server, string testServer = null, IDictionary creationParameters = null, string name = null) : base()
+        public VPNManager(string server, string testServer = null, IDictionary creationParameters = null, string name = null) : base(name)
         {
-            Name = name;
             Server = server;
             TestServer = testServer ?? server;
             creationParams = creationParameters;
-
-            conInfo.FileName = "rasphone.exe";
-            disInfo.FileName = "rasdial.exe";
-
-            pingInfo = CreateProcessInfo("ping.exe");
         }
-        public bool IsReachable(int timeout = 500)
+        protected override PowerShell CreateShell()
         {
-            pingInfo.Arguments = $"-n 1 -w {timeout} {TestServer}";
-            Process p = Process.Start(pingInfo);
-            p.WaitForExit();
-            return p.ExitCode == 0;
-        }
-
-        protected override Process ConnectProcess()
-        {
-            conInfo.Arguments = $"-d \"{Name}\"";
-            return Process.Start(conInfo);
-        }
-        /**
-         * @throws:
-         * - ArgumentException: La VPN que se ha proporcionado funciona, pero es incapaz de acceder al Test Server
-         * - OperationCanceledException: El usuario canceló la operación.
-         */
-        protected override void ConnectionHandler(bool succeeded, string output, string error)
-        {
-            if (succeeded)
-            {
-                Process checkingProcess = Process.Start(CreateProcessInfo("rasdial.exe"));
-                succeeded = checkingProcess.WaitAndCheck((s, o, e) => 
-                {
-                    if (s && !o.Contains(Name)) throw new OperationCanceledException();
-                });
-                if (succeeded && !IsReachable(TEST_PING_TIMEOUT))
-                {
-                    disInfo.Arguments = $"\"{Name}\" /DISCONNECT";
-                    Process.Start(disInfo).WaitAndCheck();
-                    throw new ArgumentException(); //VPN no valida para acceder al TestServer
-                }
-            }
-            
-            base.ConnectionHandler(succeeded, output, error);
-
-        }
-
-        protected override Process DisconnectProcess()
-        {
-            disInfo.Arguments = $"\"{ConnectedName}\" /DISCONNECT";
-            return Process.Start(disInfo);
-        }
-
-        protected PowerShell CreateShell()
-        {
-            PowerShell shell = PowerShell.Create();
-            shell.AddCommand("Add-VpnConnection");
-            shell.AddParameter("Name", Name);
-            shell.AddParameter("ServerAddress", Server);
-            shell.AddParameter("RememberCredential"); //Se asegura de que las credenciales se guarden cuando toca (si el usuario lo indica en rasphone)
+            PowerShell shell = base.CreateShell();
             if (creationParams != null) shell.AddParameters(creationParams);
             return shell;
-        }
-
-        public bool Create()
-        {
-            using (PowerShell shell = CreateShell())
-            {
-                shell.Invoke();
-                return !shell.HadErrors;
-            }
-        }
-        public Task CreateAsync()
-        {
-            PowerShell shell = CreateShell();
-            return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) => shell.Dispose());
-        }
-
-        public bool Exists() => Find(Server).Exists(e => ((string) e.Properties["Name"].Value) == Name);
-        public List<PSObject> Find() => Find(Server);
-        public static List<PSObject> Find(string Server)
-        {
-            using (PowerShell shell = PowerShell.Create())
-            {
-                shell.AddScript("Get-VpnConnection | Where-Object {$_.ServerAddress -eq '" + Server + "'}");
-                List<PSObject> PSOutput = shell.Invoke().ToList();
-                PSOutput.RemoveAll(item => item == null);
-                return PSOutput;
-            }
         }
     }
 }

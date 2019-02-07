@@ -11,14 +11,14 @@ namespace AccesoUPV.Lib.Managers.Drive
     public class InvalidUserException : ArgumentException { }
     public class NotAvailableDriveException : IOException { }
     public class OpenedFilesException : IOException { }
-    public abstract class DriveManager : ConnectionManager
+    public abstract class DriveManagerBase : ConnectionManager
     {
-        public char? ConnectedDrive { get; private set; }
-        public char? Drive { get; set; }
+        public string ConnectedDrive { get; private set; }
+        public string Drive { get; set; }
         public abstract string Address { get; }
         public string User { get; set; }
         public string Password { get; set; }
-        public string Domain { get; set; }
+        public virtual string Domain { get; set; }
         public bool UseCredentials { get; set; }
         public bool YesToAll { get; set; }
 
@@ -32,7 +32,7 @@ namespace AccesoUPV.Lib.Managers.Drive
             }
         }
 
-        public DriveManager(char? drive = null, string user = null, string password = null, string domain = null, bool useCredentials = false, bool yesToAll = false) : base()
+        public DriveManagerBase(string drive = null, string domain = null, string user = null, string password = null, bool useCredentials = false, bool yesToAll = false) : base()
         {
             Drive = drive;
             User = user;
@@ -45,13 +45,14 @@ namespace AccesoUPV.Lib.Managers.Drive
             disInfo.FileName = "net.exe";
         }
 
-        public static List<char> GetAvailableDrives()
+        public static List<string> GetAvailableDrives()
         {
-            List<char> drives = new List<char>();
+            List<string> drives = new List<string>();
             
             for (char letter = 'Z'; letter >= 'D'; letter--)
             {
-                if (!Directory.Exists(letter + ":")) drives.Add(letter);
+                string drive = letter + ":";
+                if (!Directory.Exists(drive)) drives.Add(drive);
             }
 
             return drives;
@@ -61,16 +62,16 @@ namespace AccesoUPV.Lib.Managers.Drive
         {
             if (Drive == null)
             {
-                List<char> availableDrives = GetAvailableDrives();
+                List<string> availableDrives = GetAvailableDrives();
                 if (availableDrives.Count == 0) throw new NotAvailableDriveException();
                 Drive = availableDrives[0];
             }
-            else if (Directory.Exists(Drive + ":"))
+            else if (Directory.Exists(Drive))
             {
                 throw new NotAvailableDriveException();
             }
 
-            conInfo.Arguments = $"use {Drive}: {Address}";
+            conInfo.Arguments = $"use {Drive} {Address}";
             if (UseCredentials) conInfo.Arguments += $" {Password} /USER:{Domain}\\{User}";
 
             Process process = Process.Start(conInfo);
@@ -94,7 +95,7 @@ namespace AccesoUPV.Lib.Managers.Drive
 
         protected override Process DisconnectProcess()
         {
-            disInfo.Arguments = $"use {ConnectedDrive}: /delete";
+            disInfo.Arguments = $"use {ConnectedDrive} /delete";
             if (YesToAll) disInfo.Arguments += "/y";
             return Process.Start(disInfo);
         }

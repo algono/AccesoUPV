@@ -15,36 +15,38 @@ namespace AccesoUPV.Lib.Managers.Drive
     */
     public class CredentialsBugException : IOException { }
 
-    public enum UPVDomain
+    public static class UPVDomain
     {
-        Alumno, UPVNET
+        public const string Alumno = "alumnos", UPVNET = "discos";
     }
-    public class WDriveManager : DriveManager
+    public class WDriveManager : DriveManagerBase
     {
         public override string Address
         {
             get
             {
-                return $"\\\\nasupv.upv.es\\{base.Domain}\\{User[0]}\\{User}";
-            }
-        }
-        protected UPVDomain _Domain;
-        public new UPVDomain Domain
-        {
-            get
-            {
-                return _Domain;
-            }
-            set
-            {
-                _Domain = value;
-                base.Domain = (value == UPVDomain.Alumno ? "alumnos" : "discos");
+                return $"\\\\nasupv.upv.es\\{Domain}\\{User[0]}\\{User}";
             }
         }
 
-        public WDriveManager(string user = null, char? drive = null, UPVDomain domain = UPVDomain.Alumno) : base(drive, user)
+        public override string Domain
         {
-            Domain = domain;
+            get
+            {
+                return base.Domain;
+            }
+            set
+            {
+                if (value != UPVDomain.Alumno && value != UPVDomain.UPVNET)
+                {
+                    throw new ArgumentOutOfRangeException("The only domains permitted here are the ones within the static class UPVDomain");
+                }
+                base.Domain = value;
+            }
+        }
+
+        public WDriveManager(string user = null, string drive = null, string domain = UPVDomain.Alumno) : base(drive, domain, user)
+        {
         }
 
         protected override void ConnectionHandler(bool succeeded, string output, string err)

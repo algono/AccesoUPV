@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace AccesoUPV.Lib.Managers.Drive
 {
     class InvalidCredentials : ArgumentException { }
-    public class DSICDriveManager : DriveManager
+    public class DSICDriveManager : DriveManagerBase
     {
         public override string Address
         {
@@ -18,7 +18,7 @@ namespace AccesoUPV.Lib.Managers.Drive
             }
         }
 
-        public DSICDriveManager(string user = null, string password = null, char? drive = null) : base(drive, user, password, "DSIC", true)
+        public DSICDriveManager(string user = null, string password = null, string drive = null) : base(drive, "DSIC", user, password, true)
         {
         }
 

@@ -49,9 +49,10 @@ namespace AccesoUPV.Lib.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public char WDriveLetter {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string WDriveLetter {
             get {
-                return ((char)(this["WDriveLetter"]));
+                return ((string)(this["WDriveLetter"]));
             }
             set {
                 this["WDriveLetter"] = value;
@@ -72,9 +73,10 @@ namespace AccesoUPV.Lib.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public char DSICDriveLetter {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DSICDriveLetter {
             get {
-                return ((char)(this["DSICDriveLetter"]));
+                return ((string)(this["DSICDriveLetter"]));
             }
             set {
                 this["DSICDriveLetter"] = value;
