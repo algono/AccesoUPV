@@ -2,6 +2,7 @@
 using AccesoUPV.Lib.Managers.Drive;
 using AccesoUPV.Lib.Managers.VPN;
 using System;
+using System.Text;
 
 namespace AccesoUPVTesting
 {
@@ -10,10 +11,7 @@ namespace AccesoUPVTesting
         static void Main(string[] args)
         {
             //Service test calls
-
-            Console.WriteLine("Creating Service...");
-            AccesoUPVService Service = new AccesoUPVService();
-            Console.WriteLine("Service created.");
+            AccesoUPVService Service = ServiceTest();
 
             ////VPN test calls
 
@@ -45,6 +43,33 @@ namespace AccesoUPVTesting
 
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
+        }
+
+        static AccesoUPVService ServiceTest()
+        {
+            Console.WriteLine("Creating Service...");
+            AccesoUPVService Service = new AccesoUPVService();
+            Console.WriteLine("Service created.");
+
+            if (true)//Service.AreSettingsUninitialized)
+            {
+                Console.WriteLine("--------- SERVICE TEST ---------");
+
+                Console.WriteLine("There are uninitialized settings. These are:");
+
+                StringBuilder builder = new StringBuilder();
+                foreach (System.Configuration.SettingsPropertyValue setting in Service.UninitializedSettings) // Loop through all strings
+                {
+                    builder.Append(" | ").Append(setting.Name.ToString()); // Append string to StringBuilder
+                }
+                Console.WriteLine(builder.ToString()); // Get string from StringBuilder
+
+                Console.WriteLine("\nPress any key to continue...");
+                Console.ReadKey();
+
+                Console.WriteLine("--------- SERVICE TEST ENDED ---------");
+            }
+            return Service;
         }
 
         //VPN tests

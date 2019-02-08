@@ -98,12 +98,12 @@ namespace AccesoUPV.Lib.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DSICPassword {
+        public string DSICDrivePassword {
             get {
-                return ((string)(this["DSICPassword"]));
+                return ((string)(this["DSICDrivePassword"]));
             }
             set {
-                this["DSICPassword"] = value;
+                this["DSICDrivePassword"] = value;
             }
         }
     }

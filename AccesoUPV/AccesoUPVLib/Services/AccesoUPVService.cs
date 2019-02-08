@@ -5,6 +5,7 @@ using AccesoUPV.Lib.Properties;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 
 namespace AccesoUPV.Lib.Services
@@ -31,8 +32,13 @@ namespace AccesoUPV.Lib.Services
         }
         public bool SavePasswords { get; set; }
 
+        public bool AreSettingsUninitialized { get { return UninitializedSettings.Count > 0; } }
+        public HashSet<SettingsPropertyValue> UninitializedSettings { get; } = new HashSet<SettingsPropertyValue>();
+
         public AccesoUPVService()
         {
+            Settings.Default.SettingsLoaded += Default_SettingsLoaded;
+
             user = Settings.Default.User;
 
             VPN_UPV = new UPVManager(Settings.Default.VPN_UPVName);
@@ -43,8 +49,19 @@ namespace AccesoUPV.Lib.Services
             //En las strings de settings, si no estan inicializados, son strings vacios
             if (!string.IsNullOrEmpty(Settings.Default.WDriveDomain)) WDrive.Domain = Settings.Default.WDriveDomain;
             
-            DSICDrive = new DSICDriveManager(User, Settings.Default.DSICPassword, Settings.Default.DSICDriveLetter);
+            DSICDrive = new DSICDriveManager(User, Settings.Default.DSICDrivePassword, Settings.Default.DSICDriveLetter);
             SavePasswords = DSICDrive.Password != null;
+        }
+
+        protected virtual void Default_SettingsLoaded(object sender, SettingsLoadedEventArgs e)
+        {
+            foreach (SettingsPropertyValue property in Settings.Default.PropertyValues)
+            {
+                if (string.IsNullOrEmpty(property.PropertyValue as string))
+                {
+                    UninitializedSettings.Add(property);
+                }
+            }
         }
 
         public void SaveChanges()
@@ -58,7 +75,7 @@ namespace AccesoUPV.Lib.Services
             Settings.Default.WDriveDomain = WDrive.Domain;
 
             Settings.Default.DSICDriveLetter = DSICDrive.Drive;
-            Settings.Default.DSICPassword = SavePasswords ? DSICDrive.Password : null;
+            Settings.Default.DSICDrivePassword = SavePasswords ? DSICDrive.Password : null;
 
             Settings.Default.Save();
         }

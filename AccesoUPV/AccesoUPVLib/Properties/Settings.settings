@@ -20,7 +20,7 @@
     <Setting Name="User" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="DSICPassword" Type="System.String" Scope="User">
+    <Setting Name="DSICDrivePassword" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>
