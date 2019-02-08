@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Threading.Tasks;
@@ -59,15 +60,22 @@ namespace AccesoUPV.Lib.Managers.VPN
             if (succeeded)
             {
                 Process checkingProcess = Process.Start(CreateProcessInfo("rasdial.exe"));
-                succeeded = checkingProcess.WaitAndCheck((s, o, e) => 
+                try
                 {
-                    if (s && !o.Contains(Name)) throw new OperationCanceledException();
-                });
-                if (succeeded && !IsReachable(TEST_PING_TIMEOUT))
+                    checkingProcess.WaitAndCheck((s, o, e) =>
+                            {
+                                if (s && !o.Contains(Name)) throw new OperationCanceledException();
+                            });
+                    if (!IsReachable(TEST_PING_TIMEOUT))
+                    {
+                        disInfo.Arguments = $"\"{Name}\" /DISCONNECT";
+                        Process.Start(disInfo).WaitAndCheck();
+                        throw new ArgumentException(); //VPN no valida para acceder al TestServer
+                    }
+                }
+                catch (IOException)
                 {
-                    disInfo.Arguments = $"\"{Name}\" /DISCONNECT";
-                    Process.Start(disInfo).WaitAndCheck();
-                    throw new ArgumentException(); //VPN no valida para acceder al TestServer
+                    //If the checking fails, it still continues
                 }
             }
             

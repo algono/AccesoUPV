@@ -15,13 +15,13 @@ namespace AccesoUPVTesting
             AccesoUPVService Service = new AccesoUPVService();
             Console.WriteLine("Service created.");
 
-            //VPN test calls
+            ////VPN test calls
 
-            Service.VPN_UPV.Name = "UPV";
-            VPNTest(Service.VPN_UPV);
+            //Service.VPN_UPV.Name = "UPV";
+            //VPNTest(Service.VPN_UPV);
 
-            Service.VPN_DSIC.Name = "DSIC";
-            VPNTest(Service.VPN_DSIC);
+            //Service.VPN_DSIC.Name = "DSIC";
+            //VPNTest(Service.VPN_DSIC);
 
             if (!Service.VPN_UPV.IsReachable()) ConnectTest(Service.VPN_UPV);
 
@@ -64,6 +64,10 @@ namespace AccesoUPVTesting
             {
                 Console.WriteLine("The VPN connection process was canceled by the user.");
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
 
             Console.WriteLine("--------- VPN TEST ENDED ---------");
         }
@@ -100,8 +104,15 @@ namespace AccesoUPVTesting
         {
             Console.WriteLine("--------- DRIVE TEST ({0}) ---------", Manager.Address);
 
-            ConnectTest(Manager);
-            DisconnectTest(Manager);
+            try
+            {
+                ConnectTest(Manager);
+                DisconnectTest(Manager);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
 
             Console.WriteLine("--------- DRIVE TEST ENDED ---------");
 

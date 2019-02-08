@@ -72,8 +72,7 @@ namespace AccesoUPV.Lib.Managers.Drive
             }
 
             conInfo.Arguments = $"use {Drive} {Address}";
-            if (UseCredentials) conInfo.Arguments += $" {Password} /USER:{Domain}\\{User}";
-
+            if (UseCredentials) conInfo.Arguments += $" \"{Password}\" /USER:" + (string.IsNullOrEmpty(Domain) ? User : $"{Domain}\\{User}");
             Process process = Process.Start(conInfo);
             process.StandardInput.Close(); //Para que falle si pide input al usuario
             return process;
