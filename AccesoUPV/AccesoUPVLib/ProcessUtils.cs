@@ -33,19 +33,20 @@ namespace AccesoUPV.Lib
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
 
             Task<string> outputTask = null, errorTask = null;
-            ICollection<Task> tasks = new HashSet<Task>() { tcs.Task }; //HashSet es el mas rapido para este caso
+            Task[] tasks = new Task[3];
+            tasks[0] = tcs.Task;
 
             if (!process.StartInfo.UseShellExecute)
             {
                 if (process.StartInfo.RedirectStandardOutput)
                 {
                     outputTask = process.StandardOutput.ReadToEndAsync();
-                    tasks.Add(outputTask);
+                    tasks[1] = outputTask;
                 }
                 if (process.StartInfo.RedirectStandardError)
                 {
                     errorTask = process.StandardError.ReadToEndAsync();
-                    tasks.Add(errorTask);
+                    tasks[2] = errorTask;
                 }
             }
 
