@@ -52,7 +52,7 @@
     <Compile Include="Managers\VPN\IVPNManager.cs" />
     <Compile Include="Managers\VPN\UPVManager.cs" />
     <Compile Include="Managers\VPN\VPNManagerBase.cs" />
-    <Compile Include="ProcessUtils.cs" />
+    <Compile Include="Utilities.cs" />
     <Compile Include="Services\AccesoUPVService.cs" />
     <Compile Include="Managers\Drive\DriveManagerBase.cs" />
     <Compile Include="Managers\Drive\DSICDriveManager.cs" />

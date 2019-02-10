@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Lib
 {
-    public static class ProcessUtils
+    public static class Utilities
     {
         public static void WaitAndCheck(this Process process, Action<bool, string, string> handler = null)
         {
@@ -62,5 +62,6 @@ namespace AccesoUPV.Lib
 
             if (!succeeded) throw new IOException($"Output:\n{outputTask.Result}\n\nError:\n{errorTask.Result}");
         }
+
     }
 }

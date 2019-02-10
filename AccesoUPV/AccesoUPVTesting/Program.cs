@@ -15,10 +15,10 @@ namespace AccesoUPVTesting
 
             ////VPN test calls
 
-            //Service.VPN_UPV.Name = "UPV";
+            Service.VPN_UPV.Name = "UPV";
             //VPNTest(Service.VPN_UPV);
 
-            //Service.VPN_DSIC.Name = "DSIC";
+            Service.VPN_DSIC.Name = "DSIC";
             //VPNTest(Service.VPN_DSIC);
 
             if (!Service.VPN_UPV.IsReachable()) ConnectTest(Service.VPN_UPV);

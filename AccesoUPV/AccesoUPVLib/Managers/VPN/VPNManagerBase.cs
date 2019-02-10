@@ -39,6 +39,7 @@ namespace AccesoUPV.Lib.Managers.VPN
         }
         public bool IsReachable(int timeout = 500)
         {
+            if (string.IsNullOrEmpty(TestServer)) throw new ArgumentNullException("The test server is not defined.");
             pingInfo.Arguments = $"-n 1 -w {timeout} {TestServer}";
             Process p = Process.Start(pingInfo);
             p.WaitForExit();
@@ -47,6 +48,7 @@ namespace AccesoUPV.Lib.Managers.VPN
 
         protected override Process ConnectProcess()
         {
+            if (string.IsNullOrEmpty(Name)) throw new ArgumentNullException("The name is not defined.");
             conInfo.Arguments = $"-d \"{Name}\"";
             return Process.Start(conInfo);
         }
@@ -91,6 +93,9 @@ namespace AccesoUPV.Lib.Managers.VPN
 
         protected virtual PowerShell CreateShell()
         {
+            if (string.IsNullOrEmpty(Name)) throw new ArgumentNullException("The name is not defined.");
+            else if (string.IsNullOrEmpty(Server)) throw new ArgumentNullException("The server is not defined.");
+
             PowerShell shell = PowerShell.Create();
             shell.AddCommand("Add-VpnConnection");
             shell.AddParameter("Name", Name);

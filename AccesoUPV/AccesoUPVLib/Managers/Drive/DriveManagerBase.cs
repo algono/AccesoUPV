@@ -60,7 +60,7 @@ namespace AccesoUPV.Lib.Managers.Drive
 
         protected void CheckDrive()
         {
-            if (Drive == null)
+            if (string.IsNullOrEmpty(Drive))
             {
                 List<string> availableDrives = GetAvailableDrives();
                 if (availableDrives.Count == 0) throw new NotAvailableDriveException();
@@ -75,7 +75,13 @@ namespace AccesoUPV.Lib.Managers.Drive
         protected void CheckArguments()
         {
             conInfo.Arguments = $"use {Drive} {Address}";
-            if (UseCredentials) conInfo.Arguments += $" \"{Password}\" /USER:{Domain?.GetFullUserName(UserName) ?? UserName}";
+            if (UseCredentials)
+            {
+                if (string.IsNullOrEmpty(UserName)) throw new ArgumentNullException("UserName is not set");
+                if (string.IsNullOrEmpty(Password)) throw new ArgumentNullException("Password is not set");
+                conInfo.Arguments += $" \"{Password}\" /USER:{Domain?.GetFullUserName(UserName) ?? UserName}";
+            }
+            if (YesToAll) conInfo.Arguments += "/y";
         }
 
         protected Process StartProcess()
