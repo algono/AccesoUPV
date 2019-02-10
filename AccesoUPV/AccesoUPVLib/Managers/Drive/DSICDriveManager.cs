@@ -14,11 +14,24 @@ namespace AccesoUPV.Lib.Managers.Drive
         {
             get
             {
-                return $"\\\\fileserver.dsic.upv.es\\{User}";
+                return $"\\\\fileserver.dsic.upv.es\\{UserName}";
             }
         }
+        private static readonly DriveDomain DSICDomain = new DriveDomain("DSIC");
+        public override DriveDomain Domain
+        {
+            get
+            {
+                return DSICDomain;
+            }
 
-        public DSICDriveManager(string user = null, string password = null, string drive = null) : base(drive, "DSIC", user, password, true)
+            protected set
+            {
+                throw new InvalidOperationException("The domain for this class can't be changed.");
+            }
+        }
+        
+        public DSICDriveManager(string user = null, string password = null, string drive = null) : base(drive, user, password, true)
         {
         }
 

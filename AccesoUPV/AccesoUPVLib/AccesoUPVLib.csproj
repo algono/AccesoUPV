@@ -44,8 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\Drive\DriveDomain.cs" />
+    <Compile Include="Managers\Drive\IDriveManager.cs" />
+    <Compile Include="Managers\IConnectionManager.cs" />
     <Compile Include="Managers\Servers.cs" />
     <Compile Include="Managers\VPN\DSICManager.cs" />
+    <Compile Include="Managers\VPN\IVPNManager.cs" />
     <Compile Include="Managers\VPN\UPVManager.cs" />
     <Compile Include="Managers\VPN\VPNManagerBase.cs" />
     <Compile Include="ProcessUtils.cs" />
@@ -53,7 +57,6 @@
     <Compile Include="Managers\Drive\DriveManagerBase.cs" />
     <Compile Include="Managers\Drive\DSICDriveManager.cs" />
     <Compile Include="Managers\Drive\WDriveManager.cs" />
-    <Compile Include="Managers\VPN\VPNManager.cs" />
     <Compile Include="Managers\ConnectionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

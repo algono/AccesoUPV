@@ -11,14 +11,13 @@ namespace AccesoUPV.Lib.Managers.Drive
     public class InvalidUserException : ArgumentException { }
     public class NotAvailableDriveException : IOException { }
     public class OpenedFilesException : IOException { }
-    public abstract class DriveManagerBase : ConnectionManager
+    public abstract class DriveManagerBase : ConnectionManager, IDriveManager
     {
         public string ConnectedDrive { get; private set; }
         public string Drive { get; set; }
         public abstract string Address { get; }
-        public string User { get; set; }
+        public string UserName { get; set; }
         public string Password { get; set; }
-        public virtual string Domain { get; set; }
         public bool UseCredentials { get; set; }
         public bool YesToAll { get; set; }
 
@@ -32,12 +31,13 @@ namespace AccesoUPV.Lib.Managers.Drive
             }
         }
 
-        public DriveManagerBase(string drive = null, string domain = null, string user = null, string password = null, bool useCredentials = false, bool yesToAll = false) : base()
+        public virtual DriveDomain Domain { get; protected set; }
+
+        public DriveManagerBase(string drive = null, string user = null, string password = null, bool useCredentials = false, bool yesToAll = false) : base()
         {
             Drive = drive;
-            User = user;
+            UserName = user;
             Password = password;
-            Domain = domain;
             UseCredentials = useCredentials;
             YesToAll = yesToAll;
 
@@ -58,7 +58,7 @@ namespace AccesoUPV.Lib.Managers.Drive
             return drives;
         }
 
-        protected override Process ConnectProcess()
+        protected void CheckDrive()
         {
             if (Drive == null)
             {
@@ -70,12 +70,26 @@ namespace AccesoUPV.Lib.Managers.Drive
             {
                 throw new NotAvailableDriveException();
             }
+        }
 
+        protected void CheckArguments()
+        {
             conInfo.Arguments = $"use {Drive} {Address}";
-            if (UseCredentials) conInfo.Arguments += $" \"{Password}\" /USER:" + (string.IsNullOrEmpty(Domain) ? User : $"{Domain}\\{User}");
+            if (UseCredentials) conInfo.Arguments += $" \"{Password}\" /USER:{Domain?.GetFullUserName(UserName) ?? UserName}";
+        }
+
+        protected Process StartProcess()
+        {
             Process process = Process.Start(conInfo);
             process.StandardInput.Close(); //Para que falle si pide input al usuario
             return process;
+        }
+
+        protected override Process ConnectProcess()
+        {
+            CheckDrive();
+            CheckArguments();
+            return StartProcess();
         }
 
         protected override void ConnectionHandler(bool succeeded, string output, string error)

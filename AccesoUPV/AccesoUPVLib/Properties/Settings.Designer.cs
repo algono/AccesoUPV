@@ -61,10 +61,10 @@ namespace AccesoUPV.Lib.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string WDriveDomain {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int WDriveDomain {
             get {
-                return ((string)(this["WDriveDomain"]));
+                return ((int)(this["WDriveDomain"]));
             }
             set {
                 this["WDriveDomain"] = value;

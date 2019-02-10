@@ -15,9 +15,9 @@ namespace AccesoUPV.Lib.Managers.Drive
     */
     public class CredentialsBugException : IOException { }
 
-    public static class UPVDomain
+    public enum UPVDomain
     {
-        public const string Alumno = "alumnos", UPVNET = "discos";
+        Alumno, UPVNET
     }
     public class WDriveManager : DriveManagerBase
     {
@@ -25,28 +25,41 @@ namespace AccesoUPV.Lib.Managers.Drive
         {
             get
             {
-                return $"\\\\nasupv.upv.es\\{Domain}\\{User[0]}\\{User}";
+                return $"\\\\nasupv.upv.es\\{base.Domain.Folder}\\{UserName[0]}\\{UserName}";
             }
         }
 
-        public override string Domain
+        public static readonly DriveDomain domainAlumno = new DriveDomain("alumno.upv.es", DomainStyle.AtSignStyle, "alumnos"),
+                                            domainUPVNET = new DriveDomain("upvnet.upv.es", DomainStyle.AtSignStyle, "discos");
+
+        public static DriveDomain GetDriveDomain(UPVDomain domain)
         {
-            get
+            switch (domain)
             {
-                return base.Domain;
+                case UPVDomain.Alumno:
+                    return domainAlumno;
+                case UPVDomain.UPVNET:
+                    return domainUPVNET;
+                default:
+                    throw new ArgumentOutOfRangeException("Argument not valid.");
             }
+        }
+
+        private UPVDomain wDomain;
+
+        public new UPVDomain Domain
+        {
+            get { return wDomain; }
             set
             {
-                if (value != UPVDomain.Alumno && value != UPVDomain.UPVNET)
-                {
-                    throw new ArgumentOutOfRangeException("The only domains permitted here are the ones within the static class UPVDomain");
-                }
-                base.Domain = value;
+                wDomain = value;
+                base.Domain = GetDriveDomain(value);
             }
         }
 
-        public WDriveManager(string user = null, string drive = null, string domain = UPVDomain.Alumno) : base(drive, domain, user)
+        public WDriveManager(string user = null, string drive = null, UPVDomain domain = UPVDomain.Alumno) : base(drive, user)
         {
+            Domain = domain;
         }
 
         protected override void ConnectionHandler(bool succeeded, string output, string err)

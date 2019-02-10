@@ -73,7 +73,7 @@ namespace AccesoUPVTesting
         }
 
         //VPN tests
-        static void VPNTest(VPNManagerBase Manager)
+        static void VPNTest(IVPNManager Manager)
         {
             Console.WriteLine("--------- VPN TEST ({0}) ---------", Manager.Name);
 
@@ -97,14 +97,14 @@ namespace AccesoUPVTesting
             Console.WriteLine("--------- VPN TEST ENDED ---------");
         }
 
-        static void CreateTest(VPNManagerBase Manager)
+        static void CreateTest(IVPNManager Manager)
         {
             Console.WriteLine("Press any key to create...");
             Console.ReadKey();
             Console.WriteLine("Creating...");
             Console.WriteLine("Created: {0}", Manager.Create());
         }
-        static void ConnectTest(VPNManagerBase Manager)
+        static void ConnectTest(IVPNManager Manager)
         {
             Console.WriteLine("Reachable before connecting: {0}", Manager.IsReachable());
             Console.WriteLine("Press any key to connect...");
@@ -114,7 +114,7 @@ namespace AccesoUPVTesting
             Console.WriteLine("Connected: {0}", Manager.Connected);
             Console.WriteLine("Reachable after connecting: {0}", Manager.IsReachable(VPNManagerBase.TEST_PING_TIMEOUT));
         }
-        static void DisconnectTest(VPNManagerBase Manager)
+        static void DisconnectTest(IVPNManager Manager)
         {
             Console.WriteLine("Press any key to disconnect...");
             Console.ReadKey();
@@ -125,7 +125,7 @@ namespace AccesoUPVTesting
         }
 
         //Drive tests
-        static void DriveTest(DriveManagerBase Manager)
+        static void DriveTest(IDriveManager Manager)
         {
             Console.WriteLine("--------- DRIVE TEST ({0}) ---------", Manager.Address);
 
@@ -142,7 +142,7 @@ namespace AccesoUPVTesting
             Console.WriteLine("--------- DRIVE TEST ENDED ---------");
 
         }
-        static void ConnectTest(DriveManagerBase Manager)
+        static void ConnectTest(IDriveManager Manager)
         {
             Console.WriteLine("Press any key to connect...");
             Console.ReadKey();
@@ -150,7 +150,7 @@ namespace AccesoUPVTesting
             Manager.Connect();
             Console.WriteLine("Connected: {0}", Manager.Connected);
         }
-        static void DisconnectTest(DriveManagerBase Manager)
+        static void DisconnectTest(IDriveManager Manager)
         {
             Console.WriteLine("Press any key to disconnect...");
             Console.ReadKey();

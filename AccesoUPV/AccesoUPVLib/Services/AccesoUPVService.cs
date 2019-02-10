@@ -26,8 +26,8 @@ namespace AccesoUPV.Lib.Services
             set
             {
                 user = value;
-                WDrive.User = value;
-                DSICDrive.User = value;
+                WDrive.UserName = value;
+                DSICDrive.UserName = value;
             }
         }
         public bool SavePasswords { get; set; }
@@ -44,11 +44,8 @@ namespace AccesoUPV.Lib.Services
             VPN_UPV = new UPVManager(Settings.Default.VPN_UPVName);
             VPN_DSIC = new DSICManager(Settings.Default.VPN_DSICName);
 
-            WDrive = new WDriveManager(User, Settings.Default.WDriveLetter);
+            WDrive = new WDriveManager(User, Settings.Default.WDriveLetter, (UPVDomain) Settings.Default.WDriveDomain);
 
-            //En las strings de settings, si no estan inicializados, son strings vacios
-            if (!string.IsNullOrEmpty(Settings.Default.WDriveDomain)) WDrive.Domain = Settings.Default.WDriveDomain;
-            
             DSICDrive = new DSICDriveManager(User, Settings.Default.DSICDrivePassword, Settings.Default.DSICDriveLetter);
             SavePasswords = DSICDrive.Password != null;
         }
@@ -72,7 +69,7 @@ namespace AccesoUPV.Lib.Services
             Settings.Default.VPN_DSICName = VPN_DSIC.Name;
 
             Settings.Default.WDriveLetter = WDrive.Drive;
-            Settings.Default.WDriveDomain = WDrive.Domain;
+            Settings.Default.WDriveDomain = (int) WDrive.Domain;
 
             Settings.Default.DSICDriveLetter = DSICDrive.Drive;
             Settings.Default.DSICDrivePassword = SavePasswords ? DSICDrive.Password : null;

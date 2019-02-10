@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Lib.Managers
 {
-    public abstract class ConnectionManager
+    public abstract class ConnectionManager : IConnectionManager
     {
         public abstract bool Connected { get; protected set; }
         protected ProcessStartInfo conInfo, disInfo;

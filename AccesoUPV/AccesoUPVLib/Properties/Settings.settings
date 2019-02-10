@@ -11,8 +11,8 @@
     <Setting Name="WDriveLetter" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="WDriveDomain" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="WDriveDomain" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="DSICDriveLetter" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
