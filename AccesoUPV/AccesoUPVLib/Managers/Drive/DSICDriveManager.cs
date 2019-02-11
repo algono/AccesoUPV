@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Lib.Managers.Drive
+namespace AccesoUPV.Library.Managers.Drive
 {
     class InvalidCredentials : ArgumentException { }
     public class DSICDriveManager : DriveManagerBase

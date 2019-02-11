@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Lib.Managers.Drive
+namespace AccesoUPV.Library.Managers.Drive
 {
     public enum DomainStyle { BackSlashStyle, AtSignStyle }
     public class DriveDomain

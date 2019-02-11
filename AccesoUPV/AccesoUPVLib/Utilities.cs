@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Lib
+namespace AccesoUPV.Library
 {
     public static class Utilities
     {

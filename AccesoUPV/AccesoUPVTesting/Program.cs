@@ -1,10 +1,10 @@
-﻿using AccesoUPV.Lib.Services;
-using AccesoUPV.Lib.Managers.Drive;
-using AccesoUPV.Lib.Managers.VPN;
+﻿using AccesoUPV.Library.Services;
+using AccesoUPV.Library.Managers.Drive;
+using AccesoUPV.Library.Managers.VPN;
 using System;
 using System.Text;
 
-namespace AccesoUPVTesting
+namespace AccesoUPV.ConsoleTesting
 {
     class Program
     {
@@ -112,7 +112,7 @@ namespace AccesoUPVTesting
             Console.WriteLine("Connecting...");
             Manager.Connect();
             Console.WriteLine("Connected: {0}", Manager.Connected);
-            Console.WriteLine("Reachable after connecting: {0}", Manager.IsReachable(VPNManagerBase.TEST_PING_TIMEOUT));
+            Console.WriteLine("Reachable after connecting: {0}", Manager.IsReachable());
         }
         static void DisconnectTest(IVPNManager Manager)
         {

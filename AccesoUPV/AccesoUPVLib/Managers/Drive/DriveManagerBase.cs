@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Lib.Managers.Drive
+namespace AccesoUPV.Library.Managers.Drive
 {
     // Custom Exceptions
     // (Not having constructors defined creates an empty constructor automatically, and it calls its parent constructor as well)
@@ -48,13 +48,30 @@ namespace AccesoUPV.Lib.Managers.Drive
         public static List<string> GetAvailableDrives()
         {
             List<string> drives = new List<string>();
-            
+            List<string> mappedDrives = GetMappedDrives();
+
             for (char letter = 'Z'; letter >= 'D'; letter--)
             {
                 string drive = letter + ":";
-                if (!Directory.Exists(drive)) drives.Add(drive);
+                if (!Directory.Exists(drive) && !mappedDrives.Contains(drive)) drives.Add(drive);
             }
 
+            return drives;
+        }
+        public static List<string> GetMappedDrives()
+        {
+            List<string> drives = new List<string>();
+
+            ProcessStartInfo info = CreateProcessInfo("net.exe");
+            info.Arguments = "use";
+            Process process = Process.Start(info);
+            string output = process.StandardOutput.ReadToEnd();
+            string[] splits = output.Split(':');
+            for (int i = 0; i < splits.Length - 1; i++)
+            {
+                string split = splits[i];
+                drives.Add(split[split.Length - 1] + ":");
+            }
             return drives;
         }
 

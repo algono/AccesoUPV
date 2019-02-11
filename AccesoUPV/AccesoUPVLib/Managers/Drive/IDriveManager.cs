@@ -1,4 +1,4 @@
-﻿namespace AccesoUPV.Lib.Managers.Drive
+﻿namespace AccesoUPV.Library.Managers.Drive
 {
     public interface IDriveManager : IConnectionManager
     {

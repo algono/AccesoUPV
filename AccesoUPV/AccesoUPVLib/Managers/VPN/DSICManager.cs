@@ -5,7 +5,7 @@ using System.Management.Automation;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Lib.Managers.VPN
+namespace AccesoUPV.Library.Managers.VPN
 {
     public class DSICManager : VPNManagerBase
     {

@@ -2,7 +2,7 @@
 using System.Management.Automation;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Lib.Managers.VPN
+namespace AccesoUPV.Library.Managers.VPN
 {
     public interface IVPNManager : IConnectionManager
     {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace AccesoUPV.Lib.Managers
+namespace AccesoUPV.Library.Managers
 {
     public interface IConnectionManager
     {

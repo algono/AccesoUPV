@@ -1,14 +1,14 @@
-﻿using AccesoUPV.Lib.Managers;
-using AccesoUPV.Lib.Managers.Drive;
-using AccesoUPV.Lib.Managers.VPN;
-using AccesoUPV.Lib.Properties;
+﻿using AccesoUPV.Library.Managers;
+using AccesoUPV.Library.Managers.Drive;
+using AccesoUPV.Library.Managers.VPN;
+using AccesoUPV.Library.Properties;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 
-namespace AccesoUPV.Lib.Services
+namespace AccesoUPV.Library.Services
 {
     public class AccesoUPVService
     {

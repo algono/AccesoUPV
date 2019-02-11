@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Lib.Managers
+namespace AccesoUPV.Library.Managers
 {
     public abstract class ConnectionManager : IConnectionManager
     {

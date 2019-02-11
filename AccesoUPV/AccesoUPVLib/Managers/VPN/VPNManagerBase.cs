@@ -7,11 +7,11 @@ using System.Linq;
 using System.Management.Automation;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Lib.Managers.VPN
+namespace AccesoUPV.Library.Managers.VPN
 {
     public abstract class VPNManagerBase : ConnectionManager, IVPNManager
     {
-        public const int TEST_PING_TIMEOUT = 4000;
+        public const int CONNECTED_PING_TIMEOUT = 5000, DISCONNECTED_PING_TIMEOUT = 500;
         public string ConnectedName { get; private set; }
         public string Name { get; set; }
         public abstract string Server { get; }
@@ -37,7 +37,12 @@ namespace AccesoUPV.Lib.Managers.VPN
 
             pingInfo = CreateProcessInfo("ping.exe");
         }
-        public bool IsReachable(int timeout = 500)
+        public bool IsReachable()
+        {
+            if (Connected) return IsReachable(CONNECTED_PING_TIMEOUT);
+            else return IsReachable(DISCONNECTED_PING_TIMEOUT);
+        }
+        public bool IsReachable(int timeout)
         {
             if (string.IsNullOrEmpty(TestServer)) throw new ArgumentNullException("The test server is not defined.");
             pingInfo.Arguments = $"-n 1 -w {timeout} {TestServer}";
@@ -68,7 +73,7 @@ namespace AccesoUPV.Lib.Managers.VPN
                     {
                         if (s && !o.Contains(Name)) throw new OperationCanceledException();
                     });
-                    if (!IsReachable(TEST_PING_TIMEOUT))
+                    if (!IsReachable(CONNECTED_PING_TIMEOUT))
                     {
                         disInfo.Arguments = $"\"{Name}\" /DISCONNECT";
                         Process.Start(disInfo).WaitAndCheck();
