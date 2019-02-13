@@ -69,10 +69,11 @@ namespace AccesoUPV.Library.Managers.VPN
                 Process checkingProcess = Process.Start(CreateProcessInfo("rasdial.exe"));
                 try
                 {
-                    checkingProcess.WaitAndCheck((s, o, e) =>
-                    {
-                        if (s && !o.Contains(Name)) throw new OperationCanceledException();
-                    });
+                    if (!IsActuallyConnected()) throw new OperationCanceledException();
+                    //checkingProcess.WaitAndCheck((s, o, e) =>
+                    //{
+                    //    if (s && !o.Contains(Name)) throw new OperationCanceledException();
+                    //});
                     if (!IsReachable(CONNECTED_PING_TIMEOUT))
                     {
                         disInfo.Arguments = $"\"{Name}\" /DISCONNECT";
@@ -88,6 +89,17 @@ namespace AccesoUPV.Library.Managers.VPN
             
             base.ConnectionHandler(succeeded, output, error);
 
+        }
+
+        private bool IsActuallyConnected()
+        {
+            bool res = false;
+            Process checkingProcess = Process.Start(CreateProcessInfo("rasdial.exe"));
+            checkingProcess.WaitAndCheck((s, o, e) =>
+            {
+                res = s && o.Contains(Name);
+            });
+            return res;
         }
 
         protected override Process DisconnectProcess()

@@ -18,13 +18,13 @@ namespace AccesoUPV.UnitTests
         {
             Assert.IsTrue(Manager.Connected);
             Assert.IsNotNull(Manager.ConnectedName);
-            Assert.IsTrue(Manager.IsReachable());
+            //Assert.IsTrue(Manager.IsReachable());
         }
         private static void Assert_Disconnected(IVPNManager Manager)
         {
             Assert.IsFalse(Manager.Connected);
             Assert.IsNull(Manager.ConnectedName);
-            Assert.IsFalse(Manager.IsReachable());
+            //Assert.IsFalse(Manager.IsReachable());
         }
         private static void CanBeConnected(IVPNManager Manager)
         {
