@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Managers.VPN
 {
-    public interface IVPNManager : IConnectionManager
+    public interface IVPN : Connectable
     {
         string ConnectedName { get; }
         string Name { get; set; }
@@ -15,6 +15,8 @@ namespace AccesoUPV.Library.Managers.VPN
         Task CreateAsync();
         bool Exists();
         List<PSObject> Find();
-        bool IsReachable(int timeout = 500);
+        bool IsReachable();
+        bool IsReachable(int timeout);
+        void Refresh();
     }
 }

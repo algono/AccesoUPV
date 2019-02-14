@@ -13,10 +13,10 @@ namespace AccesoUPV.Library.Services
     public class AccesoUPVService
     {
         //Managers
-        public UPVManager VPN_UPV { get; }
-        public DSICManager VPN_DSIC { get; }
-        public WDriveManager WDrive { get; }
-        public DSICDriveManager DSICDrive { get; }
+        public VPNToUPV VPN_UPV { get; }
+        public VPNToDSIC VPN_DSIC { get; }
+        public NetworkDriveW WDrive { get; }
+        public NetworkDriveDSIC DSICDrive { get; }
 
         private string user;
 
@@ -41,12 +41,12 @@ namespace AccesoUPV.Library.Services
 
             user = Settings.Default.User;
 
-            VPN_UPV = new UPVManager(Settings.Default.VPN_UPVName);
-            VPN_DSIC = new DSICManager(Settings.Default.VPN_DSICName);
+            VPN_UPV = new VPNToUPV(Settings.Default.VPN_UPVName);
+            VPN_DSIC = new VPNToDSIC(Settings.Default.VPN_DSICName);
 
-            WDrive = new WDriveManager(User, Settings.Default.WDriveLetter, (UPVDomain) Settings.Default.WDriveDomain);
+            WDrive = new NetworkDriveW(User, Settings.Default.WDriveLetter, (UPVDomain) Settings.Default.WDriveDomain);
 
-            DSICDrive = new DSICDriveManager(User, Settings.Default.DSICDrivePassword, Settings.Default.DSICDriveLetter);
+            DSICDrive = new NetworkDriveDSIC(User, Settings.Default.DSICDrivePassword, Settings.Default.DSICDriveLetter);
             SavePasswords = DSICDrive.Password != null;
         }
 

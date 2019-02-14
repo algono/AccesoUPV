@@ -11,7 +11,7 @@ namespace AccesoUPV.Library.Managers.Drive
     public class InvalidUserException : ArgumentException { }
     public class NotAvailableDriveException : IOException { }
     public class OpenedFilesException : IOException { }
-    public abstract class DriveManagerBase : ConnectionManager, IDriveManager
+    public abstract class NetworkDriveBase : ProcessConnector, INetworkDrive
     {
         public string ConnectedDrive { get; private set; }
         public string Drive { get; set; }
@@ -33,7 +33,7 @@ namespace AccesoUPV.Library.Managers.Drive
 
         public virtual DriveDomain Domain { get; protected set; }
 
-        public DriveManagerBase(string drive = null, string user = null, string password = null, bool useCredentials = false, bool yesToAll = false) : base()
+        public NetworkDriveBase(string drive = null, string user = null, string password = null, bool useCredentials = false, bool yesToAll = false) : base()
         {
             Drive = drive;
             UserName = user;

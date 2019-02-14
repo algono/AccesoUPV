@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Managers
 {
-    public abstract class ConnectionManager : IConnectionManager
+    public abstract class ProcessConnector : Connectable
     {
         public abstract bool Connected { get; protected set; }
         protected ProcessStartInfo conInfo, disInfo;
 
-        public ConnectionManager()
+        public ProcessConnector()
         {
             conInfo = CreateProcessInfo();
             disInfo = CreateProcessInfo();

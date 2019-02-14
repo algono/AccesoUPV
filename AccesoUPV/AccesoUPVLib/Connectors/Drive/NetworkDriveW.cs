@@ -19,7 +19,7 @@ namespace AccesoUPV.Library.Managers.Drive
     {
         Alumno, UPVNET
     }
-    public class WDriveManager : DriveManagerBase
+    public class NetworkDriveW : NetworkDriveBase
     {
         public override string Address
         {
@@ -57,7 +57,7 @@ namespace AccesoUPV.Library.Managers.Drive
             }
         }
 
-        public WDriveManager(string user = null, string drive = null, UPVDomain domain = UPVDomain.Alumno) : base(drive, user)
+        public NetworkDriveW(string user = null, string drive = null, UPVDomain domain = UPVDomain.Alumno) : base(drive, user)
         {
             Domain = domain;
         }

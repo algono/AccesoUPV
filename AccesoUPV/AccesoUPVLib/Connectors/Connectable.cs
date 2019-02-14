@@ -2,7 +2,7 @@
 
 namespace AccesoUPV.Library.Managers
 {
-    public interface IConnectionManager
+    public interface Connectable
     {
         bool Connected { get; }
 

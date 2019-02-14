@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Managers.VPN
 {
-    public class DSICManager : VPNManagerBase
+    public class VPNToDSIC : VPNBase
     {
         public override string Server
         {
@@ -24,7 +24,7 @@ namespace AccesoUPV.Library.Managers.VPN
                 return Servers.PORTAL_DSIC;
             }
         }
-        public DSICManager(string name = null) : base(name) { }
+        public VPNToDSIC(string name = null) : base(name) { }
 
         protected override PowerShell CreateShell()
         {

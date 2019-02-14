@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Managers.VPN
 {
-    public class UPVManager : VPNManagerBase
+    public class VPNToUPV : VPNBase
     {
         public override string Server
         {
@@ -25,7 +25,7 @@ namespace AccesoUPV.Library.Managers.VPN
             }
         }
 
-        public UPVManager(string name = null) : base(name) { }
+        public VPNToUPV(string name = null) : base(name) { }
 
         protected override PowerShell CreateShell()
         {

@@ -11,22 +11,22 @@ namespace AccesoUPV.UnitTests
     [TestClass]
     public class ConnectionTests
     {
-        private static IVPNManager VPN_UPV, VPN_DSIC;
-        private static IDriveManager WDrive, DSICDrive;
+        private static IVPN VPN_UPV, VPN_DSIC;
+        private static INetworkDrive WDrive, DSICDrive;
 
-        private static void Assert_Connected(IVPNManager Manager)
+        private static void Assert_Connected(IVPN Manager)
         {
             Assert.IsTrue(Manager.Connected);
-            Assert.IsNotNull(Manager.ConnectedName);
-            //Assert.IsTrue(Manager.IsReachable());
+            Manager.Refresh();
+            Assert.IsTrue(Manager.Connected);
         }
-        private static void Assert_Disconnected(IVPNManager Manager)
+        private static void Assert_Disconnected(IVPN Manager)
         {
             Assert.IsFalse(Manager.Connected);
-            Assert.IsNull(Manager.ConnectedName);
-            //Assert.IsFalse(Manager.IsReachable());
+            Manager.Refresh();
+            Assert.IsFalse(Manager.Connected);
         }
-        private static void CanBeConnected(IVPNManager Manager)
+        private static void CanBeConnected(IVPN Manager)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace AccesoUPV.UnitTests
                 Assert_Disconnected(Manager);
             }
         }
-        private static void CanBeDisconnected(IVPNManager Manager)
+        private static void CanBeDisconnected(IVPN Manager)
         {
             try
             {
@@ -50,21 +50,21 @@ namespace AccesoUPV.UnitTests
                 Assert_Connected(Manager);   
             }
         }
-        private static void Assert_Connected(IDriveManager Manager)
+        private static void Assert_Connected(INetworkDrive Manager)
         {
             Assert.IsTrue(Manager.Connected);
             Assert.IsNotNull(Manager.ConnectedDrive);
-            Assert.IsTrue(DriveManagerBase.GetMappedDrives().Contains(Manager.ConnectedDrive));
+            Assert.IsTrue(NetworkDriveBase.GetMappedDrives().Contains(Manager.ConnectedDrive));
             Assert.IsTrue(Directory.Exists(Manager.ConnectedDrive));
         }
-        private static void Assert_Disconnected(IDriveManager Manager)
+        private static void Assert_Disconnected(INetworkDrive Manager)
         {
             Assert.IsFalse(Manager.Connected);
             Assert.IsNull(Manager.ConnectedDrive);
             Assert.IsFalse(Directory.Exists(Manager.Drive));
-            Assert.IsFalse(DriveManagerBase.GetMappedDrives().Contains(Manager.Drive));
+            Assert.IsFalse(NetworkDriveBase.GetMappedDrives().Contains(Manager.Drive));
         }
-        private static void CanBeConnected(IDriveManager Manager)
+        private static void CanBeConnected(INetworkDrive Manager)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace AccesoUPV.UnitTests
                 Assert_Disconnected(Manager);
             }
         }
-        private static void CanBeDisconnected(IDriveManager Manager)
+        private static void CanBeDisconnected(INetworkDrive Manager)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace AccesoUPV.UnitTests
         {
             // Arrange
             AccesoUPVService Service = new AccesoUPVService();
-            IVPNManager Manager = Service.VPN_UPV;
+            IVPN Manager = Service.VPN_UPV;
             Manager.Name = "UPV";
             // Keep to disconnect in further testing
             VPN_UPV = Manager;
@@ -107,7 +107,7 @@ namespace AccesoUPV.UnitTests
         {
             // Arrange
             AccesoUPVService Service = new AccesoUPVService();
-            IDriveManager Manager = Service.WDrive;
+            INetworkDrive Manager = Service.WDrive;
             Manager.UserName = "algono";
             // Keep to disconnect in further testing
             WDrive = Manager;
@@ -152,7 +152,7 @@ namespace AccesoUPV.UnitTests
         {
             // Arrange
             AccesoUPVService Service = new AccesoUPVService();
-            IVPNManager Manager = Service.VPN_DSIC;
+            IVPN Manager = Service.VPN_DSIC;
             Manager.Name = "DSIC";
             // Keep to disconnect in further testing
             VPN_DSIC = Manager;

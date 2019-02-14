@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Managers.VPN
 {
-    public abstract class VPNManagerBase : ConnectionManager, IVPNManager
+    public abstract class VPNBase : ProcessConnector, IVPN
     {
         public const int CONNECTED_PING_TIMEOUT = 5000, DISCONNECTED_PING_TIMEOUT = 500;
         public string ConnectedName { get; private set; }
@@ -28,7 +28,7 @@ namespace AccesoUPV.Library.Managers.VPN
 
         protected readonly ProcessStartInfo pingInfo;
 
-        public VPNManagerBase(string name = null) : base()
+        public VPNBase(string name = null) : base()
         {
             Name = name;
 
@@ -49,6 +49,11 @@ namespace AccesoUPV.Library.Managers.VPN
             Process p = Process.Start(pingInfo);
             p.WaitForExit();
             return p.ExitCode == 0;
+        }
+
+        public void Refresh()
+        {
+            Connected = IsActuallyConnected();
         }
 
         protected override Process ConnectProcess()
