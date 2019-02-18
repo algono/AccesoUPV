@@ -21,12 +21,11 @@ namespace AccesoUPV.ConsoleTesting
             Service.VPN_DSIC.Name = "DSIC";
             //VPNTest(Service.VPN_DSIC);
 
-            if (!Service.VPN_UPV.IsReachable()) ConnectTest(Service.VPN_UPV);
+            //if (!Service.VPN_UPV.IsReachable()) ConnectTest(Service.VPN_UPV);
 
             //Drive test calls
 
             Service.User = "algono";
-
             Service.WDrive.Drive = "W:";
             Service.WDrive.Domain = UPVDomain.Alumno;
             DriveTest(Service.WDrive);
@@ -51,7 +50,7 @@ namespace AccesoUPV.ConsoleTesting
             AccesoUPVService Service = new AccesoUPVService();
             Console.WriteLine("Service created.");
 
-            if (true)//Service.AreSettingsUninitialized)
+            if (Service.AreSettingsUninitialized)
             {
                 Console.WriteLine("--------- SERVICE TEST ---------");
 

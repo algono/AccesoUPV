@@ -33,20 +33,22 @@ namespace AccesoUPV.Library
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
 
             Task<string> outputTask = null, errorTask = null;
-            Task[] tasks = new Task[3];
-            tasks[0] = tcs.Task;
+            HashSet<Task> tasks = new HashSet<Task>
+            {
+                tcs.Task
+            };
 
             if (!process.StartInfo.UseShellExecute)
             {
                 if (process.StartInfo.RedirectStandardOutput)
                 {
                     outputTask = process.StandardOutput.ReadToEndAsync();
-                    tasks[1] = outputTask;
+                    tasks.Add(outputTask);
                 }
                 if (process.StartInfo.RedirectStandardError)
                 {
                     errorTask = process.StandardError.ReadToEndAsync();
-                    tasks[2] = errorTask;
+                    tasks.Add(errorTask);
                 }
             }
 
@@ -61,6 +63,11 @@ namespace AccesoUPV.Library
             if (handler != null) await Task.Run(() => handler(succeeded, outputTask?.Result ?? "", errorTask?.Result ?? ""));
 
             if (!succeeded) throw new IOException($"Output:\n{outputTask.Result}\n\nError:\n{errorTask.Result}");
+        }
+
+        public static void ConnectToRemoteDesktop(string server)
+        {
+            Process.Start("mstsc.exe", $"/v:{server}").WaitAndCheck();
         }
 
     }

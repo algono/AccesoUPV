@@ -3,10 +3,10 @@ using AccesoUPV.Library.Managers.Drive;
 using AccesoUPV.Library.Managers.VPN;
 using AccesoUPV.Library.Properties;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Services
 {
@@ -33,7 +33,7 @@ namespace AccesoUPV.Library.Services
         public bool SavePasswords { get; set; }
 
         public bool AreSettingsUninitialized { get { return UninitializedSettings.Count > 0; } }
-        public HashSet<SettingsPropertyValue> UninitializedSettings { get; } = new HashSet<SettingsPropertyValue>();
+        public List<SettingsPropertyValue> UninitializedSettings { get; } = new List<SettingsPropertyValue>();
 
         public AccesoUPVService()
         {
@@ -77,18 +77,7 @@ namespace AccesoUPV.Library.Services
             Settings.Default.Save();
         }
 
-        public static void ConnectToLinuxDesktop()
-        {
-            ConnectToRemoteDesktop(Servers.LINUX_DSIC);
-        }
-        public static void ConnectToWindowsDesktop()
-        {
-            ConnectToRemoteDesktop(Servers.WIN_DSIC);
-        }
-        protected static void ConnectToRemoteDesktop(string server)
-        {
-            Process.Start("mstsc.exe", $"/v:{server}").WaitAndCheck();
-        }
-
+        public static void ConnectToLinuxDesktop() => Utilities.ConnectToRemoteDesktop(Servers.LINUX_DSIC);
+        public static void ConnectToWindowsDesktop() => Utilities.ConnectToRemoteDesktop(Servers.WIN_DSIC);
     }
 }
