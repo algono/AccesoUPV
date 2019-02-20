@@ -1,4 +1,4 @@
-﻿namespace AccesoUPV.Library.Managers.Drive
+﻿namespace AccesoUPV.Library.Connectors.Drive
 {
     public interface INetworkDrive : Connectable
     {

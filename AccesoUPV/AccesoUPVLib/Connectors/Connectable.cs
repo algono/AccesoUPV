@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace AccesoUPV.Library.Managers
+namespace AccesoUPV.Library.Connectors
 {
     public interface Connectable
     {

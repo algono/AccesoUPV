@@ -1,17 +1,19 @@
-﻿using AccesoUPV.Library.Managers;
-using AccesoUPV.Library.Managers.Drive;
-using AccesoUPV.Library.Managers.VPN;
+﻿using AccesoUPV.Library.Connectors;
+using AccesoUPV.Library.Connectors.Drive;
+using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Properties;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using AccesoUPV.Library.Static;
 
 namespace AccesoUPV.Library.Services
 {
     public class AccesoUPVService
     {
+        public static string DISCA_SSH = "home-labs.disca.upv.es", KAHAN_SSH = "kahan.dsic.upv.es";
         //Managers
         public VPNToUPV VPN_UPV { get; }
         public VPNToDSIC VPN_DSIC { get; }
@@ -22,7 +24,7 @@ namespace AccesoUPV.Library.Services
 
         public string User
         {
-            get { return user; }
+            get => user;
             set
             {
                 user = value;
@@ -32,7 +34,7 @@ namespace AccesoUPV.Library.Services
         }
         public bool SavePasswords { get; set; }
 
-        public bool AreSettingsUninitialized { get { return UninitializedSettings.Count > 0; } }
+        public bool AreSettingsUninitialized => UninitializedSettings.Count > 0;
         public List<SettingsPropertyValue> UninitializedSettings { get; } = new List<SettingsPropertyValue>();
 
         public AccesoUPVService()
@@ -76,8 +78,5 @@ namespace AccesoUPV.Library.Services
 
             Settings.Default.Save();
         }
-
-        public static void ConnectToLinuxDesktop() => Utilities.ConnectToRemoteDesktop(Servers.LINUX_DSIC);
-        public static void ConnectToWindowsDesktop() => Utilities.ConnectToRemoteDesktop(Servers.WIN_DSIC);
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AccesoUPV.Library.Managers.Drive;
+using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Services;
-using AccesoUPV.Library.Managers.VPN;
-using AccesoUPV.Library.Managers;
+using AccesoUPV.Library.Connectors.VPN;
+using AccesoUPV.Library.Connectors;
 using System.IO;
 
 namespace AccesoUPV.UnitTests
@@ -130,10 +130,7 @@ namespace AccesoUPV.UnitTests
         //}
 
         [TestMethod]
-        public void WDriveCanBeDisconnected()
-        {
-            CanBeDisconnected(WDrive);
-        }
+        public void WDriveCanBeDisconnected() => CanBeDisconnected(WDrive);
 
         //[TestMethod]
         //public void DSICDriveCanBeDisconnected()
@@ -142,10 +139,7 @@ namespace AccesoUPV.UnitTests
         //}
 
         [TestMethod]
-        public void VPN_UPVCanBeDisconnected()
-        {
-            CanBeDisconnected(VPN_UPV);
-        }
+        public void VPN_UPVCanBeDisconnected() => CanBeDisconnected(VPN_UPV);
 
         [TestMethod]
         public void VPN_DSICCanBeConnected()
@@ -161,10 +155,7 @@ namespace AccesoUPV.UnitTests
         }
 
         [TestMethod]
-        public void VPN_DSICCanBeDisconnected()
-        {
-            CanBeDisconnected(VPN_DSIC);
-        }
+        public void VPN_DSICCanBeDisconnected() => CanBeDisconnected(VPN_DSIC);
 
     }
 }

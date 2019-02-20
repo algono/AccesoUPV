@@ -47,12 +47,12 @@
     <Compile Include="Connectors\Drive\DriveDomain.cs" />
     <Compile Include="Connectors\Drive\INetworkDrive.cs" />
     <Compile Include="Connectors\Connectable.cs" />
-    <Compile Include="Connectors\Servers.cs" />
     <Compile Include="Connectors\VPN\VPNToDSIC.cs" />
     <Compile Include="Connectors\VPN\IVPN.cs" />
     <Compile Include="Connectors\VPN\VPNToUPV.cs" />
     <Compile Include="Connectors\VPN\VPNBase.cs" />
-    <Compile Include="Utilities.cs" />
+    <Compile Include="Static\RemoteDesktop.cs" />
+    <Compile Include="Static\Utilities.cs" />
     <Compile Include="Services\AccesoUPVService.cs" />
     <Compile Include="Connectors\Drive\NetworkDriveBase.cs" />
     <Compile Include="Connectors\Drive\NetworkDriveDSIC.cs" />

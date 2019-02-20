@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Library.Managers.Drive
+namespace AccesoUPV.Library.Connectors.Drive
 {
     class InvalidCredentials : ArgumentException { }
     public class NetworkDriveDSIC : NetworkDriveBase

@@ -1,8 +1,9 @@
 ﻿using AccesoUPV.Library.Services;
-using AccesoUPV.Library.Managers.Drive;
-using AccesoUPV.Library.Managers.VPN;
+using AccesoUPV.Library.Connectors.Drive;
+using AccesoUPV.Library.Connectors.VPN;
 using System;
 using System.Text;
+using AccesoUPV.Library.Static;
 
 namespace AccesoUPV.ConsoleTesting
 {
@@ -36,7 +37,7 @@ namespace AccesoUPV.ConsoleTesting
             //Remote desktop test
 
             //Console.WriteLine("Connecting to Linux Desktop...");
-            //AccesoUPVService.ConnectToLinuxDesktop();
+            //RemoteDesktop.ConnectToLinuxDesktop();
 
             if (Service.VPN_UPV.Connected) DisconnectTest(Service.VPN_UPV);
 

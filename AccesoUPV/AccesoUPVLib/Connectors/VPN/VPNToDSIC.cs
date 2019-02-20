@@ -5,25 +5,15 @@ using System.Management.Automation;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Library.Managers.VPN
+namespace AccesoUPV.Library.Connectors.VPN
 {
     public class VPNToDSIC : VPNBase
     {
-        public override string Server
-        {
-            get
-            {
-                return Servers.VPN_DSIC;
-            }
-        }
+        public static string VPN_DSIC = "r1-vpn.dsic.upv.es", PORTAL_DSIC = "portal-ng.dsic.cloud";
 
-        public override string TestServer
-        {
-            get
-            {
-                return Servers.PORTAL_DSIC;
-            }
-        }
+        public override string Server => VPN_DSIC;
+
+        public override string TestServer => PORTAL_DSIC;
         public VPNToDSIC(string name = null) : base(name) { }
 
         protected override PowerShell CreateShell()

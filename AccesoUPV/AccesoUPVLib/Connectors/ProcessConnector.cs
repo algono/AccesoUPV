@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Library.Managers
+namespace AccesoUPV.Library.Connectors
 {
     public abstract class ProcessConnector : Connectable
     {

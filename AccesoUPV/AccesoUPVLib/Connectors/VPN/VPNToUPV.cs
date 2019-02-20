@@ -4,26 +4,18 @@ using System.Linq;
 using System.Management.Automation;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
-namespace AccesoUPV.Library.Managers.VPN
+namespace AccesoUPV.Library.Connectors.VPN
 {
     public class VPNToUPV : VPNBase
     {
-        public override string Server
-        {
-            get
-            {
-                return Servers.VPN_UPV;
-            }
-        }
+        public static string
+            VPN_UPV = "vpn.upv.es", WEB_UPV = "www.upv.es";
 
-        public override string TestServer
-        {
-            get
-            {
-                return Servers.WEB_UPV;
-            }
-        }
+        public override string Server => VPN_UPV;
+
+        public override string TestServer => WEB_UPV;
 
         public VPNToUPV(string name = null) : base(name) { }
 
@@ -35,7 +27,7 @@ namespace AccesoUPV.Library.Managers.VPN
             shell.AddParameter("EncryptionLevel", "Required");
             shell.AddParameter("TunnelType", "Sstp");
 
-            System.Xml.XmlDocument ConfigXml = new System.Xml.XmlDocument();
+            XmlDocument ConfigXml = new XmlDocument();
             ConfigXml.Load("Resources/UPV_Config.xml");
             shell.AddParameter("EapConfigXmlStream", ConfigXml);
 

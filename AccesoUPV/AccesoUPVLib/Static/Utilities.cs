@@ -62,13 +62,7 @@ namespace AccesoUPV.Library
 
             if (handler != null) await Task.Run(() => handler(succeeded, outputTask?.Result ?? "", errorTask?.Result ?? ""));
 
-            if (!succeeded) throw new IOException($"Output:\n{outputTask.Result}\n\nError:\n{errorTask.Result}");
+            if (!succeeded) throw new IOException($"Output:\n{outputTask?.Result}\n\nError:\n{errorTask?.Result}");
         }
-
-        public static void ConnectToRemoteDesktop(string server)
-        {
-            Process.Start("mstsc.exe", $"/v:{server}").WaitAndCheck();
-        }
-
     }
 }

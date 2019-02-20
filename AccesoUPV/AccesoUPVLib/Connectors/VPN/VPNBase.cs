@@ -7,7 +7,7 @@ using System.Linq;
 using System.Management.Automation;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Library.Managers.VPN
+namespace AccesoUPV.Library.Connectors.VPN
 {
     public abstract class VPNBase : ProcessConnector, IVPN
     {

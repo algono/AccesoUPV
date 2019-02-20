@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Library.Managers.Drive
+namespace AccesoUPV.Library.Connectors.Drive
 {
     /**
     * 1223 - Error del sistema "El usuario o la contraseña son incorrectos".
