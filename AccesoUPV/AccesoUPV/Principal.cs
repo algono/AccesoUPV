@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using AccesoUPV.Library.Connectors;
 using AccesoUPV.Library.Services;
@@ -15,7 +8,7 @@ namespace AccesoUPV.GUI
 {
     public partial class Principal : Form
     {
-        private AccesoUPVService _service;
+        private readonly AccesoUPVService _service;
 
         public Principal()
         {
@@ -25,35 +18,32 @@ namespace AccesoUPV.GUI
         public Principal(AccesoUPVService service) : this()
         {
             _service = service;
-            listaConectar.Items.Add(_service.WDrive);
-            listaConectar.Items.Add(_service.DSICDrive);
-            listaConectar.Items.Add(_service.VPN_DSIC);
+            _service.VPN_UPV.Name = "UPV"; // TEST CODE
+            _service.VPN_UPV.Connect();
+            InitializeConnectList();
+        }
+
+        private void InitializeConnectList()
+        {
+            // Testing code. Delete before production.
+            _service.WDrive.UserName = "algono";
+            _service.VPN_DSIC.SetNameAuto();
+
+            listaConectar.Items.Add(new ListItem("Disco W", _service.WDrive));
+            listaConectar.Items.Add(new ListItem("Disco DSIC", _service.DSICDrive));
+            listaConectar.Items.Add(new ListItem("Portal DSIC", _service.VPN_DSIC));
         }
 
         private async void connectButton_Click(object sender, EventArgs e)
         {
-            var item = listaConectar.SelectedItem;
-            if (item is Connectable)
-            {
-                await ((Connectable) listaConectar.SelectedItem).ConnectAsync();
-            }
-            else
-            {
-                throw new ArgumentException("The item is not Connectable");
-            }
+            var item = ((ListItem) listaConectar.SelectedItem).Value;
+            if (item != null) await ((Connectable) item).ConnectAsync();
         }
 
         private async void disconnectButton_Click(object sender, EventArgs e)
         {
-            var item = listaConectar.SelectedItem;
-            if (item is Connectable)
-            {
-                await ((Connectable) listaConectar.SelectedItem).DisconnectAsync();
-            }
-            else
-            {
-                throw new ArgumentException("The item is not Connectable");
-            }
+            var item = ((ListItem)listaConectar.SelectedItem).Value;
+            if (item != null) await ((Connectable) item).DisconnectAsync();
         }
 
         private void linuxButton_Click(object sender, EventArgs e)

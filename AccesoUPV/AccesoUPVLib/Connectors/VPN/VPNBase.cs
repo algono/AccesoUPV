@@ -12,41 +12,38 @@ namespace AccesoUPV.Library.Connectors.VPN
     public abstract class VPNBase : ProcessConnector, IVPN
     {
         public const int CONNECTED_PING_TIMEOUT = 5000, DISCONNECTED_PING_TIMEOUT = 500;
+
         public string ConnectedName { get; private set; }
         public string Name { get; set; }
         public abstract string Server { get; }
         public abstract string TestServer { get; }
         public override bool Connected
         {
-            get { return ConnectedName != null; }
-            protected set
-            {
-                if (value) ConnectedName = Name;
-                else ConnectedName = null;
-            }
+            get => ConnectedName != null;
+            protected set => ConnectedName = value ? Name : null;
         }
 
-        protected readonly ProcessStartInfo pingInfo;
+        protected static readonly ProcessStartInfo PingInfo = CreateProcessInfo("ping.exe");
 
-        public VPNBase(string name = null) : base()
+        protected VPNBase(string name = null, bool findNameAuto = false)
         {
-            Name = name;
+            if (name == null && findNameAuto) SetNameAuto();
+            else Name = name;
 
             conInfo.FileName = "rasphone.exe";
             disInfo.FileName = "rasdial.exe";
-
-            pingInfo = CreateProcessInfo("ping.exe");
         }
+
         public bool IsReachable()
         {
-            if (Connected) return IsReachable(CONNECTED_PING_TIMEOUT);
-            else return IsReachable(DISCONNECTED_PING_TIMEOUT);
+            return IsReachable(Connected ? CONNECTED_PING_TIMEOUT : DISCONNECTED_PING_TIMEOUT);
         }
+
         public bool IsReachable(int timeout)
         {
             if (string.IsNullOrEmpty(TestServer)) throw new ArgumentNullException("The test server is not defined.");
-            pingInfo.Arguments = $"-n 1 -w {timeout} {TestServer}";
-            Process p = Process.Start(pingInfo);
+            PingInfo.Arguments = $"-n 1 -w {timeout} {TestServer}";
+            Process p = Process.Start(PingInfo);
             p.WaitForExit();
             return p.ExitCode == 0;
         }
@@ -71,14 +68,10 @@ namespace AccesoUPV.Library.Connectors.VPN
         {
             if (succeeded)
             {
-                Process checkingProcess = Process.Start(CreateProcessInfo("rasdial.exe"));
                 try
                 {
                     if (!IsActuallyConnected()) throw new OperationCanceledException();
-                    //checkingProcess.WaitAndCheck((s, o, e) =>
-                    //{
-                    //    if (s && !o.Contains(Name)) throw new OperationCanceledException();
-                    //});
+
                     if (!IsReachable(CONNECTED_PING_TIMEOUT))
                     {
                         disInfo.Arguments = $"\"{Name}\" /DISCONNECT";
@@ -141,13 +134,23 @@ namespace AccesoUPV.Library.Connectors.VPN
             return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) => shell.Dispose());
         }
 
-        public bool Exists() => Find(Server).Exists(e => ((string) e.Properties["Name"].Value) == Name);
+        public bool SetNameAuto()
+        {
+            List<PSObject> vpnList = Find();
+            if (vpnList.Count <= 0) return false;
+            Name = vpnList[0].GetStringPropertyValue("Name");
+            return true;
+        }
+
+        public bool Exists() => Find(Server).Exists(vpn => vpn.GetStringPropertyValue("Name") == Name);
+
         public List<PSObject> Find() => Find(Server);
-        public static List<PSObject> Find(string Server)
+
+        public static List<PSObject> Find(string server)
         {
             using (PowerShell shell = PowerShell.Create())
             {
-                shell.AddScript("Get-VpnConnection | Where-Object {$_.ServerAddress -eq '" + Server + "'}");
+                shell.AddScript("Get-VpnConnection | Where-Object {$_.ServerAddress -eq '" + server + "'}");
                 List<PSObject> PSOutput = shell.Invoke().ToList();
                 PSOutput.RemoveAll(item => item == null);
                 return PSOutput;

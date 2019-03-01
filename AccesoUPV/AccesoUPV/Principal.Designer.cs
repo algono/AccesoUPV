@@ -32,21 +32,22 @@
             this.linuxButton = new System.Windows.Forms.Button();
             this.windowsButton = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.ajustesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AyudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.índiceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connectButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.listaConectar = new System.Windows.Forms.ListBox();
             this.openButton = new System.Windows.Forms.Button();
-            this.ajustesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // disconnectButton
             // 
-            this.disconnectButton.Location = new System.Drawing.Point(93, 149);
+            this.disconnectButton.Location = new System.Drawing.Point(81, 121);
+            this.disconnectButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.disconnectButton.Name = "disconnectButton";
-            this.disconnectButton.Size = new System.Drawing.Size(101, 23);
+            this.disconnectButton.Size = new System.Drawing.Size(76, 19);
             this.disconnectButton.TabIndex = 1;
             this.disconnectButton.Text = "Desconectar";
             this.disconnectButton.UseVisualStyleBackColor = true;
@@ -54,9 +55,10 @@
             // 
             // linuxButton
             // 
-            this.linuxButton.Location = new System.Drawing.Point(261, 103);
+            this.linuxButton.Location = new System.Drawing.Point(179, 84);
+            this.linuxButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.linuxButton.Name = "linuxButton";
-            this.linuxButton.Size = new System.Drawing.Size(54, 23);
+            this.linuxButton.Size = new System.Drawing.Size(80, 19);
             this.linuxButton.TabIndex = 2;
             this.linuxButton.Text = "Linux";
             this.linuxButton.UseVisualStyleBackColor = true;
@@ -64,9 +66,10 @@
             // 
             // windowsButton
             // 
-            this.windowsButton.Location = new System.Drawing.Point(250, 132);
+            this.windowsButton.Location = new System.Drawing.Point(179, 107);
+            this.windowsButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.windowsButton.Name = "windowsButton";
-            this.windowsButton.Size = new System.Drawing.Size(75, 23);
+            this.windowsButton.Size = new System.Drawing.Size(80, 19);
             this.windowsButton.TabIndex = 3;
             this.windowsButton.Text = "Windows";
             this.windowsButton.UseVisualStyleBackColor = true;
@@ -80,29 +83,37 @@
             this.AyudaToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(380, 28);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(285, 24);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // ajustesToolStripMenuItem
+            // 
+            this.ajustesToolStripMenuItem.Name = "ajustesToolStripMenuItem";
+            this.ajustesToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+            this.ajustesToolStripMenuItem.Text = "Ajustes";
             // 
             // AyudaToolStripMenuItem
             // 
             this.AyudaToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.índiceToolStripMenuItem});
             this.AyudaToolStripMenuItem.Name = "AyudaToolStripMenuItem";
-            this.AyudaToolStripMenuItem.Size = new System.Drawing.Size(63, 24);
+            this.AyudaToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.AyudaToolStripMenuItem.Text = "Ayuda";
             // 
             // índiceToolStripMenuItem
             // 
             this.índiceToolStripMenuItem.Name = "índiceToolStripMenuItem";
-            this.índiceToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.índiceToolStripMenuItem.Size = new System.Drawing.Size(106, 22);
             this.índiceToolStripMenuItem.Text = "Índice";
             // 
             // connectButton
             // 
-            this.connectButton.Location = new System.Drawing.Point(12, 149);
+            this.connectButton.Location = new System.Drawing.Point(9, 121);
+            this.connectButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.connectButton.Name = "connectButton";
-            this.connectButton.Size = new System.Drawing.Size(75, 23);
+            this.connectButton.Size = new System.Drawing.Size(68, 19);
             this.connectButton.TabIndex = 8;
             this.connectButton.Text = "Conectar";
             this.connectButton.UseVisualStyleBackColor = true;
@@ -111,41 +122,37 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(234, 73);
+            this.label2.Location = new System.Drawing.Point(176, 56);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(109, 17);
+            this.label2.Size = new System.Drawing.Size(83, 13);
             this.label2.TabIndex = 9;
             this.label2.Text = "Escritorios DSIC";
             // 
             // listaConectar
             // 
             this.listaConectar.FormattingEnabled = true;
-            this.listaConectar.ItemHeight = 16;
-            this.listaConectar.Location = new System.Drawing.Point(12, 48);
+            this.listaConectar.Location = new System.Drawing.Point(9, 39);
+            this.listaConectar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.listaConectar.Name = "listaConectar";
-            this.listaConectar.Size = new System.Drawing.Size(182, 84);
+            this.listaConectar.Size = new System.Drawing.Size(148, 69);
             this.listaConectar.TabIndex = 10;
             // 
             // openButton
             // 
-            this.openButton.Location = new System.Drawing.Point(12, 178);
+            this.openButton.Location = new System.Drawing.Point(9, 145);
+            this.openButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.openButton.Name = "openButton";
-            this.openButton.Size = new System.Drawing.Size(182, 23);
+            this.openButton.Size = new System.Drawing.Size(148, 19);
             this.openButton.TabIndex = 11;
             this.openButton.Text = "Acceder";
             this.openButton.UseVisualStyleBackColor = true;
             // 
-            // ajustesToolStripMenuItem
-            // 
-            this.ajustesToolStripMenuItem.Name = "ajustesToolStripMenuItem";
-            this.ajustesToolStripMenuItem.Size = new System.Drawing.Size(68, 24);
-            this.ajustesToolStripMenuItem.Text = "Ajustes";
-            // 
             // Principal
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(380, 225);
+            this.ClientSize = new System.Drawing.Size(285, 183);
             this.Controls.Add(this.openButton);
             this.Controls.Add(this.listaConectar);
             this.Controls.Add(this.label2);
@@ -155,6 +162,7 @@
             this.Controls.Add(this.disconnectButton);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Principal";
             this.Text = "Acceso UPV";
             this.menuStrip1.ResumeLayout(false);

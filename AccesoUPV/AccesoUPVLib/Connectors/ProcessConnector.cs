@@ -49,7 +49,7 @@ namespace AccesoUPV.Library.Connectors
         public void Disconnect() => DisconnectProcess().WaitAndCheck(DisconnectionHandler);
         public async Task DisconnectAsync()
         {
-            Process process = await Task.Factory.StartNew(ConnectProcess);
+            Process process = await Task.Factory.StartNew(DisconnectProcess);
             await process.WaitAndCheckAsync(DisconnectionHandler);
         }
     }

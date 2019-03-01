@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Management.Automation;
 using System.Threading.Tasks;
 
 namespace AccesoUPV.Library
@@ -64,5 +65,7 @@ namespace AccesoUPV.Library
 
             if (!succeeded) throw new IOException($"Output:\n{outputTask?.Result}\n\nError:\n{errorTask?.Result}");
         }
+        public static string GetStringPropertyValue(this PSObject obj, string propertyName) => (string) obj.Properties["Name"].Value;
+
     }
 }

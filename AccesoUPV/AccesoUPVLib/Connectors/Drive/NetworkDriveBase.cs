@@ -23,17 +23,13 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public override bool Connected
         {
-            get { return ConnectedDrive != null; }
-            protected set
-            {
-                if (value) ConnectedDrive = Drive;
-                else ConnectedDrive = null;
-            }
+            get => ConnectedDrive != null;
+            protected set => ConnectedDrive = value ? Drive : null;
         }
 
         public virtual DriveDomain Domain { get; protected set; }
 
-        public NetworkDriveBase(string drive = null, string user = null, string password = null, bool useCredentials = false, bool yesToAll = false) : base()
+        protected NetworkDriveBase(string drive = null, string user = null, string password = null, bool useCredentials = false, bool yesToAll = false) : base()
         {
             Drive = drive;
             UserName = user;
