@@ -20,14 +20,14 @@ namespace AccesoUPV.Library.Services
         public NetworkDriveW WDrive { get; }
         public NetworkDriveDSIC DSICDrive { get; }
 
-        private string user;
+        private string _user;
 
         public string User
         {
-            get => user;
+            get => _user;
             set
             {
-                user = value;
+                _user = value;
                 WDrive.UserName = value;
                 DSICDrive.UserName = value;
             }
@@ -41,7 +41,7 @@ namespace AccesoUPV.Library.Services
         {
             Settings.Default.SettingsLoaded += Default_SettingsLoaded;
 
-            user = Settings.Default.User;
+            _user = Settings.Default.User;
 
             VPN_UPV = new VPNToUPV(Settings.Default.VPN_UPVName);
             VPN_DSIC = new VPNToDSIC(Settings.Default.VPN_DSICName);
