@@ -17,7 +17,7 @@ namespace AccesoUPV.Library
                 if (process.StartInfo.RedirectStandardOutput) output = process.StandardOutput.ReadToEnd();
                 if (process.StartInfo.RedirectStandardError) error = process.StandardError.ReadToEnd();
             }
-            
+
             process.WaitForExit();
 
             bool succeeded = process.ExitCode == 0;
@@ -31,40 +31,52 @@ namespace AccesoUPV.Library
 
         public static async Task WaitAndCheckAsync(this Process process, Action<bool, string, string> handler = null)
         {
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            string output = "", error = "";
 
-            Task<string> outputTask = null, errorTask = null;
-            HashSet<Task> tasks = new HashSet<Task>
-            {
-                tcs.Task
-            };
+            process.OutputDataReceived += (s, ea) => output += ea.Data;
+            process.ErrorDataReceived += (s, ea) => error += ea.Data;
 
-            if (!process.StartInfo.UseShellExecute)
-            {
-                if (process.StartInfo.RedirectStandardOutput)
-                {
-                    outputTask = process.StandardOutput.ReadToEndAsync();
-                    tasks.Add(outputTask);
-                }
-                if (process.StartInfo.RedirectStandardError)
-                {
-                    errorTask = process.StandardError.ReadToEndAsync();
-                    tasks.Add(errorTask);
-                }
-            }
+            bool succeeded = await process.WaitAsync();
 
-            process.Exited += (s, e) => tcs.TrySetResult(process.ExitCode == 0);
-            if (process.HasExited) tcs.TrySetResult(process.ExitCode == 0);
+            if (handler != null) await Task.Run(() => handler(succeeded, output, error));
 
-            await Task.WhenAll(tasks);
-            process.Close();
-
-            bool succeeded = tcs.Task.Result;
-
-            if (handler != null) await Task.Run(() => handler(succeeded, outputTask?.Result ?? "", errorTask?.Result ?? ""));
-
-            if (!succeeded) throw new IOException($"Output:\n{outputTask?.Result}\n\nError:\n{errorTask?.Result}");
+            if (!succeeded) throw new IOException($"Output:\n{output}\n\nError:\n{error}");
         }
+
+        public static async Task<bool> RunProcessAsync(string fileName, string args)
+        {
+            using (var process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = fileName, Arguments = args,
+                    UseShellExecute = false, CreateNoWindow = true,
+                    RedirectStandardOutput = true, RedirectStandardError = true
+                },
+                EnableRaisingEvents = true
+            })
+            {
+                process.Start();
+                return await process.WaitAsync().ConfigureAwait(false);
+            }
+        }
+
+        private static Task<bool> WaitAsync(this Process process)
+        {
+            process.EnableRaisingEvents = true;
+
+            var tcs = new TaskCompletionSource<bool>();
+
+            process.Exited += (s, ea) => tcs.SetResult(process.ExitCode == 0);
+            process.OutputDataReceived += (s, ea) => Console.WriteLine(ea.Data);
+            process.ErrorDataReceived += (s, ea) => Console.WriteLine("ERR: " + ea.Data);
+
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+
+            return tcs.Task;
+        }
+
         public static string GetStringPropertyValue(this PSObject obj, string propertyName) => (string) obj.Properties["Name"].Value;
 
     }

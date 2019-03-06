@@ -131,7 +131,7 @@ namespace AccesoUPV.UnitTests
         }
 
         [TestMethod]
-        public async Task VPN_DSICCanBeDisconnected() => await CanBeDisconnectedAsync(VPN_DSIC);
+        public async Task VPN_DSICCanBeDisconnectedAsync() => await CanBeDisconnectedAsync(VPN_DSIC);
 
     }
 }

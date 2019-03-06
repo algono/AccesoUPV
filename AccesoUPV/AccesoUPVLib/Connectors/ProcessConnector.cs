@@ -41,16 +41,8 @@ namespace AccesoUPV.Library.Connectors
         }
 
         public void Connect() => ConnectProcess().WaitAndCheck(ConnectionHandler);
-        public async Task ConnectAsync()
-        {
-            Process process = await Task.Factory.StartNew(ConnectProcess);
-            await process.WaitAndCheckAsync(ConnectionHandler);
-        }
+        public async Task ConnectAsync() => await ConnectProcess().WaitAndCheckAsync(ConnectionHandler);
         public void Disconnect() => DisconnectProcess().WaitAndCheck(DisconnectionHandler);
-        public async Task DisconnectAsync()
-        {
-            Process process = await Task.Factory.StartNew(DisconnectProcess);
-            await process.WaitAndCheckAsync(DisconnectionHandler);
-        }
+        public async Task DisconnectAsync() => await DisconnectProcess().WaitAndCheckAsync(DisconnectionHandler);
     }
 }

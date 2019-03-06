@@ -100,7 +100,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         protected Process StartProcess(ProcessStartInfo info)
         {
             Process process = Process.Start(info);
-            process.StandardInput.Close(); //Para que falle si pide input al usuario
+            process?.StandardInput.Close(); //Para que falle si pide input al usuario
             return process;
         }
 
