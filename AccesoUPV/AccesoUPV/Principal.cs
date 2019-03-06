@@ -19,7 +19,7 @@ namespace AccesoUPV.GUI
         {
             _service = service;
             _service.VPN_UPV.Name = "UPV"; // TEST CODE
-            _service.VPN_UPV.Connect();
+            if (!_service.VPN_UPV.IsReachable()) _service.VPN_UPV.Connect();
             InitializeConnectList();
         }
 

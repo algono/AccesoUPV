@@ -5,20 +5,21 @@ using AccesoUPV.Library.Services;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Connectors;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace AccesoUPV.UnitTests
 {
     [TestClass]
-    public class ConnectionTests
+    public class ConnectionTestsAsync
     {
         private static IVPN VPN_UPV, VPN_DSIC;
         private static INetworkDrive WDrive, DSICDrive;
 
-        private static void CanBeConnected(IVPN manager)
+        private static async Task CanBeConnectedAsync(IVPN manager)
         {
             try
             {
-                manager.Connect();
+                await manager.ConnectAsync();
                 ConnectionAsserts.Assert_Connected(manager);
             }
             catch (OperationCanceledException)
@@ -26,11 +27,11 @@ namespace AccesoUPV.UnitTests
                 ConnectionAsserts.Assert_Disconnected(manager);
             }
         }
-        private static void CanBeDisconnected(IVPN manager)
+        private static async Task CanBeDisconnectedAsync(IVPN manager)
         {
             try
             {
-                manager.Disconnect();
+                await manager.DisconnectAsync();
                 ConnectionAsserts.Assert_Disconnected(manager);
             }
             catch (OperationCanceledException)
@@ -38,11 +39,11 @@ namespace AccesoUPV.UnitTests
                 ConnectionAsserts.Assert_Connected(manager);   
             }
         }
-        private static void CanBeConnected(INetworkDrive manager)
+        private static async Task CanBeConnectedAsync(INetworkDrive manager)
         {
             try
             {
-                manager.Connect();
+                await manager.ConnectAsync();
                 ConnectionAsserts.Assert_Connected(manager);
             }
             catch (OperationCanceledException)
@@ -50,11 +51,12 @@ namespace AccesoUPV.UnitTests
                 ConnectionAsserts.Assert_Disconnected(manager);
             }
         }
-        private static void CanBeDisconnected(INetworkDrive manager)
+        private static async Task CanBeDisconnectedAsync(INetworkDrive manager)
         {
             try
             {
-                manager.Disconnect();
+                // manager.Disconnect();
+                await manager.DisconnectAsync();
                 ConnectionAsserts.Assert_Disconnected(manager);
             }
             catch (OperationCanceledException)
@@ -64,7 +66,7 @@ namespace AccesoUPV.UnitTests
         }
 
         [TestMethod]
-        public void VPN_UPVCanBeConnected()
+        public async Task VPN_UPVCanBeConnectedAsync()
         {
             // Arrange
             AccesoUPVService service = new AccesoUPVService();
@@ -73,11 +75,11 @@ namespace AccesoUPV.UnitTests
             // Keep to disconnect in further testing
             VPN_UPV = manager;
             // Act and Assert
-            CanBeConnected(manager);
+            await CanBeConnectedAsync(manager);
         }
 
         [TestMethod]
-        public void WDriveCanBeConnected()
+        public async Task WDriveCanBeConnectedAsync()
         {
             // Arrange
             AccesoUPVService Service = new AccesoUPVService();
@@ -86,11 +88,11 @@ namespace AccesoUPV.UnitTests
             // Keep to disconnect in further testing
             WDrive = manager;
             // Act and Assert
-            CanBeConnected(manager);
+            await CanBeConnectedAsync(manager);
         }
 
         //[TestMethod]
-        //public void DSICDriveCanBeConnected()
+        //public void DSICDriveCanBeConnectedAsync()
         //{
         //    // Arrange
         //    AccesoUPVService Service = new AccesoUPVService();
@@ -100,11 +102,11 @@ namespace AccesoUPV.UnitTests
         //    // Keep to disconnect in further testing
         //    DSICDrive = Manager;
         //    // Act and Assert
-        //    CanBeConnected(Manager);
+        //    CanBeConnectedAsync(Manager);
         //}
 
         [TestMethod]
-        public void WDriveCanBeDisconnected() => CanBeDisconnected(WDrive);
+        public async Task WDriveCanBeDisconnectedAsync() => await CanBeDisconnectedAsync(WDrive);
 
         //[TestMethod]
         //public void DSICDriveCanBeDisconnected()
@@ -113,10 +115,10 @@ namespace AccesoUPV.UnitTests
         //}
 
         [TestMethod]
-        public void VPN_UPVCanBeDisconnected() => CanBeDisconnected(VPN_UPV);
+        public async Task VPN_UPVCanBeDisconnectedAsync() => await CanBeDisconnectedAsync(VPN_UPV);
 
         [TestMethod]
-        public void VPN_DSICCanBeConnected()
+        public async Task VPN_DSICCanBeConnectedAsync()
         {
             // Arrange
             AccesoUPVService service = new AccesoUPVService();
@@ -125,11 +127,11 @@ namespace AccesoUPV.UnitTests
             // Keep to disconnect in further testing
             VPN_DSIC = Manager;
             // Act and Assert
-            CanBeConnected(Manager);
+            await CanBeConnectedAsync(Manager);
         }
 
         [TestMethod]
-        public void VPN_DSICCanBeDisconnected() => CanBeDisconnected(VPN_DSIC);
+        public async Task VPN_DSICCanBeDisconnected() => await CanBeDisconnectedAsync(VPN_DSIC);
 
     }
 }

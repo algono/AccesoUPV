@@ -97,9 +97,9 @@ namespace AccesoUPV.Library.Connectors.Drive
             if (YesToAll) conInfo.Arguments += "/y";
         }
 
-        protected Process StartProcess()
+        protected Process StartProcess(ProcessStartInfo info)
         {
-            Process process = Process.Start(conInfo);
+            Process process = Process.Start(info);
             process.StandardInput.Close(); //Para que falle si pide input al usuario
             return process;
         }
@@ -108,7 +108,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         {
             CheckDrive();
             CheckArguments();
-            return StartProcess();
+            return StartProcess(conInfo);
         }
 
         protected override void ConnectionHandler(bool succeeded, string output, string error)
@@ -129,7 +129,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         {
             disInfo.Arguments = $"use {ConnectedDrive} /delete";
             if (YesToAll) disInfo.Arguments += "/y";
-            return Process.Start(disInfo);
+            return StartProcess(disInfo);
         }
 
         protected override void DisconnectionHandler(bool succeeded, string output, string error)
