@@ -55,5 +55,11 @@ namespace AccesoUPV.GUI
         {
             RemoteDesktop.ConnectToWindowsDesktop();
         }
+
+        private void openButton_Click(object sender, EventArgs e)
+        {
+            var item = ((ListItem)listaConectar.SelectedItem).Value;
+            if (item != null) ((Openable) item).Open();
+        }
     }
 }

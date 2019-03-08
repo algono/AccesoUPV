@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors.VPN
 {
-    public class VPNToDSIC : VPNBase
+    public class VPNToDSIC : VPNBase, Openable
     {
         public static string VPN_DSIC = "r1-vpn.dsic.upv.es", PORTAL_DSIC = "portal-ng.dsic.cloud";
 
@@ -27,6 +27,11 @@ namespace AccesoUPV.Library.Connectors.VPN
             shell.AddParameter("Force");
 
             return shell;
+        }
+
+        public void Open()
+        {
+            System.Diagnostics.Process.Start("http://" + PORTAL_DSIC);
         }
     }
 }

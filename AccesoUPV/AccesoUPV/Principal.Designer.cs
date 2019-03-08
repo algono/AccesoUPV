@@ -45,7 +45,7 @@
             // disconnectButton
             // 
             this.disconnectButton.Location = new System.Drawing.Point(81, 121);
-            this.disconnectButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.disconnectButton.Margin = new System.Windows.Forms.Padding(2);
             this.disconnectButton.Name = "disconnectButton";
             this.disconnectButton.Size = new System.Drawing.Size(76, 19);
             this.disconnectButton.TabIndex = 1;
@@ -56,7 +56,7 @@
             // linuxButton
             // 
             this.linuxButton.Location = new System.Drawing.Point(179, 84);
-            this.linuxButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.linuxButton.Margin = new System.Windows.Forms.Padding(2);
             this.linuxButton.Name = "linuxButton";
             this.linuxButton.Size = new System.Drawing.Size(80, 19);
             this.linuxButton.TabIndex = 2;
@@ -67,7 +67,7 @@
             // windowsButton
             // 
             this.windowsButton.Location = new System.Drawing.Point(179, 107);
-            this.windowsButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.windowsButton.Margin = new System.Windows.Forms.Padding(2);
             this.windowsButton.Name = "windowsButton";
             this.windowsButton.Size = new System.Drawing.Size(80, 19);
             this.windowsButton.TabIndex = 3;
@@ -111,7 +111,7 @@
             // connectButton
             // 
             this.connectButton.Location = new System.Drawing.Point(9, 121);
-            this.connectButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.connectButton.Margin = new System.Windows.Forms.Padding(2);
             this.connectButton.Name = "connectButton";
             this.connectButton.Size = new System.Drawing.Size(68, 19);
             this.connectButton.TabIndex = 8;
@@ -133,7 +133,7 @@
             // 
             this.listaConectar.FormattingEnabled = true;
             this.listaConectar.Location = new System.Drawing.Point(9, 39);
-            this.listaConectar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listaConectar.Margin = new System.Windows.Forms.Padding(2);
             this.listaConectar.Name = "listaConectar";
             this.listaConectar.Size = new System.Drawing.Size(148, 69);
             this.listaConectar.TabIndex = 10;
@@ -141,12 +141,13 @@
             // openButton
             // 
             this.openButton.Location = new System.Drawing.Point(9, 145);
-            this.openButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.openButton.Margin = new System.Windows.Forms.Padding(2);
             this.openButton.Name = "openButton";
             this.openButton.Size = new System.Drawing.Size(148, 19);
             this.openButton.TabIndex = 11;
             this.openButton.Text = "Acceder";
             this.openButton.UseVisualStyleBackColor = true;
+            this.openButton.Click += new System.EventHandler(this.openButton_Click);
             // 
             // Principal
             // 
@@ -162,7 +163,7 @@
             this.Controls.Add(this.disconnectButton);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Principal";
             this.Text = "Acceso UPV";
             this.menuStrip1.ResumeLayout(false);

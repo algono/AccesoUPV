@@ -53,6 +53,17 @@ namespace AccesoUPV.Library.Connectors.VPN
             Connected = IsActuallyConnected();
         }
 
+        private bool IsActuallyConnected()
+        {
+            bool res = false;
+            Process checkingProcess = Process.Start(CreateProcessInfo("rasdial.exe"));
+            checkingProcess.WaitAndCheck((s, o, e) =>
+            {
+                res = s && o.Contains(Name);
+            });
+            return res;
+        }
+
         protected override Process ConnectProcess()
         {
             if (string.IsNullOrEmpty(Name)) throw new ArgumentNullException("The name is not defined.");
@@ -87,17 +98,6 @@ namespace AccesoUPV.Library.Connectors.VPN
             
             base.ConnectionHandler(succeeded, output, error);
 
-        }
-
-        private bool IsActuallyConnected()
-        {
-            bool res = false;
-            Process checkingProcess = Process.Start(CreateProcessInfo("rasdial.exe"));
-            checkingProcess.WaitAndCheck((s, o, e) =>
-            {
-                res = s && o.Contains(Name);
-            });
-            return res;
         }
 
         protected override Process DisconnectProcess()

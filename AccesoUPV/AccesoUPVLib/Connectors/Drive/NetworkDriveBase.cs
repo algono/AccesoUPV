@@ -146,5 +146,10 @@ namespace AccesoUPV.Library.Connectors.Drive
             }
         }
 
+        public void Open()
+        {
+            if (Connected) Process.Start(ConnectedDrive);
+            else throw new InvalidOperationException("The drive must be connected in order to be opened");
+        }
     }
 }

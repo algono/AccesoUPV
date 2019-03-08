@@ -1,6 +1,6 @@
 ﻿namespace AccesoUPV.Library.Connectors.Drive
 {
-    public interface INetworkDrive : Connectable
+    public interface INetworkDrive : Connectable, Openable
     {
         string Address { get; }
         string ConnectedDrive { get; }
