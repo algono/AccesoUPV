@@ -28,52 +28,61 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.disconnectButton = new System.Windows.Forms.Button();
-            this.linuxButton = new System.Windows.Forms.Button();
-            this.windowsButton = new System.Windows.Forms.Button();
+            this.DisconnectButton = new System.Windows.Forms.Button();
+            this.LinuxButton = new System.Windows.Forms.Button();
+            this.WindowsButton = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.ajustesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AyudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.índiceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.connectButton = new System.Windows.Forms.Button();
+            this.ConnectButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.listaConectar = new System.Windows.Forms.ListBox();
-            this.openButton = new System.Windows.Forms.Button();
+            this.OpenButton = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.KahanButton = new System.Windows.Forms.Button();
+            this.DiscaButton = new System.Windows.Forms.Button();
+            this.usuarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.UsuarioBox = new System.Windows.Forms.ToolStripTextBox();
+            this.passwordUPVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.passwordDSICToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.PassDSICBox = new System.Windows.Forms.ToolStripTextBox();
+            this.PassUPVBox = new System.Windows.Forms.ToolStripTextBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // disconnectButton
+            // DisconnectButton
             // 
-            this.disconnectButton.Location = new System.Drawing.Point(81, 121);
-            this.disconnectButton.Margin = new System.Windows.Forms.Padding(2);
-            this.disconnectButton.Name = "disconnectButton";
-            this.disconnectButton.Size = new System.Drawing.Size(76, 19);
-            this.disconnectButton.TabIndex = 1;
-            this.disconnectButton.Text = "Desconectar";
-            this.disconnectButton.UseVisualStyleBackColor = true;
-            this.disconnectButton.Click += new System.EventHandler(this.disconnectButton_Click);
+            this.DisconnectButton.Location = new System.Drawing.Point(81, 121);
+            this.DisconnectButton.Margin = new System.Windows.Forms.Padding(2);
+            this.DisconnectButton.Name = "DisconnectButton";
+            this.DisconnectButton.Size = new System.Drawing.Size(76, 19);
+            this.DisconnectButton.TabIndex = 1;
+            this.DisconnectButton.Text = "Desconectar";
+            this.DisconnectButton.UseVisualStyleBackColor = true;
+            this.DisconnectButton.Click += new System.EventHandler(this.DisconnectButton_Click);
             // 
-            // linuxButton
+            // LinuxButton
             // 
-            this.linuxButton.Location = new System.Drawing.Point(179, 84);
-            this.linuxButton.Margin = new System.Windows.Forms.Padding(2);
-            this.linuxButton.Name = "linuxButton";
-            this.linuxButton.Size = new System.Drawing.Size(80, 19);
-            this.linuxButton.TabIndex = 2;
-            this.linuxButton.Text = "Linux";
-            this.linuxButton.UseVisualStyleBackColor = true;
-            this.linuxButton.Click += new System.EventHandler(this.linuxButton_Click);
+            this.LinuxButton.Location = new System.Drawing.Point(180, 57);
+            this.LinuxButton.Margin = new System.Windows.Forms.Padding(2);
+            this.LinuxButton.Name = "LinuxButton";
+            this.LinuxButton.Size = new System.Drawing.Size(80, 19);
+            this.LinuxButton.TabIndex = 2;
+            this.LinuxButton.Text = "Linux";
+            this.LinuxButton.UseVisualStyleBackColor = true;
+            this.LinuxButton.Click += new System.EventHandler(this.LinuxButton_Click);
             // 
-            // windowsButton
+            // WindowsButton
             // 
-            this.windowsButton.Location = new System.Drawing.Point(179, 107);
-            this.windowsButton.Margin = new System.Windows.Forms.Padding(2);
-            this.windowsButton.Name = "windowsButton";
-            this.windowsButton.Size = new System.Drawing.Size(80, 19);
-            this.windowsButton.TabIndex = 3;
-            this.windowsButton.Text = "Windows";
-            this.windowsButton.UseVisualStyleBackColor = true;
-            this.windowsButton.Click += new System.EventHandler(this.windowsButton_Click);
+            this.WindowsButton.Location = new System.Drawing.Point(180, 80);
+            this.WindowsButton.Margin = new System.Windows.Forms.Padding(2);
+            this.WindowsButton.Name = "WindowsButton";
+            this.WindowsButton.Size = new System.Drawing.Size(80, 19);
+            this.WindowsButton.TabIndex = 3;
+            this.WindowsButton.Text = "Windows";
+            this.WindowsButton.UseVisualStyleBackColor = true;
+            this.WindowsButton.Click += new System.EventHandler(this.WindowsButton_Click);
             // 
             // menuStrip1
             // 
@@ -90,6 +99,10 @@
             // 
             // ajustesToolStripMenuItem
             // 
+            this.ajustesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.usuarioToolStripMenuItem,
+            this.passwordUPVToolStripMenuItem,
+            this.passwordDSICToolStripMenuItem});
             this.ajustesToolStripMenuItem.Name = "ajustesToolStripMenuItem";
             this.ajustesToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
             this.ajustesToolStripMenuItem.Text = "Ajustes";
@@ -108,21 +121,21 @@
             this.índiceToolStripMenuItem.Size = new System.Drawing.Size(106, 22);
             this.índiceToolStripMenuItem.Text = "Índice";
             // 
-            // connectButton
+            // ConnectButton
             // 
-            this.connectButton.Location = new System.Drawing.Point(9, 121);
-            this.connectButton.Margin = new System.Windows.Forms.Padding(2);
-            this.connectButton.Name = "connectButton";
-            this.connectButton.Size = new System.Drawing.Size(68, 19);
-            this.connectButton.TabIndex = 8;
-            this.connectButton.Text = "Conectar";
-            this.connectButton.UseVisualStyleBackColor = true;
-            this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
+            this.ConnectButton.Location = new System.Drawing.Point(9, 121);
+            this.ConnectButton.Margin = new System.Windows.Forms.Padding(2);
+            this.ConnectButton.Name = "ConnectButton";
+            this.ConnectButton.Size = new System.Drawing.Size(68, 19);
+            this.ConnectButton.TabIndex = 8;
+            this.ConnectButton.Text = "Conectar";
+            this.ConnectButton.UseVisualStyleBackColor = true;
+            this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(176, 56);
+            this.label2.Location = new System.Drawing.Point(177, 29);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(83, 13);
@@ -138,29 +151,103 @@
             this.listaConectar.Size = new System.Drawing.Size(148, 69);
             this.listaConectar.TabIndex = 10;
             // 
-            // openButton
+            // OpenButton
             // 
-            this.openButton.Location = new System.Drawing.Point(9, 145);
-            this.openButton.Margin = new System.Windows.Forms.Padding(2);
-            this.openButton.Name = "openButton";
-            this.openButton.Size = new System.Drawing.Size(148, 19);
-            this.openButton.TabIndex = 11;
-            this.openButton.Text = "Acceder";
-            this.openButton.UseVisualStyleBackColor = true;
-            this.openButton.Click += new System.EventHandler(this.openButton_Click);
+            this.OpenButton.Location = new System.Drawing.Point(9, 145);
+            this.OpenButton.Margin = new System.Windows.Forms.Padding(2);
+            this.OpenButton.Name = "OpenButton";
+            this.OpenButton.Size = new System.Drawing.Size(148, 19);
+            this.OpenButton.TabIndex = 11;
+            this.OpenButton.Text = "Acceder";
+            this.OpenButton.UseVisualStyleBackColor = true;
+            this.OpenButton.Click += new System.EventHandler(this.OpenButton_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(177, 114);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(87, 13);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Conexiones SSH";
+            // 
+            // KahanButton
+            // 
+            this.KahanButton.Location = new System.Drawing.Point(180, 152);
+            this.KahanButton.Margin = new System.Windows.Forms.Padding(2);
+            this.KahanButton.Name = "KahanButton";
+            this.KahanButton.Size = new System.Drawing.Size(80, 19);
+            this.KahanButton.TabIndex = 13;
+            this.KahanButton.Text = "Kahan";
+            this.KahanButton.UseVisualStyleBackColor = true;
+            this.KahanButton.Click += new System.EventHandler(this.KahanButton_Click);
+            // 
+            // DiscaButton
+            // 
+            this.DiscaButton.Location = new System.Drawing.Point(180, 129);
+            this.DiscaButton.Margin = new System.Windows.Forms.Padding(2);
+            this.DiscaButton.Name = "DiscaButton";
+            this.DiscaButton.Size = new System.Drawing.Size(80, 19);
+            this.DiscaButton.TabIndex = 12;
+            this.DiscaButton.Text = "DISCA";
+            this.DiscaButton.UseVisualStyleBackColor = true;
+            this.DiscaButton.Click += new System.EventHandler(this.DiscaButton_Click);
+            // 
+            // usuarioToolStripMenuItem
+            // 
+            this.usuarioToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.UsuarioBox});
+            this.usuarioToolStripMenuItem.Name = "usuarioToolStripMenuItem";
+            this.usuarioToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.usuarioToolStripMenuItem.Text = "Usuario";
+            // 
+            // UsuarioBox
+            // 
+            this.UsuarioBox.Name = "UsuarioBox";
+            this.UsuarioBox.Size = new System.Drawing.Size(100, 23);
+            // 
+            // passwordUPVToolStripMenuItem
+            // 
+            this.passwordUPVToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.PassUPVBox});
+            this.passwordUPVToolStripMenuItem.Name = "passwordUPVToolStripMenuItem";
+            this.passwordUPVToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.passwordUPVToolStripMenuItem.Text = "Password UPV";
+            // 
+            // passwordDSICToolStripMenuItem
+            // 
+            this.passwordDSICToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.PassDSICBox});
+            this.passwordDSICToolStripMenuItem.Name = "passwordDSICToolStripMenuItem";
+            this.passwordDSICToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.passwordDSICToolStripMenuItem.Text = "Password DSIC";
+            // 
+            // PassDSICBox
+            // 
+            this.PassDSICBox.Name = "PassDSICBox";
+            this.PassDSICBox.Size = new System.Drawing.Size(100, 23);
+            // 
+            // PassUPVBox
+            // 
+            this.PassUPVBox.Name = "PassUPVBox";
+            this.PassUPVBox.Size = new System.Drawing.Size(100, 23);
             // 
             // Principal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(285, 183);
-            this.Controls.Add(this.openButton);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.KahanButton);
+            this.Controls.Add(this.DiscaButton);
+            this.Controls.Add(this.OpenButton);
             this.Controls.Add(this.listaConectar);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.connectButton);
-            this.Controls.Add(this.windowsButton);
-            this.Controls.Add(this.linuxButton);
-            this.Controls.Add(this.disconnectButton);
+            this.Controls.Add(this.ConnectButton);
+            this.Controls.Add(this.WindowsButton);
+            this.Controls.Add(this.LinuxButton);
+            this.Controls.Add(this.DisconnectButton);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(2);
@@ -174,17 +261,26 @@
         }
 
         #endregion
-        private System.Windows.Forms.Button disconnectButton;
-        private System.Windows.Forms.Button linuxButton;
-        private System.Windows.Forms.Button windowsButton;
+        private System.Windows.Forms.Button DisconnectButton;
+        private System.Windows.Forms.Button LinuxButton;
+        private System.Windows.Forms.Button WindowsButton;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem AyudaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem índiceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ajustesToolStripMenuItem;
-        private System.Windows.Forms.Button connectButton;
+        private System.Windows.Forms.Button ConnectButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ListBox listaConectar;
-        private System.Windows.Forms.Button openButton;
+        private System.Windows.Forms.Button OpenButton;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button KahanButton;
+        private System.Windows.Forms.Button DiscaButton;
+        private System.Windows.Forms.ToolStripMenuItem usuarioToolStripMenuItem;
+        private System.Windows.Forms.ToolStripTextBox UsuarioBox;
+        private System.Windows.Forms.ToolStripMenuItem passwordUPVToolStripMenuItem;
+        private System.Windows.Forms.ToolStripTextBox PassUPVBox;
+        private System.Windows.Forms.ToolStripMenuItem passwordDSICToolStripMenuItem;
+        private System.Windows.Forms.ToolStripTextBox PassDSICBox;
     }
 }
 

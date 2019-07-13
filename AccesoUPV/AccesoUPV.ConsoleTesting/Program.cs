@@ -51,7 +51,7 @@ namespace AccesoUPV.ConsoleTesting
             AccesoUPVService Service = new AccesoUPVService();
             Console.WriteLine("Service created.");
 
-            if (Service.AreSettingsUninitialized)
+            if (Service.AreUninitializedSettings)
             {
                 Console.WriteLine("--------- SERVICE TEST ---------");
 

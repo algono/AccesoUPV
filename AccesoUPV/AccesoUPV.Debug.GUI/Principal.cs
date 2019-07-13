@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using AccesoUPV.Library.Connectors;
 using AccesoUPV.Library.Services;
 using AccesoUPV.Library.Static;
+using Microsoft.VisualBasic;
 
 namespace AccesoUPV.Debug.GUI
 {
@@ -13,53 +14,71 @@ namespace AccesoUPV.Debug.GUI
         public Principal()
         {
             InitializeComponent();
-        }
+            
+        } 
 
         public Principal(AccesoUPVService service) : this()
         {
             _service = service;
-            _service.VPN_UPV.Name = "UPV"; // TEST CODE
+            _service.VPN_UPV.SetNameAuto();
             if (!_service.VPN_UPV.IsReachable()) _service.VPN_UPV.Connect();
-            InitializeConnectList();
+            InitializeTextBoxes();
+        }
+
+        private void InitializeTextBoxes()
+        {
+            UsuarioBox.TextChanged += (sender, e) => _service.User = UsuarioBox.Text;
+            UsuarioBox.TextChanged += (sender, e) => InitializeConnectList();
+            PassUPVBox.TextChanged += (sender, e) => _service.WDrive.Password = PassUPVBox.Text;
+            PassDSICBox.TextChanged += (sender, e) => _service.DSICDrive.Password = PassDSICBox.Text;
         }
 
         private void InitializeConnectList()
         {
-            // Testing code. Delete before production.
-            _service.WDrive.UserName = "algono";
-            _service.VPN_DSIC.SetNameAuto();
+            if (_service.VPN_DSIC.Name == null) _service.VPN_DSIC.SetNameAuto();
 
+            listaConectar.Items.Clear();
             listaConectar.Items.Add(new ListItem("Disco W", _service.WDrive));
             listaConectar.Items.Add(new ListItem("Disco DSIC", _service.DSICDrive));
             listaConectar.Items.Add(new ListItem("Portal DSIC", _service.VPN_DSIC));
         }
 
-        private async void connectButton_Click(object sender, EventArgs e)
+        private async void ConnectButton_Click(object sender, EventArgs e)
         {
             var item = ((ListItem) listaConectar.SelectedItem).Value;
             if (item != null) await ((Connectable) item).ConnectAsync();
         }
 
-        private async void disconnectButton_Click(object sender, EventArgs e)
+        private async void DisconnectButton_Click(object sender, EventArgs e)
         {
             var item = ((ListItem)listaConectar.SelectedItem).Value;
             if (item != null) await ((Connectable) item).DisconnectAsync();
         }
 
-        private void linuxButton_Click(object sender, EventArgs e)
+        private void LinuxButton_Click(object sender, EventArgs e)
         {
             RemoteDesktop.ConnectToLinuxDesktop();
         }
 
-        private void windowsButton_Click(object sender, EventArgs e)
+        private void WindowsButton_Click(object sender, EventArgs e)
         {
             RemoteDesktop.ConnectToWindowsDesktop();
         }
 
-        private void openButton_Click(object sender, EventArgs e)
+        private void OpenButton_Click(object sender, EventArgs e)
         {
             var item = ((ListItem)listaConectar.SelectedItem).Value;
             if (item != null) ((Openable) item).Open();
+        }
+
+        private void DiscaButton_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void KahanButton_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

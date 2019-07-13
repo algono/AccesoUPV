@@ -53,6 +53,8 @@
     <Compile Include="Connectors\VPN\IVPN.cs" />
     <Compile Include="Connectors\VPN\VPNToUPV.cs" />
     <Compile Include="Connectors\VPN\VPNBase.cs" />
+    <Compile Include="Services\IAccesoUPVService.cs" />
+    <Compile Include="Static\SSHConnection.cs" />
     <Compile Include="Static\RemoteDesktop.cs" />
     <Compile Include="Static\Utilities.cs" />
     <Compile Include="Services\AccesoUPVService.cs" />

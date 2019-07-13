@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AccesoUPV.Library.Services;
 using System.Windows;
 
 namespace AccesoUPV.GUI
@@ -13,5 +8,11 @@ namespace AccesoUPV.GUI
     /// </summary>
     public partial class App : Application
     {
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            AccesoUPVService service = new AccesoUPVService();
+            MainWindow window = new MainWindow(service);
+            window.Show();
+        }
     }
 }

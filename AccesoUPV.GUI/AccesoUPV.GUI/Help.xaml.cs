@@ -1,5 +1,4 @@
-﻿using AccesoUPV.Library.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,25 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace AccesoUPV.GUI
 {
     /// <summary>
-    /// Lógica de interacción para MainWindow.xaml
+    /// Lógica de interacción para Help.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Help : Window
     {
-        private readonly IAccesoUPVService _service;
-        public MainWindow()
+        public Help()
         {
             InitializeComponent();
-        }
-
-        public MainWindow(IAccesoUPVService service) : this()
-        {
-            _service = service;
         }
     }
 }
