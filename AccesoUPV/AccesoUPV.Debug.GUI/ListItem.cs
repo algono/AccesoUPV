@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.GUI
+namespace AccesoUPV.Debug.GUI
 {
     public class ListItem
     {

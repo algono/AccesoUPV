@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using AccesoUPV.Library.Services;
 
-namespace AccesoUPV.GUI
+namespace AccesoUPV.Debug.GUI
 {
     static class Program
     {

@@ -4,7 +4,7 @@ using AccesoUPV.Library.Connectors;
 using AccesoUPV.Library.Services;
 using AccesoUPV.Library.Static;
 
-namespace AccesoUPV.GUI
+namespace AccesoUPV.Debug.GUI
 {
     public partial class Principal : Form
     {

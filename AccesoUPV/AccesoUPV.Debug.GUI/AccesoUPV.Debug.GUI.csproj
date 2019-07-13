@@ -7,11 +7,12 @@
     <ProjectGuid>{452012BC-F2F6-4FC2-BDF6-83B7F1712016}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AccesoUPV.GUI</RootNamespace>
-    <AssemblyName>AccesoUPV</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RootNamespace>AccesoUPV.Debug.GUI</RootNamespace>
+    <AssemblyName>AccesoUPV.Debug.GUI</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -82,7 +83,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AccesoUPVLib\AccesoUPV.Library.csproj">
+    <ProjectReference Include="..\AccesoUPV.Library\AccesoUPV.Library.csproj">
       <Project>{978e1348-1efc-4af5-904d-7b870f465fb1}</Project>
       <Name>AccesoUPV.Library</Name>
     </ProjectReference>

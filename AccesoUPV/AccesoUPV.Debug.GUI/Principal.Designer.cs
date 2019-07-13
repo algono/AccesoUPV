@@ -1,4 +1,4 @@
-﻿namespace AccesoUPV.GUI
+﻿namespace AccesoUPV.Debug.GUI
 {
     partial class Principal
     {
