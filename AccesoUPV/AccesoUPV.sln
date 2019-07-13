@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccesoUPV.ConsoleTesting", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Debug", "Debug", "{2FCD1776-0454-4787-A5B7-E8E7FC416EE9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccesoUPV.GUI", "..\AccesoUPV.GUI\AccesoUPV.GUI\AccesoUPV.GUI.csproj", "{62CEA87B-1F40-41DB-A45E-A78650A25A4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{D823E76C-3980-44E6-A24E-6D68E19E181C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D823E76C-3980-44E6-A24E-6D68E19E181C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D823E76C-3980-44E6-A24E-6D68E19E181C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62CEA87B-1F40-41DB-A45E-A78650A25A4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62CEA87B-1F40-41DB-A45E-A78650A25A4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62CEA87B-1F40-41DB-A45E-A78650A25A4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62CEA87B-1F40-41DB-A45E-A78650A25A4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
