@@ -59,6 +59,12 @@
     <Compile Include="ConnectionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AccesoUPV.Library\AccesoUPV.Library.csproj">
+      <Project>{978e1348-1efc-4af5-904d-7b870f465fb1}</Project>
+      <Name>AccesoUPV.Library</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
