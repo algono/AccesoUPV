@@ -1,18 +1,7 @@
-﻿using AccesoUPV.Library.Services;
+﻿using AccesoUPV.GUI.Windows.Main.Pages;
+using AccesoUPV.Library.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace AccesoUPV.GUI
 {
@@ -30,6 +19,15 @@ namespace AccesoUPV.GUI
         public MainWindow(IAccesoUPVService service) : this()
         {
             _service = service;
+            Start startPage = new Start(service);
+            startPage.Started += StartPage_Started;
+            Main.Content = startPage;
         }
+
+        private void StartPage_Started(object sender, EventArgs e)
+        {
+            Main.Content = new Main(_service);
+        }
+        
     }
 }

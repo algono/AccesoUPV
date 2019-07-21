@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AccesoUPV.Library.Connectors.Drive
+﻿namespace AccesoUPV.Library.Connectors.Drive
 {
     public enum DomainStyle { BackSlashStyle, AtSignStyle }
     public class DriveDomain
@@ -12,7 +6,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         public string Name { get; }
         public string Folder { get; }
         public DomainStyle PreferredStyle { get; }
-        
+
         public DriveDomain(string name, DomainStyle style = DomainStyle.BackSlashStyle, string folder = null)
         {
             Name = name;

@@ -11,12 +11,20 @@ namespace AccesoUPV.Library.Connectors.VPN
         string Server { get; }
         string TestServer { get; }
 
+        bool Any();
+        Task<bool> AnyAsync();
         bool Create();
-        Task CreateAsync();
+        Task<bool> CreateAsync();
         bool Exists();
+        Task<bool> ExistsAsync();
         List<PSObject> Find();
+        Task<List<PSObject>> FindAsync();
+        List<string> FindNames();
+        Task<List<string>> FindNamesAsync();
         bool IsReachable();
         bool IsReachable(int timeout);
-        void Refresh();
+        void CheckConnection();
+        bool SetNameAuto();
+        Task<bool> SetNameAutoAsync();
     }
 }

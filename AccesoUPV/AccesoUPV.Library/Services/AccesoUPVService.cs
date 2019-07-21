@@ -1,13 +1,8 @@
-﻿using AccesoUPV.Library.Connectors;
-using AccesoUPV.Library.Connectors.Drive;
+﻿using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Properties;
-using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using AccesoUPV.Library.Static;
 
 namespace AccesoUPV.Library.Services
 {

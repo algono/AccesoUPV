@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors.Drive
 {
@@ -13,6 +9,7 @@ namespace AccesoUPV.Library.Connectors.Drive
     * (ya sea VPN o WiFi).
     * Por ahora el bug sólo se ha visto desde red WiFi, y la solución es reconectarse.
     */
+    [Serializable]
     public class CredentialsBugException : IOException { }
 
     public enum UPVDomain
@@ -21,13 +18,7 @@ namespace AccesoUPV.Library.Connectors.Drive
     }
     public class NetworkDriveW : NetworkDriveBase
     {
-        public override string Address
-        {
-            get
-            {
-                return $"\\\\nasupv.upv.es\\{base.Domain.Folder}\\{UserName[0]}\\{UserName}";
-            }
-        }
+        public override string Address => $@"\\nasupv.upv.es\{base.Domain.Folder}\{UserName[0]}\{UserName}";
 
         public static readonly DriveDomain domainAlumno = new DriveDomain("alumno.upv.es", DomainStyle.AtSignStyle, "alumnos"),
                                             domainUPVNET = new DriveDomain("upvnet.upv.es", DomainStyle.AtSignStyle, "discos");
@@ -49,7 +40,7 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public new UPVDomain Domain
         {
-            get { return wDomain; }
+            get => wDomain;
             set
             {
                 wDomain = value;

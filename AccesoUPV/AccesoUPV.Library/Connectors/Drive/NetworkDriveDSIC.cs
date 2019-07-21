@@ -1,36 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors.Drive
 {
-    class InvalidCredentials : ArgumentException { }
+    [Serializable]
+    public class InvalidCredentials : ArgumentException { }
     public class NetworkDriveDSIC : NetworkDriveBase
     {
-        public override string Address
-        {
-            get
-            {
-                return $"\\\\fileserver.dsic.upv.es\\{UserName}";
-            }
-        }
+        public override string Address => $@"\\fileserver.dsic.upv.es\{UserName}";
         private static readonly DriveDomain DSICDomain = new DriveDomain("DSIC");
         public override DriveDomain Domain
         {
-            get
-            {
-                return DSICDomain;
-            }
-
-            protected set
-            {
-                throw new InvalidOperationException("The domain for this class can't be changed.");
-            }
+            get => DSICDomain;
+            protected set => throw new InvalidOperationException("The domain for this class can't be changed.");
         }
-        
+
         public NetworkDriveDSIC(string user = null, string password = null, string drive = null) : base(drive, user, password, true)
         {
         }

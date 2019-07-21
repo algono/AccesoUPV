@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors.Drive
 {
     // Custom Exceptions
     // (Not having constructors defined creates an empty constructor automatically, and it calls its parent constructor as well)
+    [Serializable]
     public class InvalidUserException : ArgumentException { }
+    [Serializable]
     public class NotAvailableDriveException : IOException { }
+    [Serializable]
     public class OpenedFilesException : IOException { }
     public abstract class NetworkDriveBase : ProcessConnector, INetworkDrive
     {
@@ -116,7 +118,7 @@ namespace AccesoUPV.Library.Connectors.Drive
             base.ConnectionHandler(succeeded, output, error);
 
             if (!succeeded)
-            { 
+            {
                 // 55 - Error del sistema "El recurso no se encuentra disponible" (es decir, la dir no existe, por tanto, el usuario no es válido).
                 if (output.Contains("55") || error.Contains("55"))
                 {

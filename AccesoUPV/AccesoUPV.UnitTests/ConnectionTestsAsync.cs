@@ -1,10 +1,8 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AccesoUPV.Library.Connectors.Drive;
-using AccesoUPV.Library.Services;
+﻿using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
-using AccesoUPV.Library.Connectors;
-using System.IO;
+using AccesoUPV.Library.Services;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Threading.Tasks;
 
 namespace AccesoUPV.UnitTests
@@ -36,7 +34,7 @@ namespace AccesoUPV.UnitTests
             }
             catch (OperationCanceledException)
             {
-                ConnectionAsserts.Assert_Connected(manager);   
+                ConnectionAsserts.Assert_Connected(manager);
             }
         }
         private static async Task CanBeConnectedAsync(INetworkDrive manager)

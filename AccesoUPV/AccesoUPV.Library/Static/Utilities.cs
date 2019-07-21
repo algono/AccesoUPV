@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Management.Automation;
@@ -24,7 +23,7 @@ namespace AccesoUPV.Library
 
             process.Close();
 
-            handler?.Invoke(succeeded, output, error);
+            handler?.Invoke(succeeded, output, error); // TODO: Convertir llamada a async
 
             if (!succeeded) throw new IOException($"Output:\n{output}\n\nError:\n{error}");
         }
@@ -38,7 +37,7 @@ namespace AccesoUPV.Library
 
             bool succeeded = await process.WaitAsync();
 
-            if (handler != null) await Task.Run(() => handler(succeeded, output, error));
+            handler?.Invoke(succeeded, output, error);
 
             if (!succeeded) throw new IOException($"Output:\n{output}\n\nError:\n{error}");
         }
@@ -77,7 +76,7 @@ namespace AccesoUPV.Library
             return tcs.Task;
         }
 
-        public static string GetStringPropertyValue(this PSObject obj, string propertyName) => (string) obj.Properties["Name"].Value;
+        public static string GetStringPropertyValue(this PSObject obj, string propertyName) => (string)obj.Properties["Name"].Value;
 
     }
 }

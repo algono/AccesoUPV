@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AccesoUPV.Library.Services;
+using System;
 using System.Windows.Forms;
-using AccesoUPV.Library.Services;
 
 namespace AccesoUPV.Debug.GUI
 {

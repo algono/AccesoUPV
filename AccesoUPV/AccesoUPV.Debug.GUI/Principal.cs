@@ -1,9 +1,8 @@
-﻿using System;
-using System.Windows.Forms;
-using AccesoUPV.Library.Connectors;
+﻿using AccesoUPV.Library.Connectors;
 using AccesoUPV.Library.Services;
 using AccesoUPV.Library.Static;
-using Microsoft.VisualBasic;
+using System;
+using System.Windows.Forms;
 
 namespace AccesoUPV.Debug.GUI
 {
@@ -14,15 +13,42 @@ namespace AccesoUPV.Debug.GUI
         public Principal()
         {
             InitializeComponent();
-            
-        } 
+
+        }
 
         public Principal(AccesoUPVService service) : this()
         {
             _service = service;
+
             _service.VPN_UPV.SetNameAuto();
-            if (!_service.VPN_UPV.IsReachable()) _service.VPN_UPV.Connect();
+            _service.VPN_DSIC.SetNameAuto();
+
+            this.Load += InitVPN;
+            this.FormClosing += DisconnectVPN;
+
             InitializeTextBoxes();
+            InitializeConnectList();
+        }
+
+        private async void DisconnectVPN(object sender, FormClosingEventArgs e)
+        {
+            await _service.VPN_UPV.DisconnectAsync();
+        }
+
+        private void InitVPN(object sender, EventArgs e)
+        {
+            if (!_service.VPN_UPV.IsReachable())
+            {
+                try
+                {
+                    _service.VPN_UPV.Connect();
+                }
+                catch (OperationCanceledException)
+                {
+                    this.Close();
+                    Application.Exit();
+                }
+            }
         }
 
         private void InitializeTextBoxes()
@@ -45,14 +71,14 @@ namespace AccesoUPV.Debug.GUI
 
         private async void ConnectButton_Click(object sender, EventArgs e)
         {
-            var item = ((ListItem) listaConectar.SelectedItem).Value;
-            if (item != null) await ((Connectable) item).ConnectAsync();
+            var item = ((ListItem)listaConectar.SelectedItem).Value;
+            if (item != null) await ((Connectable)item).ConnectAsync();
         }
 
         private async void DisconnectButton_Click(object sender, EventArgs e)
         {
             var item = ((ListItem)listaConectar.SelectedItem).Value;
-            if (item != null) await ((Connectable) item).DisconnectAsync();
+            if (item != null) await ((Connectable)item).DisconnectAsync();
         }
 
         private void LinuxButton_Click(object sender, EventArgs e)
@@ -68,17 +94,8 @@ namespace AccesoUPV.Debug.GUI
         private void OpenButton_Click(object sender, EventArgs e)
         {
             var item = ((ListItem)listaConectar.SelectedItem).Value;
-            if (item != null) ((Openable) item).Open();
+            if (item != null) ((Openable)item).Open();
         }
 
-        private void DiscaButton_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void KahanButton_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

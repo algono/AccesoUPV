@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AccesoUPV.Library.Connectors.Drive;
+﻿using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.IO;
 
 namespace AccesoUPV.UnitTests
 {
@@ -15,14 +10,14 @@ namespace AccesoUPV.UnitTests
         public static void Assert_Connected(IVPN manager)
         {
             Assert.IsTrue(manager.Connected);
-            manager.Refresh();
+            manager.CheckConnection();
             Assert.IsTrue(manager.Connected);
         }
 
         public static void Assert_Disconnected(IVPN manager)
         {
             Assert.IsFalse(manager.Connected);
-            manager.Refresh();
+            manager.CheckConnection();
             Assert.IsFalse(manager.Connected);
         }
 
