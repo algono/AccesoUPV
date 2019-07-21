@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors.VPN
 {
-    public abstract class VPNBase : ProcessConnector, IVPN
+    public abstract class VPN : ProcessConnector, IVPN
     {
         public const int CONNECTED_PING_TIMEOUT = 5000, DISCONNECTED_PING_TIMEOUT = 500;
 
@@ -24,7 +24,7 @@ namespace AccesoUPV.Library.Connectors.VPN
 
         protected static readonly ProcessStartInfo PingInfo = CreateProcessInfo("ping.exe");
 
-        protected VPNBase(string name = null)
+        protected VPN(string name = null)
         {
             Name = name;
 
@@ -171,6 +171,19 @@ namespace AccesoUPV.Library.Connectors.VPN
             }
         }
 
+        public static List<string> GetNameList() => GetList().Select(vpn => vpn.GetStringPropertyValue("Name")).ToList();
+
+        public static List<PSObject> GetList()
+        {
+            using (PowerShell shell = PowerShell.Create())
+            {
+                shell.AddScript("Get-VpnConnection");
+                List<PSObject> PSOutput = shell.Invoke().ToList();
+                PSOutput.RemoveAll(item => item == null);
+                return PSOutput;
+            }
+        }
+
         public async Task<bool> SetNameAutoAsync()
         {
             List<PSObject> vpnList = await FindAsync();
@@ -200,6 +213,22 @@ namespace AccesoUPV.Library.Connectors.VPN
         {
             PowerShell shell = PowerShell.Create();
             shell.AddScript(GetFindScript(server));
+
+            return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) =>
+            {
+                List<PSObject> PSOutput = shell.EndInvoke(res).ToList();
+                shell.Dispose();
+                PSOutput.RemoveAll(item => item == null);
+                return PSOutput;
+            });
+        }
+
+        public static async Task<List<string>> GetNameListAsync() => (await GetListAsync()).Select(vpn => vpn.GetStringPropertyValue("Name")).ToList();
+
+        public static Task<List<PSObject>> GetListAsync()
+        {
+            PowerShell shell = PowerShell.Create();
+            shell.AddScript("Get-VpnConnection");
 
             return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) =>
             {

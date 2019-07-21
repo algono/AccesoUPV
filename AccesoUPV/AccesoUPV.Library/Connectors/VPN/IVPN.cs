@@ -19,8 +19,6 @@ namespace AccesoUPV.Library.Connectors.VPN
         Task<bool> ExistsAsync();
         List<PSObject> Find();
         Task<List<PSObject>> FindAsync();
-        List<string> FindNames();
-        Task<List<string>> FindNamesAsync();
         bool IsReachable();
         bool IsReachable(int timeout);
         void CheckConnection();

@@ -3,7 +3,7 @@ using System.Xml;
 
 namespace AccesoUPV.Library.Connectors.VPN
 {
-    public class VPNToUPV : VPNBase
+    public class VPNToUPV : VPN
     {
         public static string
             VPN_UPV = "vpn.upv.es", WEB_UPV = "www.upv.es";

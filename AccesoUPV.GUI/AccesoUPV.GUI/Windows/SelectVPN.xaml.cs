@@ -8,18 +8,24 @@ namespace AccesoUPV.GUI
     /// </summary>
     public partial class SelectVPN : Window
     {
-        public IVPN VPN { get; private set; }
-
         public string SelectedName { get; private set; }
 
-        public SelectVPN()
+        private string _server;
+        public SelectVPN(string server = null)
         {
             InitializeComponent();
+            _server = server;
+            this.Loaded += LoadNameList;
         }
 
-        public SelectVPN(IVPN vpn) : this()
+        private async void LoadNameList(object sender, RoutedEventArgs e)
         {
-            VPN = vpn;
+            VPNList.ItemsSource = _server == null 
+                ? await VPN.GetNameListAsync()
+                : await VPN.FindNamesAsync(_server);
+
+            VPNProgressBar.Visibility = Visibility.Collapsed;
+            VPNList.Visibility = Visibility.Visible;
         }
 
         private void SelectButton_Click(object sender, RoutedEventArgs e)

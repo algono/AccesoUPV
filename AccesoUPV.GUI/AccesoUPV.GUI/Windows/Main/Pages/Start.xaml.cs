@@ -33,9 +33,9 @@ namespace AccesoUPV.GUI.Windows.Main.Pages
                 IVPN vpn = _service.VPN_UPV;
                 if (!vpn.IsReachable())
                 {
-                    bool exists = await vpn.SetNameAutoAsync()
-                            || await CreateVPN(vpn, "la UPV desde fuera del campus");
-
+                    //bool exists = await vpn.SetNameAutoAsync()
+                    //        || await CreateVPN(vpn, "la UPV desde fuera del campus");
+                    bool exists = await CreateVPN(vpn, "la UPV desde fuera del campus");
                     if (exists)
                     {
                         await vpn.ConnectAsync();
@@ -68,7 +68,7 @@ namespace AccesoUPV.GUI.Windows.Main.Pages
             }
             else if (result == MessageBoxResult.No)
             {
-                SelectVPN window = new SelectVPN();
+                SelectVPN window = new SelectVPN(vpn.Server);
                 window.ShowDialog();
                 if (window.SelectedName == null) return false;
                 else vpn.Name = window.SelectedName;
