@@ -5,8 +5,86 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AccesoUPV.GUI"
         mc:Ignorable="d"
-        Title="Preferences" Height="450" Width="800">
+        Title="Preferencias" FontSize="14" Height="452" Width="433">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="20" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Usuario (UPV)" FontSize="16" Grid.Column="1" Grid.Row="1" FontWeight="Bold" Foreground="Gray" Margin="0 0 0 20" />
+        <TextBlock Text="Nombre:" Grid.Column="1" Grid.Row="2" />
+        <TextBox x:Name="UserBox" Grid.Column="2" Grid.Row="2" />
+
+        <TabControl Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="3">
+            <TabItem Header="UPV">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="20" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Conexión VPN" FontSize="16" Grid.Column="0" Grid.Row="1" FontWeight="Bold" Foreground="Gray" Margin="0 0 0 20" />
+                    <TextBlock Text="Nombre:" Grid.Column="0" Grid.Row="2" />
+                    <TextBox x:Name="VPNToUPVBox" Grid.Column="1" Grid.Row="2" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="DSIC">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="20" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="20" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="20" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Conexión VPN" FontSize="16" Grid.Column="0" Grid.Row="1" FontWeight="Bold" Foreground="Gray" Margin="0 0 0 20" />
+                    <TextBlock Text="Nombre:" Grid.Column="0" Grid.Row="2" />
+                    <TextBox x:Name="VPNToDSICBox" Grid.Column="1" Grid.Row="2" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3">
+            <Button x:Name="ResetButton" Content="Reestablecer" Grid.Column="0" />
+            <Button x:Name="AcceptButton" Content="Aceptar" IsDefault="True" Grid.Column="1" Margin="20 0 20 0" />
+            <Button x:Name="CancelButton" Content="Cancelar" IsCancel="True" Grid.Column="2" />
+        </StackPanel>
     </Grid>
 </Window>
