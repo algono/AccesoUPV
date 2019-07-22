@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,24 +9,27 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors.VPN
 {
-    public abstract class VPN : ProcessConnector, IVPN
+    public class VPN : ProcessConnector, IVPN, Openable
     {
         public const int CONNECTED_PING_TIMEOUT = 5000, DISCONNECTED_PING_TIMEOUT = 500;
 
         public string ConnectedName { get; private set; }
         public string Name { get; set; }
-        public abstract string Server { get; }
-        public abstract string TestServer { get; }
+
+        public string Server { get; set; }
+        public string TestServer { get; set; }
+
+        public IDictionary Config { get; set; }
+
         public override bool Connected
         {
             get => ConnectedName != null;
             protected set => ConnectedName = value ? Name : null;
         }
 
-        protected static readonly ProcessStartInfo PingInfo = CreateProcessInfo("ping.exe");
-
-        protected VPN(string name = null)
+        public VPN(string server, string name = null)
         {
+            Server = server;
             Name = name;
 
             conInfo.FileName = "rasphone.exe";
@@ -37,8 +41,10 @@ namespace AccesoUPV.Library.Connectors.VPN
         public bool IsReachable(int timeout)
         {
             if (string.IsNullOrEmpty(TestServer)) throw new ArgumentNullException("The test server is not defined.");
-            PingInfo.Arguments = $"-n 1 -w {timeout} {TestServer}";
-            Process p = Process.Start(PingInfo);
+
+            ProcessStartInfo pingInfo = CreateProcessInfo("ping.exe");
+            pingInfo.Arguments = $"-n 1 -w {timeout} {TestServer}";
+            Process p = Process.Start(pingInfo);
             p.WaitForExit();
             return p.ExitCode == 0;
         }
@@ -110,8 +116,12 @@ namespace AccesoUPV.Library.Connectors.VPN
             shell.AddCommand("Add-VpnConnection");
             shell.AddParameter("Name", Name);
             shell.AddParameter("ServerAddress", Server);
+
             //Es necesario para que las credenciales se guarden cuando el usuario lo indique en rasphone
             shell.AddParameter("RememberCredential");
+
+            shell.AddParameters(Config);
+
             return shell;
         }
 
@@ -133,6 +143,11 @@ namespace AccesoUPV.Library.Connectors.VPN
                 shell.Dispose();
                 return succeeded;
             });
+        }
+
+        public void Open()
+        {
+            Process.Start("http://" + TestServer);
         }
 
         public bool SetNameAuto()

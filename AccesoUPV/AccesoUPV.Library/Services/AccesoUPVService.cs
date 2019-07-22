@@ -8,8 +8,8 @@ namespace AccesoUPV.Library.Services
 {
     public class AccesoUPVService : IAccesoUPVService
     {
-        public VPNToUPV VPN_UPV { get; }
-        public VPNToDSIC VPN_DSIC { get; }
+        public IVPN VPN_UPV { get; }
+        public IVPN VPN_DSIC { get; }
         public NetworkDriveW WDrive { get; }
         public NetworkDriveDSIC DSICDrive { get; }
 
@@ -36,8 +36,8 @@ namespace AccesoUPV.Library.Services
 
             _user = Settings.Default.User;
 
-            VPN_UPV = new VPNToUPV(Settings.Default.VPN_UPVName);
-            VPN_DSIC = new VPNToDSIC(Settings.Default.VPN_DSICName);
+            VPN_UPV = VPNFactory.GetVPNToUPV(Settings.Default.VPN_UPVName);
+            VPN_DSIC = VPNFactory.GetVPNToDSIC(Settings.Default.VPN_DSICName);
 
             WDrive = new NetworkDriveW(User, Settings.Default.WDriveLetter, (UPVDomain)Settings.Default.WDriveDomain);
 

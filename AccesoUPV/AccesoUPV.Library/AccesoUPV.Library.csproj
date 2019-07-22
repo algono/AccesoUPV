@@ -49,9 +49,8 @@
     <Compile Include="Connectors\Drive\INetworkDrive.cs" />
     <Compile Include="Connectors\Connectable.cs" />
     <Compile Include="Connectors\Openable.cs" />
-    <Compile Include="Connectors\VPN\VPNToDSIC.cs" />
+    <Compile Include="Connectors\VPN\VPNFactory.cs" />
     <Compile Include="Connectors\VPN\IVPN.cs" />
-    <Compile Include="Connectors\VPN\VPNToUPV.cs" />
     <Compile Include="Connectors\VPN\VPN.cs" />
     <Compile Include="Services\IAccesoUPVService.cs" />
     <Compile Include="Static\SSHConnection.cs" />
