@@ -3,6 +3,7 @@ using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Properties;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Services
 {
@@ -70,6 +71,27 @@ namespace AccesoUPV.Library.Services
             Settings.Default.DSICDrivePassword = SavePasswords ? DSICDrive.Password : null;
 
             Settings.Default.Save();
+        }
+
+        public void ClearSettings()
+        {
+            Settings.Default.Reset();
+        }
+
+        public async Task Shutdown()
+        {
+            Task dd, dw;
+
+            if (DSICDrive.Connected) dd = DSICDrive.DisconnectAsync();
+            else dd = Task.CompletedTask;
+
+            if (WDrive.Connected) dw = WDrive.DisconnectAsync();
+            else dw = Task.CompletedTask;
+
+            await Task.WhenAll(dd, dw);
+
+            if (VPN_DSIC.Connected) await VPN_DSIC.DisconnectAsync();
+            if (VPN_UPV.Connected) await VPN_UPV.DisconnectAsync();
         }
     }
 }

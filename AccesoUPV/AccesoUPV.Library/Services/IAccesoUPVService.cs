@@ -2,6 +2,7 @@
 using AccesoUPV.Library.Connectors.VPN;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Services
 {
@@ -16,6 +17,8 @@ namespace AccesoUPV.Library.Services
         IVPN VPN_UPV { get; }
         NetworkDriveW WDrive { get; }
 
+        void ClearSettings();
         void SaveChanges();
+        Task Shutdown();
     }
 }

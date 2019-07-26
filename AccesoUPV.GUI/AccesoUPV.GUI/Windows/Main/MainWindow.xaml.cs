@@ -18,7 +18,8 @@ namespace AccesoUPV.GUI
 
         public MainWindow(IAccesoUPVService service) : this()
         {
-            _service = service;
+            _service = service; 
+
             Start startPage = new Start(service);
             startPage.Started += StartPage_Started;
             Main.Content = startPage;

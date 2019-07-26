@@ -19,8 +19,6 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="20" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="20" />
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="20" />
@@ -45,6 +43,7 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="10" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="20" />
                     </Grid.RowDefinitions>
@@ -52,6 +51,16 @@
                     <TextBlock Text="Conexión VPN" FontSize="16" Grid.Column="0" Grid.Row="1" FontWeight="Bold" Foreground="Gray" Margin="0 0 0 20" />
                     <TextBlock Text="Nombre:" Grid.Column="0" Grid.Row="2" />
                     <TextBox x:Name="VPNToUPVBox" Grid.Column="1" Grid.Row="2" />
+
+                    <TextBlock Text="Disco W" FontSize="16" Grid.Column="0" Grid.Row="3" FontWeight="Bold" Foreground="Gray" Margin="0 20 0 20" />
+                    <CheckBox x:Name="DriveWCheckBox" Content="Unidad:" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center" ToolTip="Si no selecciona una, se elegirá la primera disponible." />
+                    <ComboBox x:Name="WDriveBox" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Width="100" IsEnabled="{Binding ElementName=DriveWCheckBox, Path=IsChecked}" />
+
+                    <TextBlock Text="Dominio:" Grid.Column="0" Grid.Row="6" />
+                    <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="6" VerticalAlignment="Center" >
+                        <RadioButton x:Name="DominioAlumnoRadio" GroupName="Dominio" Content="Alumno" />
+                        <RadioButton x:Name="DominioUPVNETRadio" GroupName="Dominio" Content="UPVNET" Margin="20 0 0 0" />
+                    </StackPanel>
                 </Grid>
             </TabItem>
             <TabItem Header="DSIC">
@@ -66,10 +75,9 @@
                         <RowDefinition Height="20" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
-                        <RowDefinition Height="20" />
                         <RowDefinition Height="auto" />
-                        <RowDefinition Height="20" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="10" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="20" />
                     </Grid.RowDefinitions>
@@ -77,13 +85,22 @@
                     <TextBlock Text="Conexión VPN" FontSize="16" Grid.Column="0" Grid.Row="1" FontWeight="Bold" Foreground="Gray" Margin="0 0 0 20" />
                     <TextBlock Text="Nombre:" Grid.Column="0" Grid.Row="2" />
                     <TextBox x:Name="VPNToDSICBox" Grid.Column="1" Grid.Row="2" />
+
+                    <TextBlock Text="Disco DSIC" FontSize="16" Grid.Column="0" Grid.Row="3" FontWeight="Bold" Foreground="Gray" Margin="0 20 0 20" />
+                    <CheckBox x:Name="DriveDSICCheckBox" Content="Unidad:" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center" ToolTip="Si no selecciona una, se elegirá la primera disponible." />
+                    <ComboBox x:Name="DSICDriveBox" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Width="100" IsEnabled="{Binding ElementName=DriveDSICCheckBox, Path=IsChecked}" />
+
+                    <TextBlock Text="Contraseña:" Grid.Column="0" Grid.Row="6" />
+                    <TextBox x:Name="PassDSICBox" Grid.Column="1" Grid.Row="6" />
+                    <CheckBox x:Name="SavePassCheckBox" Content="Guardar" Grid.Column="2" Grid.Row="6" VerticalAlignment="Center" Margin="10 0 0 0" 
+                              ToolTip="Si está activado, se guardará la contraseña para futuras sesiones." />
                 </Grid>
             </TabItem>
         </TabControl>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3">
-            <Button x:Name="ResetButton" Content="Reestablecer" Grid.Column="0" />
-            <Button x:Name="AcceptButton" Content="Aceptar" IsDefault="True" Grid.Column="1" Margin="20 0 20 0" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" Margin="0 20 0 0">
+            <Button x:Name="ResetButton" Content="Reestablecer" Grid.Column="0" Click="ResetButton_Click" />
+            <Button x:Name="AcceptButton" Content="Aceptar" IsDefault="True" Grid.Column="1" Margin="20 0 20 0" Click="AcceptButton_Click" />
             <Button x:Name="CancelButton" Content="Cancelar" IsCancel="True" Grid.Column="2" />
         </StackPanel>
     </Grid>

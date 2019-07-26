@@ -26,6 +26,12 @@ namespace AccesoUPV.GUI.Windows.Main.Pages
         public Main()
         {
             InitializeComponent();
+            Application.Current.SessionEnding += Current_SessionEnding;
+        }
+
+        private async void Current_SessionEnding(object sender, SessionEndingCancelEventArgs e)
+        {
+            await _service.Shutdown();
         }
 
         public Main(IAccesoUPVService service) : this()

@@ -36,6 +36,7 @@ namespace AccesoUPV.GUI.Windows.Main.Pages
                     bool exists = !string.IsNullOrEmpty(vpn.Name) || await CreateVPN(vpn, "la UPV desde fuera del campus");
                     if (exists)
                     {
+                        _service.SaveChanges();
                         await vpn.ConnectAsync();
                     }
                     else
@@ -81,7 +82,7 @@ namespace AccesoUPV.GUI.Windows.Main.Pages
 
         private void PrefsButton_Click(object sender, RoutedEventArgs e)
         {
-            Window prefsWindow = new Preferences();
+            Window prefsWindow = new Preferences(_service);
             prefsWindow.ShowDialog();
         }
 

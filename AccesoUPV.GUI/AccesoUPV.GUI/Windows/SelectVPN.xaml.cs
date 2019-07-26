@@ -10,20 +10,31 @@ namespace AccesoUPV.GUI
     {
         public string SelectedName { get; private set; }
 
-        private string _server;
+        private readonly string _server;
         public SelectVPN(string server = null)
         {
             InitializeComponent();
             _server = server;
             this.Loaded += LoadNameList;
         }
+        public SelectVPN(string[] vpnList)
+        {
+            InitializeComponent();
+            VPNList.ItemsSource = vpnList;
+            ShowList();
+        }
 
         private async void LoadNameList(object sender, RoutedEventArgs e)
         {
-            VPNList.ItemsSource = _server == null 
+            VPNList.ItemsSource = _server == null
                 ? await VPN.GetNameListAsync()
                 : await VPN.FindNamesAsync(_server);
 
+            ShowList();
+        }
+
+        private void ShowList()
+        {
             VPNProgressBar.Visibility = Visibility.Collapsed;
             VPNList.Visibility = Visibility.Visible;
         }
