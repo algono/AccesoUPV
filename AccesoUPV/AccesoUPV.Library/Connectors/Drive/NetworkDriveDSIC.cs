@@ -6,7 +6,7 @@ namespace AccesoUPV.Library.Connectors.Drive
     public class InvalidCredentials : ArgumentException { }
     public class NetworkDriveDSIC : NetworkDriveBase
     {
-        public override string Address => $@"\\fileserver.dsic.upv.es\{UserName}";
+        public override string Address => $@"\\fileserver.dsic.upv.es\{Username}";
         private static readonly DriveDomain DSICDomain = new DriveDomain("DSIC");
         public override DriveDomain Domain
         {

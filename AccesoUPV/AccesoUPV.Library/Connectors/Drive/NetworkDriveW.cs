@@ -18,7 +18,7 @@ namespace AccesoUPV.Library.Connectors.Drive
     }
     public class NetworkDriveW : NetworkDriveBase
     {
-        public override string Address => $@"\\nasupv.upv.es\{base.Domain.Folder}\{UserName[0]}\{UserName}";
+        public override string Address => $@"\\nasupv.upv.es\{base.Domain.Folder}\{Username[0]}\{Username}";
 
         public static readonly DriveDomain domainAlumno = new DriveDomain("alumno.upv.es", DomainStyle.AtSignStyle, "alumnos"),
                                             domainUPVNET = new DriveDomain("upvnet.upv.es", DomainStyle.AtSignStyle, "discos");

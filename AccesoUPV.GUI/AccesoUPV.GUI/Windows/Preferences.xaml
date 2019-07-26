@@ -58,7 +58,7 @@
 
                     <TextBlock Text="Dominio:" Grid.Column="0" Grid.Row="6" />
                     <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="6" VerticalAlignment="Center" >
-                        <RadioButton x:Name="DominioAlumnoRadio" GroupName="Dominio" Content="Alumno" />
+                        <RadioButton x:Name="DominioAlumnoRadio" GroupName="Dominio" Content="Alumno" IsChecked="True" />
                         <RadioButton x:Name="DominioUPVNETRadio" GroupName="Dominio" Content="UPVNET" Margin="20 0 0 0" />
                     </StackPanel>
                 </Grid>

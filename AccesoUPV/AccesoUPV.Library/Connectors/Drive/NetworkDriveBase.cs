@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors.Drive
 {
@@ -12,13 +13,28 @@ namespace AccesoUPV.Library.Connectors.Drive
     [Serializable]
     public class NotAvailableDriveException : IOException { }
     [Serializable]
-    public class OpenedFilesException : IOException { }
+    public class OpenedFilesException : IOException
+    {
+        public Action Continue { get; private set; }
+        public Func<Task> ContinueAsync { get; private set; }
+
+        public const string WarningTitle = "Archivos abiertos";
+        public const string WarningMessage = 
+            "Existen archivos abiertos y/o búsquedas incompletas de directorios pendientes en el disco. Si no los cierra antes de desconectarse, podría perder datos.\n\n"
+            + "¿Desea continuar la desconexión y forzar el cierre?";
+
+        public OpenedFilesException(Action continueMethod, Func<Task> continueMethodAsync = null) : base()
+        {
+            Continue = continueMethod;
+            ContinueAsync = continueMethodAsync;
+        }
+    }
     public abstract class NetworkDriveBase : ProcessConnector, INetworkDrive
     {
         public string ConnectedDrive { get; private set; }
         public string Drive { get; set; }
         public abstract string Address { get; }
-        public string UserName { get; set; }
+        public string Username { get; set; }
         public string Password { get; set; }
         public bool UseCredentials { get; set; }
         public bool YesToAll { get; set; }
@@ -34,7 +50,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         protected NetworkDriveBase(string drive = null, string user = null, string password = null, bool useCredentials = false, bool yesToAll = false) : base()
         {
             Drive = drive;
-            UserName = user;
+            Username = user;
             Password = password;
             UseCredentials = useCredentials;
             YesToAll = yesToAll;
@@ -89,14 +105,15 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         protected void CheckArguments()
         {
+            if (string.IsNullOrEmpty(Username)) throw new ArgumentNullException("Username is not set");
+
             conInfo.Arguments = $"use {Drive} {Address}";
             if (UseCredentials)
             {
-                if (string.IsNullOrEmpty(UserName)) throw new ArgumentNullException("UserName is not set");
                 if (string.IsNullOrEmpty(Password)) throw new ArgumentNullException("Password is not set");
-                conInfo.Arguments += $" \"{Password}\" /USER:{Domain?.GetFullUserName(UserName) ?? UserName}";
+                conInfo.Arguments += $" \"{Password}\" /USER:{Domain?.GetFullUsername(Username) ?? Username}";
             }
-            if (YesToAll) conInfo.Arguments += "/y";
+            if (YesToAll) conInfo.Arguments += " /y";
         }
 
         protected Process StartProcess(ProcessStartInfo info)
@@ -130,7 +147,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         protected override Process DisconnectProcess()
         {
             disInfo.Arguments = $"use {ConnectedDrive} /delete";
-            if (YesToAll) disInfo.Arguments += "/y";
+            if (YesToAll) disInfo.Arguments += " /y";
             return StartProcess(disInfo);
         }
 
@@ -143,9 +160,25 @@ namespace AccesoUPV.Library.Connectors.Drive
                 //Esa secuencia es parte de "(S/N)", con lo que deducimos que nos pide confirmación (porque tenemos archivos abiertos)
                 if (output.Contains("/N)") || error.Contains("/N)"))
                 {
-                    throw new OpenedFilesException();
+                    throw new OpenedFilesException(ForceDisconnect, ForceDisconnectAsync) { };
                 }
             }
+        }
+
+        private void ForceDisconnect()
+        {
+            bool oldYesToAll = this.YesToAll;
+            this.YesToAll = true;
+            this.Disconnect();
+            this.YesToAll = oldYesToAll;
+        }
+
+        private async Task ForceDisconnectAsync()
+        {
+            bool oldYesToAll = this.YesToAll;
+            this.YesToAll = true;
+            await this.DisconnectAsync();
+            this.YesToAll = oldYesToAll;
         }
 
         public void Open()

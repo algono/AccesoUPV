@@ -1,4 +1,5 @@
-﻿using AccesoUPV.Library.Services;
+﻿using AccesoUPV.Library.Connectors.Drive;
+using AccesoUPV.Library.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,17 +27,38 @@ namespace AccesoUPV.GUI.Windows.Main.Pages
         public Main()
         {
             InitializeComponent();
-            Application.Current.SessionEnding += Current_SessionEnding;
-        }
-
-        private async void Current_SessionEnding(object sender, SessionEndingCancelEventArgs e)
-        {
-            await _service.Shutdown();
         }
 
         public Main(IAccesoUPVService service) : this()
         {
             _service = service;
+        }
+
+        private async void ConnectWButton_Click(object sender, RoutedEventArgs e)
+        {
+            await _service.WDrive.ConnectAsync();
+        }
+
+        private async void DisconnectWButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                await _service.WDrive.DisconnectAsync();
+            }
+            catch (OpenedFilesException ex)
+            {
+                MessageBoxResult result = MessageBox.Show(OpenedFilesException.WarningMessage, OpenedFilesException.WarningTitle, MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.OK)
+                {
+                    await ex.ContinueAsync();
+                }
+            }
+        }
+
+        private void OpenWButton_Click(object sender, RoutedEventArgs e)
+        {
+            _service.WDrive.Open();
         }
     }
 }

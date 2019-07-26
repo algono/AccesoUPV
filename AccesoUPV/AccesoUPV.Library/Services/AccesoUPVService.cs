@@ -1,6 +1,8 @@
-﻿using AccesoUPV.Library.Connectors.Drive;
+﻿using AccesoUPV.Library.Connectors;
+using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Properties;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
@@ -22,8 +24,8 @@ namespace AccesoUPV.Library.Services
             set
             {
                 _user = value;
-                WDrive.UserName = value;
-                DSICDrive.UserName = value;
+                WDrive.Username = value;
+                DSICDrive.Username = value;
             }
         }
         public bool SavePasswords { get; set; }
@@ -78,20 +80,14 @@ namespace AccesoUPV.Library.Services
             Settings.Default.Reset();
         }
 
-        public async Task Shutdown()
+        public void Shutdown()
         {
-            Task dd, dw;
+            Connectable[] connectables = { WDrive, DSICDrive, VPN_DSIC, VPN_UPV };
 
-            if (DSICDrive.Connected) dd = DSICDrive.DisconnectAsync();
-            else dd = Task.CompletedTask;
-
-            if (WDrive.Connected) dw = WDrive.DisconnectAsync();
-            else dw = Task.CompletedTask;
-
-            await Task.WhenAll(dd, dw);
-
-            if (VPN_DSIC.Connected) await VPN_DSIC.DisconnectAsync();
-            if (VPN_UPV.Connected) await VPN_UPV.DisconnectAsync();
+            foreach (Connectable connectable in connectables)
+            {
+                if (connectable.Connected) connectable.Disconnect();
+            }
         }
     }
 }

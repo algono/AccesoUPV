@@ -20,10 +20,14 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="20" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="ConnectButton" Grid.Column="1" Grid.Row="2" FontSize="36" Text="MAIN" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <Button x:Name="ConnectWButton" Grid.Column="1" Grid.Row="2" FontSize="36" Content="Conectar Disco W" VerticalAlignment="Center" HorizontalAlignment="Center" Click="ConnectWButton_Click" />
+        <Button x:Name="DisconnectWButton" Grid.Column="1" Grid.Row="4" FontSize="36" Content="Desconectar Disco W" VerticalAlignment="Center" HorizontalAlignment="Center" Click="DisconnectWButton_Click" />
+        <Button x:Name="OpenWButton" Grid.Column="1" Grid.Row="6" FontSize="36" Content="Abrir Disco W" VerticalAlignment="Center" HorizontalAlignment="Center" Click="OpenWButton_Click" />
     </Grid>
 </Page>

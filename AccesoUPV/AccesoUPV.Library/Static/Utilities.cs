@@ -23,7 +23,7 @@ namespace AccesoUPV.Library
 
             process.Close();
 
-            handler?.Invoke(succeeded, output, error); // TODO: Convertir llamada a async
+            handler?.Invoke(succeeded, output, error);
 
             if (!succeeded) throw new IOException($"Output:\n{output}\n\nError:\n{error}");
         }
@@ -35,9 +35,11 @@ namespace AccesoUPV.Library
             process.OutputDataReceived += (s, ea) => output += ea.Data;
             process.ErrorDataReceived += (s, ea) => error += ea.Data;
 
-            bool succeeded = await process.WaitAsync();
+            bool succeeded = await process.WaitAsync().ConfigureAwait(false);
 
-            handler?.Invoke(succeeded, output, error);
+            process.Close();
+
+            handler?.Invoke(succeeded, output, error); // TODO: Convertir llamada a async
 
             if (!succeeded) throw new IOException($"Output:\n{output}\n\nError:\n{error}");
         }
@@ -76,7 +78,7 @@ namespace AccesoUPV.Library
             return tcs.Task;
         }
 
-        public static string GetStringPropertyValue(this PSObject obj, string propertyName) => (string)obj.Properties["Name"].Value;
+        public static string GetStringPropertyValue(this PSObject obj, string propertyName) => (string)obj.Properties[propertyName].Value;
 
     }
 }

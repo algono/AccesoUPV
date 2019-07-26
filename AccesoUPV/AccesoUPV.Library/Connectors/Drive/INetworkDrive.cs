@@ -8,7 +8,7 @@
         string Drive { get; set; }
         string Password { get; set; }
         bool UseCredentials { get; set; }
-        string UserName { get; set; }
+        string Username { get; set; }
         bool YesToAll { get; set; }
     }
 }

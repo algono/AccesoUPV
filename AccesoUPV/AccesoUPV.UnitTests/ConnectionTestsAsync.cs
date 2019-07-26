@@ -82,7 +82,7 @@ namespace AccesoUPV.UnitTests
             // Arrange
             AccesoUPVService Service = new AccesoUPVService();
             INetworkDrive manager = Service.WDrive;
-            manager.UserName = "algono";
+            manager.Username = "algono";
             // Keep to disconnect in further testing
             WDrive = manager;
             // Act and Assert

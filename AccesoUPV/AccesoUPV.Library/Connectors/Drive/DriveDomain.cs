@@ -13,7 +13,7 @@
             PreferredStyle = style;
             Folder = folder;
         }
-        public string GetFullUserName(string userName)
+        public string GetFullUsername(string userName)
         {
             return GetFullUserName(userName, PreferredStyle);
         }

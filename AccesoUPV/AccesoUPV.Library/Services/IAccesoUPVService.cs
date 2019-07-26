@@ -19,6 +19,6 @@ namespace AccesoUPV.Library.Services
 
         void ClearSettings();
         void SaveChanges();
-        Task Shutdown();
+        void Shutdown();
     }
 }
