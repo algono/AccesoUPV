@@ -56,20 +56,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Windows\Main\Pages\Main.xaml.cs">
+    <Compile Include="Windows\Pages\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Main\Pages\Start.xaml.cs">
+    <Compile Include="Windows\Pages\Start.xaml.cs">
       <DependentUpon>Start.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\SelectVPN.xaml.cs">
       <DependentUpon>SelectVPN.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Shutdown.xaml.cs">
+      <DependentUpon>Shutdown.xaml</DependentUpon>
+    </Compile>
     <Page Include="Windows\Help.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\Main\MainWindow.xaml">
+    <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -80,15 +83,15 @@
     <Compile Include="Windows\Help.xaml.cs">
       <DependentUpon>Help.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Main\MainWindow.xaml.cs">
+    <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Windows\Main\Pages\Main.xaml">
+    <Page Include="Windows\Pages\Main.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\Main\Pages\Start.xaml">
+    <Page Include="Windows\Pages\Start.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -97,6 +100,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\SelectVPN.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Shutdown.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

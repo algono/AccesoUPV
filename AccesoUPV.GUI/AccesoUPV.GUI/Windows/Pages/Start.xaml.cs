@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace AccesoUPV.GUI.Windows.Main.Pages
+namespace AccesoUPV.GUI.Windows.Pages
 {
     /// <summary>
     /// Lógica de interacción para Start.xaml
@@ -27,7 +27,7 @@ namespace AccesoUPV.GUI.Windows.Main.Pages
         }
 
         private async void ConnectButton_Click(object sender, RoutedEventArgs e)
-        {          
+        {
             try
             {
                 IVPN vpn = _service.VPN_UPV;

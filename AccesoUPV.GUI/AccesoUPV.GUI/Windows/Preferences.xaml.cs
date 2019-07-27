@@ -2,7 +2,7 @@
 using AccesoUPV.Library.Services;
 using System.Windows;
 
-namespace AccesoUPV.GUI
+namespace AccesoUPV.GUI.Windows
 {
     /// <summary>
     /// Lógica de interacción para Preferences.xaml
@@ -51,7 +51,7 @@ namespace AccesoUPV.GUI
             {
                 _service.DSICDrive.Drive = null;
             }
-            
+
 
             if (DominioAlumnoRadio.IsChecked ?? false)
             {

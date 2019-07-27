@@ -1,7 +1,7 @@
 ﻿using AccesoUPV.Library.Connectors.VPN;
 using System.Windows;
 
-namespace AccesoUPV.GUI
+namespace AccesoUPV.GUI.Windows
 {
     /// <summary>
     /// Lógica de interacción para SelectVPN.xaml

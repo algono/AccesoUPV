@@ -1,6 +1,7 @@
 ﻿using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Services;
+using Microsoft.VisualBasic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
@@ -12,52 +13,61 @@ namespace AccesoUPV.UnitTests
         private static IVPN VPN_UPV, VPN_DSIC;
         private static INetworkDrive WDrive, DSICDrive;
 
-        private static void CanBeConnected(IVPN manager)
+        private static string Username, DSICDrivePass;
+
+        [TestInitialize]
+        public static void PromptCredentials()
+        {
+            Username = Interaction.InputBox("Username:");
+            DSICDrivePass = Interaction.InputBox("Password (DSIC Drive):");
+        }
+
+        private static void CanBeConnected(IVPN vpn)
         {
             try
             {
-                manager.Connect();
-                ConnectionAsserts.Assert_Connected(manager);
+                vpn.Connect();
+                ConnectionAsserts.Assert_Connected(vpn);
             }
             catch (OperationCanceledException)
             {
-                ConnectionAsserts.Assert_Disconnected(manager);
+                ConnectionAsserts.Assert_Disconnected(vpn);
             }
         }
-        private static void CanBeDisconnected(IVPN manager)
+        private static void CanBeDisconnected(IVPN vpn)
         {
             try
             {
-                manager.Disconnect();
-                ConnectionAsserts.Assert_Disconnected(manager);
+                vpn.Disconnect();
+                ConnectionAsserts.Assert_Disconnected(vpn);
             }
             catch (OperationCanceledException)
             {
-                ConnectionAsserts.Assert_Connected(manager);
+                ConnectionAsserts.Assert_Connected(vpn);
             }
         }
-        private static void CanBeConnected(INetworkDrive manager)
+        private static void CanBeConnected(INetworkDrive drive)
         {
             try
             {
-                manager.Connect();
-                ConnectionAsserts.Assert_Connected(manager);
+                drive.Connect();
+                ConnectionAsserts.Assert_Connected(drive);
             }
             catch (OperationCanceledException)
             {
-                ConnectionAsserts.Assert_Disconnected(manager);
+                ConnectionAsserts.Assert_Disconnected(drive);
             }
         }
-        private static void CanBeDisconnected(INetworkDrive manager)
+        private static void CanBeDisconnected(INetworkDrive drive)
         {
             try
             {
-                manager.Disconnect();
-                ConnectionAsserts.Assert_Disconnected(manager);
+                drive.Disconnect();
+                ConnectionAsserts.Assert_Disconnected(drive);
             }
             catch (OperationCanceledException)
             {
-                ConnectionAsserts.Assert_Connected(manager);
+                ConnectionAsserts.Assert_Connected(drive);
             }
         }
 
@@ -66,12 +76,12 @@ namespace AccesoUPV.UnitTests
         {
             // Arrange
             AccesoUPVService service = new AccesoUPVService();
-            IVPN manager = service.VPN_UPV;
-            manager.Name = "UPV";
+            IVPN vpn = service.VPN_UPV;
+            vpn.SetNameAuto();
             // Keep to disconnect in further testing
-            VPN_UPV = manager;
+            VPN_UPV = vpn;
             // Act and Assert
-            CanBeConnected(manager);
+            CanBeConnected(vpn);
         }
 
         [TestMethod]
@@ -79,36 +89,36 @@ namespace AccesoUPV.UnitTests
         {
             // Arrange
             AccesoUPVService Service = new AccesoUPVService();
-            INetworkDrive manager = Service.WDrive;
-            manager.Username = "algono";
+            INetworkDrive drive = Service.WDrive;
+            drive.Username = Username;
             // Keep to disconnect in further testing
-            WDrive = manager;
+            WDrive = drive;
             // Act and Assert
-            CanBeConnected(manager);
+            CanBeConnected(drive);
         }
 
-        //[TestMethod]
-        //public void DSICDriveCanBeConnected()
-        //{
-        //    // Arrange
-        //    AccesoUPVService Service = new AccesoUPVService();
-        //    IDriveManager Manager = Service.DSICDrive;
-        //    Manager.UserName = "algono";
-        //    Manager.Password = "INSERT PASSWORD HERE";
-        //    // Keep to disconnect in further testing
-        //    DSICDrive = Manager;
-        //    // Act and Assert
-        //    CanBeConnected(Manager);
-        //}
+        [TestMethod]
+        public void DSICDriveCanBeConnected()
+        {
+            // Arrange
+            AccesoUPVService Service = new AccesoUPVService();
+            INetworkDrive drive = Service.DSICDrive;
+            drive.Username = Username;
+            drive.Password = DSICDrivePass;
+            // Keep to disconnect in further testing
+            DSICDrive = drive;
+            // Act and Assert
+            CanBeConnected(drive);
+        }
 
         [TestMethod]
         public void WDriveCanBeDisconnected() => CanBeDisconnected(WDrive);
 
-        //[TestMethod]
-        //public void DSICDriveCanBeDisconnected()
-        //{
-        //    CanBeDisconnected(DSICDrive);
-        //}
+        [TestMethod]
+        public void DSICDriveCanBeDisconnected()
+        {
+            CanBeDisconnected(DSICDrive);
+        }
 
         [TestMethod]
         public void VPN_UPVCanBeDisconnected() => CanBeDisconnected(VPN_UPV);
@@ -118,12 +128,12 @@ namespace AccesoUPV.UnitTests
         {
             // Arrange
             AccesoUPVService service = new AccesoUPVService();
-            IVPN Manager = service.VPN_DSIC;
-            Manager.Name = "DSIC";
+            IVPN vpn = service.VPN_DSIC;
+            vpn.SetNameAuto();
             // Keep to disconnect in further testing
-            VPN_DSIC = Manager;
+            VPN_DSIC = vpn;
             // Act and Assert
-            CanBeConnected(Manager);
+            CanBeConnected(vpn);
         }
 
         [TestMethod]

@@ -82,12 +82,48 @@ namespace AccesoUPV.Library.Services
 
         public void Shutdown()
         {
-            Connectable[] connectables = { WDrive, DSICDrive, VPN_DSIC, VPN_UPV };
+            Connectable[] connectables = { DSICDrive, WDrive, VPN_DSIC, VPN_UPV };
 
             foreach (Connectable connectable in connectables)
             {
                 if (connectable.Connected) connectable.Disconnect();
             }
         }
+
+        public async Task ShutdownAsync(IProgress<string> progress = null)
+        {
+            List<Task> driveTasks = new List<Task>();
+
+            if (DSICDrive.Connected)
+            {
+                driveTasks.Add(ShutdownDrive(DSICDrive, "Disco DSIC", progress));
+            }
+
+            if (WDrive.Connected)
+            {
+                driveTasks.Add(ShutdownDrive(WDrive, "Disco W", progress));
+            }
+
+            if (driveTasks.Count > 0) await Task.WhenAll(driveTasks);
+
+            if (VPN_DSIC.Connected)
+            {
+                progress?.Report("Desconectando VPN al DSIC");
+                await VPN_DSIC.DisconnectAsync();
+            }
+
+            if (VPN_UPV.Connected)
+            {
+                progress?.Report("Desconectando VPN a la UPV");
+                await VPN_UPV.DisconnectAsync();
+            }
+        }
+
+        private async Task ShutdownDrive(INetworkDrive drive, string name, IProgress<string> progress = null)
+        {
+            progress?.Report($"Desconectando { name }");
+            await drive.DisconnectAsync();
+        }
+
     }
 }

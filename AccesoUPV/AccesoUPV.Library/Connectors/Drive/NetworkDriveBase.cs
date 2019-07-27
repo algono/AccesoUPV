@@ -19,7 +19,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         public Func<Task> ContinueAsync { get; private set; }
 
         public const string WarningTitle = "Archivos abiertos";
-        public const string WarningMessage = 
+        public const string WarningMessage =
             "Existen archivos abiertos y/o búsquedas incompletas de directorios pendientes en el disco. Si no los cierra antes de desconectarse, podría perder datos.\n\n"
             + "¿Desea continuar la desconexión y forzar el cierre?";
 
@@ -105,12 +105,12 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         protected void CheckArguments()
         {
-            if (string.IsNullOrEmpty(Username)) throw new ArgumentNullException("Username is not set");
+            if (string.IsNullOrEmpty(Username)) throw new ArgumentNullException(nameof(Username));
 
             conInfo.Arguments = $"use {Drive} {Address}";
             if (UseCredentials)
             {
-                if (string.IsNullOrEmpty(Password)) throw new ArgumentNullException("Password is not set");
+                if (string.IsNullOrEmpty(Password)) throw new ArgumentNullException(nameof(Password));
                 conInfo.Arguments += $" \"{Password}\" /USER:{Domain?.GetFullUsername(Username) ?? Username}";
             }
             if (YesToAll) conInfo.Arguments += " /y";
