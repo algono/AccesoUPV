@@ -11,9 +11,9 @@ namespace AccesoUPV.Library.Services
 {
     public class AccesoUPVService : IAccesoUPVService
     {
-        public IVPN VPN_UPV { get; }
-        public IVPN VPN_DSIC { get; }
-        public NetworkDrive WDrive { get; }
+        public VPN VPN_UPV { get; }
+        public VPN VPN_DSIC { get; }
+        public NetworkDriveUPV WDrive { get; }
         public NetworkDrive DSICDrive { get; }
 
         private string _user;
@@ -67,7 +67,7 @@ namespace AccesoUPV.Library.Services
             Settings.Default.VPN_DSICName = VPN_DSIC.Name;
 
             Settings.Default.WDriveLetter = WDrive.Drive;
-            Settings.Default.WDriveDomain = (int)WDrive.Domain;
+            Settings.Default.WDriveDomain = (int) WDrive.Domain;
 
             Settings.Default.DSICDriveLetter = DSICDrive.Drive;
             Settings.Default.DSICDrivePassword = SavePasswords ? DSICDrive.Password : null;

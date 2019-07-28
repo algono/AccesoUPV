@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors.VPN
 {
-    public class VPN : ProcessConnector, IVPN, Openable
+    public class VPN : ProcessConnector, VPN, Openable
     {
         public const int CONNECTED_PING_TIMEOUT = 5000, DISCONNECTED_PING_TIMEOUT = 500;
 
@@ -76,7 +76,7 @@ namespace AccesoUPV.Library.Connectors.VPN
          * - ArgumentException: La VPN que se ha proporcionado funciona, pero es incapaz de acceder al Test Server
          * - OperationCanceledException: El usuario canceló la operación.
          */
-        protected override void OnConnect(ProcessEventArgs e)
+        protected override void OnProcessConnected(ProcessEventArgs e)
         {
             if (e.Succeeded)
             {
@@ -97,7 +97,7 @@ namespace AccesoUPV.Library.Connectors.VPN
                 }
             }
 
-            base.OnConnect(e);
+            base.OnProcessConnected(e);
 
         }
 

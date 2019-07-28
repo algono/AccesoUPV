@@ -11,7 +11,7 @@ namespace AccesoUPV.UnitTests
     [TestClass]
     public class ConnectionTestsAsync
     {
-        private static IVPN VPN_UPV, VPN_DSIC;
+        private static VPN VPN_UPV, VPN_DSIC;
         private static INetworkDrive WDrive, DSICDrive;
 
         private static string Username, DSICDrivePass;
@@ -23,7 +23,7 @@ namespace AccesoUPV.UnitTests
             DSICDrivePass = Interaction.InputBox("Password (DSIC Drive):");
         }
 
-        private static async Task CanBeConnectedAsync(IVPN vpn)
+        private static async Task CanBeConnectedAsync(VPN vpn)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace AccesoUPV.UnitTests
                 ConnectionAsserts.Assert_Disconnected(vpn);
             }
         }
-        private static async Task CanBeDisconnectedAsync(IVPN vpn)
+        private static async Task CanBeDisconnectedAsync(VPN vpn)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace AccesoUPV.UnitTests
         {
             // Arrange
             AccesoUPVService service = new AccesoUPVService();
-            IVPN vpn = service.VPN_UPV;
+            VPN vpn = service.VPN_UPV;
             await vpn.SetNameAutoAsync();
             // Keep to disconnect in further testing
             VPN_UPV = vpn;
@@ -130,7 +130,7 @@ namespace AccesoUPV.UnitTests
         {
             // Arrange
             AccesoUPVService service = new AccesoUPVService();
-            IVPN vpn = service.VPN_DSIC;
+            VPN vpn = service.VPN_DSIC;
             await vpn.SetNameAutoAsync();
             // Keep to disconnect in further testing
             VPN_DSIC = vpn;

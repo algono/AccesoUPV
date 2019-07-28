@@ -32,21 +32,21 @@ namespace AccesoUPV.Library.Connectors
         }
 
         protected abstract Process ConnectProcess();
-        protected virtual void OnConnect(ProcessEventArgs e)
+        protected virtual void OnProcessConnected(ProcessEventArgs e)
         {
             if (e.Succeeded) Connected = true;
             ProcessConnected?.Invoke(this, e);
         }
         protected abstract Process DisconnectProcess();
-        protected virtual void OnDisconnect(ProcessEventArgs e)
+        protected virtual void OnProcessDisconnected(ProcessEventArgs e)
         {
             if (e.Succeeded) Connected = false;
             ProcessDisconnected?.Invoke(this, e);
         }
 
-        public void Connect() => ConnectProcess().WaitAndCheck(OnConnect);
-        public async Task ConnectAsync() => await ConnectProcess().WaitAndCheckAsync(OnConnect);
-        public void Disconnect() => DisconnectProcess().WaitAndCheck(OnDisconnect);
-        public async Task DisconnectAsync() => await DisconnectProcess().WaitAndCheckAsync(OnDisconnect);
+        public void Connect() => ConnectProcess().WaitAndCheck(OnProcessConnected);
+        public async Task ConnectAsync() => await ConnectProcess().WaitAndCheckAsync(OnProcessConnected);
+        public void Disconnect() => DisconnectProcess().WaitAndCheck(OnProcessDisconnected);
+        public async Task DisconnectAsync() => await DisconnectProcess().WaitAndCheckAsync(OnProcessDisconnected);
     }
 }

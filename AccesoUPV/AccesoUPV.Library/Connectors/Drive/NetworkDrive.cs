@@ -32,7 +32,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         public string ConnectedDrive { get; private set; }
         public string Drive { get; set; }
 
-        private readonly Func<string, DriveDomain, string> getAddress;
+        protected readonly Func<string, DriveDomain, string> getAddress;
         public string Address => getAddress(Username, Domain);
 
         public string Username { get; set; }
@@ -40,7 +40,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         public bool UseCredentials { get; set; }
         public bool YesToAll { get; set; }
 
-        public DriveDomain Domain { get; }
+        public virtual DriveDomain Domain { get; protected set; }
 
         public override bool Connected
         {
@@ -133,9 +133,9 @@ namespace AccesoUPV.Library.Connectors.Drive
             return StartProcess(conInfo);
         }
 
-        protected override void OnConnect(ProcessEventArgs e)
+        protected override void OnProcessConnected(ProcessEventArgs e)
         {
-            base.OnConnect(e);
+            base.OnProcessConnected(e);
 
             if (!e.Succeeded)
             {
@@ -169,9 +169,9 @@ namespace AccesoUPV.Library.Connectors.Drive
             return StartProcess(disInfo);
         }
 
-        protected override void OnDisconnect(ProcessEventArgs e)
+        protected override void OnProcessDisconnected(ProcessEventArgs e)
         {
-            base.OnDisconnect(e);
+            base.OnProcessDisconnected(e);
 
             if (!e.Succeeded)
             {

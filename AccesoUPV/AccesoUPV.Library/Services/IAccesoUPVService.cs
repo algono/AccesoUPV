@@ -14,9 +14,9 @@ namespace AccesoUPV.Library.Services
         bool SavePasswords { get; set; }
         List<SettingsPropertyValue> UninitializedSettings { get; }
         string User { get; set; }
-        IVPN VPN_DSIC { get; }
-        IVPN VPN_UPV { get; }
-        NetworkDrive WDrive { get; }
+        VPN VPN_DSIC { get; }
+        VPN VPN_UPV { get; }
+        NetworkDriveUPV WDrive { get; }
 
         void ClearSettings();
         void SaveChanges();

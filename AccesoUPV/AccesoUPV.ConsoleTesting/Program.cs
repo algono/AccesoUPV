@@ -72,7 +72,7 @@ namespace AccesoUPV.ConsoleTesting
         }
 
         //VPN tests
-        static void VPNTest(IVPN Manager)
+        static void VPNTest(VPN Manager)
         {
             Console.WriteLine("--------- VPN TEST ({0}) ---------", Manager.Name);
 
@@ -96,14 +96,14 @@ namespace AccesoUPV.ConsoleTesting
             Console.WriteLine("--------- VPN TEST ENDED ---------");
         }
 
-        static void CreateTest(IVPN Manager)
+        static void CreateTest(VPN Manager)
         {
             Console.WriteLine("Press any key to create...");
             Console.ReadKey();
             Console.WriteLine("Creating...");
             Console.WriteLine("Created: {0}", Manager.Create());
         }
-        static void ConnectTest(IVPN Manager)
+        static void ConnectTest(VPN Manager)
         {
             Console.WriteLine("Reachable before connecting: {0}", Manager.IsReachable());
             Console.WriteLine("Press any key to connect...");
@@ -113,7 +113,7 @@ namespace AccesoUPV.ConsoleTesting
             Console.WriteLine("Connected: {0}", Manager.Connected);
             Console.WriteLine("Reachable after connecting: {0}", Manager.IsReachable());
         }
-        static void DisconnectTest(IVPN Manager)
+        static void DisconnectTest(VPN Manager)
         {
             Console.WriteLine("Press any key to disconnect...");
             Console.ReadKey();

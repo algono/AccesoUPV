@@ -30,7 +30,7 @@ namespace AccesoUPV.GUI.Windows.Pages
         {
             try
             {
-                IVPN vpn = _service.VPN_UPV;
+                VPN vpn = _service.VPN_UPV;
                 if (!vpn.IsReachable())
                 {
                     bool exists = !string.IsNullOrEmpty(vpn.Name) || await CreateVPN(vpn, "la UPV desde fuera del campus");
@@ -53,7 +53,7 @@ namespace AccesoUPV.GUI.Windows.Pages
             }
         }
 
-        private async Task<bool> CreateVPN(IVPN vpn, string vpnMsgText = "la red")
+        private async Task<bool> CreateVPN(VPN vpn, string vpnMsgText = "la red")
         {
             MessageBoxResult result = MessageBox.Show(
                                 $"Debe establecer una red VPN para poder acceder a {vpnMsgText}.\n\n"

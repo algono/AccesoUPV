@@ -49,10 +49,10 @@
     <Compile Include="Connectors\Drive\DriveFactory.cs" />
     <Compile Include="Connectors\Drive\INetworkDrive.cs" />
     <Compile Include="Connectors\Connectable.cs" />
+    <Compile Include="Connectors\Drive\NetworkDriveUPV.cs" />
     <Compile Include="Connectors\Openable.cs" />
     <Compile Include="Connectors\ProcessEventArgs.cs" />
     <Compile Include="Connectors\VPN\VPNFactory.cs" />
-    <Compile Include="Connectors\VPN\IVPN.cs" />
     <Compile Include="Connectors\VPN\VPN.cs" />
     <Compile Include="Services\IAccesoUPVService.cs" />
     <Compile Include="Static\SSHConnection.cs" />

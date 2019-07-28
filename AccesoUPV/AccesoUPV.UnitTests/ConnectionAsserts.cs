@@ -7,14 +7,14 @@ namespace AccesoUPV.UnitTests
 {
     public static class ConnectionAsserts
     {
-        public static void Assert_Connected(IVPN manager)
+        public static void Assert_Connected(VPN manager)
         {
             Assert.IsTrue(manager.Connected);
             manager.CheckConnection();
             Assert.IsTrue(manager.Connected);
         }
 
-        public static void Assert_Disconnected(IVPN manager)
+        public static void Assert_Disconnected(VPN manager)
         {
             Assert.IsFalse(manager.Connected);
             manager.CheckConnection();
