@@ -9,8 +9,6 @@ namespace AccesoUPV.Library.Connectors.Drive
     // Custom Exceptions
     // (Not having constructors defined creates an empty constructor automatically, and it calls its parent constructor as well)
     [Serializable]
-    public class InvalidUserException : ArgumentException { }
-    [Serializable]
     public class NotAvailableDriveException : IOException { }
     [Serializable]
     public class OpenedFilesException : IOException
@@ -29,15 +27,20 @@ namespace AccesoUPV.Library.Connectors.Drive
             ContinueAsync = continueMethodAsync;
         }
     }
-    public abstract class NetworkDriveBase : ProcessConnector, INetworkDrive
+    public class NetworkDrive : ProcessConnector, INetworkDrive
     {
         public string ConnectedDrive { get; private set; }
         public string Drive { get; set; }
-        public abstract string Address { get; }
+
+        private readonly Func<string, DriveDomain, string> getAddress;
+        public string Address => getAddress(Username, Domain);
+
         public string Username { get; set; }
         public string Password { get; set; }
         public bool UseCredentials { get; set; }
         public bool YesToAll { get; set; }
+
+        public DriveDomain Domain { get; }
 
         public override bool Connected
         {
@@ -45,15 +48,15 @@ namespace AccesoUPV.Library.Connectors.Drive
             protected set => ConnectedDrive = value ? Drive : null;
         }
 
-        public virtual DriveDomain Domain { get; protected set; }
-
-        protected NetworkDriveBase(string drive = null, string user = null, string password = null, bool useCredentials = false, bool yesToAll = false) : base()
+        public NetworkDrive(Func<string, DriveDomain, string> addressGetter, DriveDomain domain = null, string drive = null, string user = null, string password = null)
         {
+            getAddress = addressGetter;
+            Domain = domain;
+
             Drive = drive;
             Username = user;
             Password = password;
-            UseCredentials = useCredentials;
-            YesToAll = yesToAll;
+            UseCredentials = password != null;
 
             conInfo.FileName = "net.exe";
             disInfo.FileName = "net.exe";
@@ -130,16 +133,31 @@ namespace AccesoUPV.Library.Connectors.Drive
             return StartProcess(conInfo);
         }
 
-        protected override void ConnectionHandler(bool succeeded, string output, string error)
+        protected override void OnConnect(ProcessEventArgs e)
         {
-            base.ConnectionHandler(succeeded, output, error);
+            base.OnConnect(e);
 
-            if (!succeeded)
+            if (!e.Succeeded)
             {
-                // 55 - Error del sistema "El recurso no se encuentra disponible" (es decir, la dir no existe, por tanto, el usuario no es válido).
-                if (output.Contains("55") || error.Contains("55"))
+                // 55 - Error del sistema "El recurso no se encuentra disponible" (es decir, la direccion no es valida).
+                if (e.Output.Contains("55") || e.Error.Contains("55"))
                 {
-                    throw new InvalidUserException();
+                    throw new ArgumentOutOfRangeException(nameof(Address));
+                }
+
+                /**
+                * 86 - Error del sistema "La contraseña de red es incorrecta"
+                * 1326 - Error del sistema "El usuario o la contraseña son incorrectos"
+                * Cuando las credenciales son erróneas, da uno de estos dos errores de forma arbitraria.
+                */
+
+                if (e.Output.Contains("86") || e.Error.Contains("86"))
+                {
+                    throw new ArgumentException(e.Error, nameof(Password));
+                }
+                if (e.Output.Contains("1326") || e.Error.Contains("1326"))
+                {
+                    throw new ArgumentException(e.Error, nameof(Username));
                 }
             }
         }
@@ -151,16 +169,16 @@ namespace AccesoUPV.Library.Connectors.Drive
             return StartProcess(disInfo);
         }
 
-        protected override void DisconnectionHandler(bool succeeded, string output, string error)
+        protected override void OnDisconnect(ProcessEventArgs e)
         {
-            base.DisconnectionHandler(succeeded, output, error);
+            base.OnDisconnect(e);
 
-            if (!succeeded)
+            if (!e.Succeeded)
             {
                 //Esa secuencia es parte de "(S/N)", con lo que deducimos que nos pide confirmación (porque tenemos archivos abiertos)
-                if (output.Contains("/N)") || error.Contains("/N)"))
+                if (e.Output.Contains("/N)") || e.Error.Contains("/N)"))
                 {
-                    throw new OpenedFilesException(ForceDisconnect, ForceDisconnectAsync) { };
+                    throw new OpenedFilesException(ForceDisconnect, ForceDisconnectAsync);
                 }
             }
         }

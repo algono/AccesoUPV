@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AccesoUPV.Library.Connectors;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Management.Automation;
@@ -8,7 +9,9 @@ namespace AccesoUPV.Library
 {
     public static class Utilities
     {
-        public static void WaitAndCheck(this Process process, Action<bool, string, string> handler = null)
+        // PROCESS
+
+        public static void WaitAndCheck(this Process process, Action<ProcessEventArgs> handler = null)
         {
             string output = "", error = "";
             if (!process.StartInfo.UseShellExecute)
@@ -23,12 +26,12 @@ namespace AccesoUPV.Library
 
             process.Close();
 
-            handler?.Invoke(succeeded, output, error);
+            handler?.Invoke(new ProcessEventArgs(succeeded, output, error));
 
             if (!succeeded) throw new IOException($"Output:\n{output}\n\nError:\n{error}");
         }
 
-        public static async Task WaitAndCheckAsync(this Process process, Action<bool, string, string> handler = null)
+        public static async Task WaitAndCheckAsync(this Process process, Action<ProcessEventArgs> handler = null)
         {
             string output = "", error = "";
 
@@ -39,7 +42,7 @@ namespace AccesoUPV.Library
 
             process.Close();
 
-            handler?.Invoke(succeeded, output, error); // TODO: Convertir llamada a async
+            handler?.Invoke(new ProcessEventArgs(succeeded, output, error)); // TODO: Convertir llamada a async
 
             if (!succeeded) throw new IOException($"Output:\n{output}\n\nError:\n{error}");
         }
@@ -77,6 +80,8 @@ namespace AccesoUPV.Library
 
             return tcs.Task;
         }
+
+        // OTHERS
 
         public static string GetStringPropertyValue(this PSObject obj, string propertyName) => (string)obj.Properties[propertyName].Value;
 

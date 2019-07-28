@@ -23,9 +23,9 @@
             {
                 return $"{userName}@{Name}";
             }
-            else //DomainStyle.BackSlashStyle
+            else // DomainStyle.BackSlashStyle
             {
-                return $"{Name}\\{userName}";
+                return $@"{Name}\{userName}";
             }
         }
     }

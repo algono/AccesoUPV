@@ -25,7 +25,7 @@ namespace AccesoUPV.UnitTests
         {
             Assert.IsTrue(manager.Connected);
             Assert.IsNotNull(manager.ConnectedDrive);
-            Assert.IsTrue(NetworkDriveBase.GetMappedDrives().Contains(manager.ConnectedDrive));
+            Assert.IsTrue(NetworkDrive.GetMappedDrives().Contains(manager.ConnectedDrive));
             Assert.IsTrue(Directory.Exists(manager.ConnectedDrive));
         }
 
@@ -34,7 +34,7 @@ namespace AccesoUPV.UnitTests
             Assert.IsFalse(manager.Connected);
             Assert.IsNull(manager.ConnectedDrive);
             Assert.IsFalse(Directory.Exists(manager.Drive));
-            Assert.IsFalse(NetworkDriveBase.GetMappedDrives().Contains(manager.Drive));
+            Assert.IsFalse(NetworkDrive.GetMappedDrives().Contains(manager.Drive));
         }
     }
 }

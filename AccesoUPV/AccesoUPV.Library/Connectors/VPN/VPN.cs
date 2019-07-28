@@ -58,9 +58,9 @@ namespace AccesoUPV.Library.Connectors.VPN
         {
             bool res = false;
             Process checkingProcess = Process.Start(CreateProcessInfo("rasdial.exe"));
-            checkingProcess.WaitAndCheck((s, o, e) =>
+            checkingProcess.WaitAndCheck((args) =>
             {
-                res = s && o.Contains(Name);
+                res = args.Succeeded && args.Output.Contains(Name);
             });
             return res;
         }
@@ -76,9 +76,9 @@ namespace AccesoUPV.Library.Connectors.VPN
          * - ArgumentException: La VPN que se ha proporcionado funciona, pero es incapaz de acceder al Test Server
          * - OperationCanceledException: El usuario canceló la operación.
          */
-        protected override void ConnectionHandler(bool succeeded, string output, string error)
+        protected override void OnConnect(ProcessEventArgs e)
         {
-            if (succeeded)
+            if (e.Succeeded)
             {
                 try
                 {
@@ -97,7 +97,7 @@ namespace AccesoUPV.Library.Connectors.VPN
                 }
             }
 
-            base.ConnectionHandler(succeeded, output, error);
+            base.OnConnect(e);
 
         }
 

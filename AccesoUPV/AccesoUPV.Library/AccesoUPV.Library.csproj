@@ -46,9 +46,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Connectors\Drive\DriveDomain.cs" />
+    <Compile Include="Connectors\Drive\DriveFactory.cs" />
     <Compile Include="Connectors\Drive\INetworkDrive.cs" />
     <Compile Include="Connectors\Connectable.cs" />
     <Compile Include="Connectors\Openable.cs" />
+    <Compile Include="Connectors\ProcessEventArgs.cs" />
     <Compile Include="Connectors\VPN\VPNFactory.cs" />
     <Compile Include="Connectors\VPN\IVPN.cs" />
     <Compile Include="Connectors\VPN\VPN.cs" />
@@ -57,9 +59,7 @@
     <Compile Include="Static\RemoteDesktop.cs" />
     <Compile Include="Static\Utilities.cs" />
     <Compile Include="Services\AccesoUPVService.cs" />
-    <Compile Include="Connectors\Drive\NetworkDriveBase.cs" />
-    <Compile Include="Connectors\Drive\NetworkDriveDSIC.cs" />
-    <Compile Include="Connectors\Drive\NetworkDriveW.cs" />
+    <Compile Include="Connectors\Drive\NetworkDrive.cs" />
     <Compile Include="Connectors\ProcessConnector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

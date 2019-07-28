@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors
@@ -6,6 +7,9 @@ namespace AccesoUPV.Library.Connectors
     public abstract class ProcessConnector : Connectable
     {
         public abstract bool Connected { get; protected set; }
+
+        public event EventHandler<ProcessEventArgs> ProcessConnected, ProcessDisconnected;
+
         protected ProcessStartInfo conInfo, disInfo;
 
         public ProcessConnector()
@@ -28,19 +32,21 @@ namespace AccesoUPV.Library.Connectors
         }
 
         protected abstract Process ConnectProcess();
-        protected virtual void ConnectionHandler(bool succeeded, string output, string error)
+        protected virtual void OnConnect(ProcessEventArgs e)
         {
-            if (succeeded) Connected = true;
+            if (e.Succeeded) Connected = true;
+            ProcessConnected?.Invoke(this, e);
         }
         protected abstract Process DisconnectProcess();
-        protected virtual void DisconnectionHandler(bool succeeded, string output, string error)
+        protected virtual void OnDisconnect(ProcessEventArgs e)
         {
-            if (succeeded) Connected = false;
+            if (e.Succeeded) Connected = false;
+            ProcessDisconnected?.Invoke(this, e);
         }
 
-        public void Connect() => ConnectProcess().WaitAndCheck(ConnectionHandler);
-        public async Task ConnectAsync() => await ConnectProcess().WaitAndCheckAsync(ConnectionHandler);
-        public void Disconnect() => DisconnectProcess().WaitAndCheck(DisconnectionHandler);
-        public async Task DisconnectAsync() => await DisconnectProcess().WaitAndCheckAsync(DisconnectionHandler);
+        public void Connect() => ConnectProcess().WaitAndCheck(OnConnect);
+        public async Task ConnectAsync() => await ConnectProcess().WaitAndCheckAsync(OnConnect);
+        public void Disconnect() => DisconnectProcess().WaitAndCheck(OnDisconnect);
+        public async Task DisconnectAsync() => await DisconnectProcess().WaitAndCheckAsync(OnDisconnect);
     }
 }
