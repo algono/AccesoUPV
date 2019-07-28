@@ -1,6 +1,7 @@
 ﻿using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Services;
+using AccesoUPV.Library.Static;
 using System;
 using System.Text;
 
@@ -10,54 +11,105 @@ namespace AccesoUPV.ConsoleTesting
     {
         static void Main(string[] args)
         {
-            //Service test calls
-            AccesoUPVService Service = ServiceTest();
+            // Service test calls
+            IAccesoUPVService service = ServiceTest();
 
-            ////VPN test calls
+            // VPN test calls
 
-            Service.VPN_UPV.Name = "UPV";
-            //VPNTest(Service.VPN_UPV);
+            service.VPN_UPV.SetNameAuto();
+            VPNTest(service.VPN_UPV);
 
-            Service.VPN_DSIC.Name = "DSIC";
-            //VPNTest(Service.VPN_DSIC);
+            service.VPN_DSIC.SetNameAuto();
+            VPNTest(service.VPN_DSIC);
 
-            //if (!Service.VPN_UPV.IsReachable()) ConnectTest(Service.VPN_UPV);
+            // Drive test calls
 
-            //Drive test calls
+            Console.WriteLine("Press any key to start Drive testing...");
+            Console.ReadKey();
+            Console.Clear();
 
-            Service.User = "algono";
-            Service.WDrive.Drive = "W:";
-            Service.WDrive.Domain = UPVDomain.Alumno;
-            DriveTest(Service.WDrive);
+            try
+            {
+                if (!service.VPN_UPV.IsReachable()) ConnectTest(service.VPN_UPV);
 
-            Service.DSICDrive.Password = "INSERT PASSWORD HERE";
-            DriveTest(Service.DSICDrive);
+                Console.Write("Type your user: ");
+                service.User = Console.ReadLine();
+                Console.Write("Type the drive (i.e: 'C:'): ");
+                service.WDrive.Drive = Console.ReadLine();
+                Console.WriteLine("Type your domain:");
+                foreach (var value in Enum.GetValues(typeof(UPVDomain)))
+                {
+                    Console.WriteLine($"{(int)value} - {(UPVDomain)value}");
+                }
+                Console.Write("Type here: ");
+                service.WDrive.Domain = (UPVDomain)int.Parse(Console.ReadLine());
 
-            //Remote desktop test
+                DriveTest(service.WDrive);
 
-            //Console.WriteLine("Connecting to Linux Desktop...");
-            //RemoteDesktop.ConnectToLinuxDesktop();
+                try
+                {
+                    Console.Write("Type your DSIC password: ");
+                    service.DSICDrive.Password = ReadPassword();
+                    DriveTest(service.DSICDrive);
+                }
+                catch (OperationCanceledException)
+                {
+                    Console.WriteLine("DSIC Drive testing was canceled by the user.");
+                };
 
-            if (Service.VPN_UPV.Connected) DisconnectTest(Service.VPN_UPV);
+                // Remote desktop test
+
+                Console.WriteLine("Connecting to Linux Desktop...");
+                RemoteDesktop.ConnectToLinuxDesktop();
+
+                Console.WriteLine("Press any key when the Linux Desktop is closed");
+                Console.ReadKey();
+
+                Console.WriteLine("Connecting to Windows Desktop...");
+                RemoteDesktop.ConnectToWindowsDesktop();
+
+                Console.WriteLine("Press any key when the Windows Desktop is closed");
+                Console.ReadKey();
+
+                if (service.VPN_UPV.Connected) DisconnectTest(service.VPN_UPV);
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("The VPN connection process was canceled by the user.\nDrive testing ended.");
+            }
 
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
         }
 
-        static AccesoUPVService ServiceTest()
+        private static string ReadPassword()
+        {
+            StringBuilder input = new StringBuilder();
+            while (true)
+            {
+                var key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Enter) break;
+                if (key.Key == ConsoleKey.Escape) throw new OperationCanceledException();
+                if (key.Key == ConsoleKey.Backspace) { if (input.Length > 0) input.Remove(input.Length - 1, 1); }
+                else input.Append(key.KeyChar);
+            }
+            return input.ToString();
+        }
+
+        static IAccesoUPVService ServiceTest()
         {
             Console.WriteLine("Creating Service...");
-            AccesoUPVService Service = new AccesoUPVService();
+            IAccesoUPVService service = new AccesoUPVService();
             Console.WriteLine("Service created.");
 
-            if (Service.AreUninitializedSettings)
+            if (service.AreUninitializedSettings)
             {
                 Console.WriteLine("--------- SERVICE TEST ---------");
 
                 Console.WriteLine("There are uninitialized settings. These are:");
 
                 StringBuilder builder = new StringBuilder();
-                foreach (System.Configuration.SettingsPropertyValue setting in Service.UninitializedSettings) // Loop through all strings
+                foreach (System.Configuration.SettingsPropertyValue setting in service.UninitializedSettings) // Loop through all strings
                 {
                     builder.Append(" | ").Append(setting.Name.ToString()); // Append string to StringBuilder
                 }
@@ -68,94 +120,83 @@ namespace AccesoUPV.ConsoleTesting
 
                 Console.WriteLine("--------- SERVICE TEST ENDED ---------");
             }
-            return Service;
+            return service;
         }
 
         //VPN tests
-        static void VPNTest(VPN Manager)
+        static void VPNTest(VPN vpn)
         {
-            Console.WriteLine("--------- VPN TEST ({0}) ---------", Manager.Name);
+            Console.WriteLine("--------- VPN TEST ({0}) ---------", vpn.Name);
 
             Console.WriteLine("Checking if the VPN exists...");
-            if (Manager.Exists()) Console.WriteLine("The VPN already exists. Next step.");
-            else CreateTest(Manager);
+            if (vpn.Exists()) Console.WriteLine("The VPN already exists. Next step.");
+            else CreateTest(vpn);
             try
             {
-                ConnectTest(Manager);
-                DisconnectTest(Manager);
+                ConnectTest(vpn);
+                DisconnectTest(vpn);
             }
             catch (OperationCanceledException)
             {
                 Console.WriteLine("The VPN connection process was canceled by the user.");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
 
             Console.WriteLine("--------- VPN TEST ENDED ---------");
         }
 
-        static void CreateTest(VPN Manager)
+        static void CreateTest(VPN vpn)
         {
             Console.WriteLine("Press any key to create...");
             Console.ReadKey();
             Console.WriteLine("Creating...");
-            Console.WriteLine("Created: {0}", Manager.Create());
+            Console.WriteLine("Created: {0}", vpn.Create());
         }
-        static void ConnectTest(VPN Manager)
+        static void ConnectTest(VPN vpn)
         {
-            Console.WriteLine("Reachable before connecting: {0}", Manager.IsReachable());
+            Console.WriteLine("Reachable before connecting: {0}", vpn.IsReachable());
             Console.WriteLine("Press any key to connect...");
             Console.ReadKey();
             Console.WriteLine("Connecting...");
-            Manager.Connect();
-            Console.WriteLine("Connected: {0}", Manager.Connected);
-            Console.WriteLine("Reachable after connecting: {0}", Manager.IsReachable());
+            vpn.Connect();
+            Console.WriteLine("Connected: {0}", vpn.Connected);
+            Console.WriteLine("Reachable after connecting: {0}", vpn.IsReachable());
         }
-        static void DisconnectTest(VPN Manager)
+        static void DisconnectTest(VPN vpn)
         {
             Console.WriteLine("Press any key to disconnect...");
             Console.ReadKey();
             Console.WriteLine("Disconnecting...");
-            Manager.Disconnect();
-            Console.WriteLine("Disconnected: {0}", !Manager.Connected);
-            Console.WriteLine("Reachable after disconnecting: {0}", Manager.IsReachable());
+            vpn.Disconnect();
+            Console.WriteLine("Disconnected: {0}", !vpn.Connected);
+            Console.WriteLine("Reachable after disconnecting: {0}", vpn.IsReachable());
         }
 
         //Drive tests
-        static void DriveTest(INetworkDrive Manager)
+        static void DriveTest(INetworkDrive drive)
         {
-            Console.WriteLine("--------- DRIVE TEST ({0}) ---------", Manager.Address);
+            Console.WriteLine("--------- DRIVE TEST ({0}) ---------", drive.Address);
 
-            try
-            {
-                ConnectTest(Manager);
-                DisconnectTest(Manager);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
+            ConnectTest(drive);
+            DisconnectTest(drive);
 
             Console.WriteLine("--------- DRIVE TEST ENDED ---------");
 
         }
-        static void ConnectTest(INetworkDrive Manager)
+        static void ConnectTest(INetworkDrive drive)
         {
             Console.WriteLine("Press any key to connect...");
             Console.ReadKey();
             Console.WriteLine("Connecting...");
-            Manager.Connect();
-            Console.WriteLine("Connected: {0}", Manager.Connected);
+            drive.Connect();
+            Console.WriteLine("Connected: {0}", drive.Connected);
         }
-        static void DisconnectTest(INetworkDrive Manager)
+        static void DisconnectTest(INetworkDrive drive)
         {
             Console.WriteLine("Press any key to disconnect...");
             Console.ReadKey();
             Console.WriteLine("Disconnecting...");
-            Manager.Disconnect();
-            Console.WriteLine("Disconnected: {0}", !Manager.Connected);
+            drive.Disconnect();
+            Console.WriteLine("Disconnected: {0}", !drive.Connected);
         }
     }
 }
