@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors.VPN
 {
-    public class VPN : ProcessConnector, VPN, Openable
+    public class VPN : ProcessConnector, Openable
     {
         public const int CONNECTED_PING_TIMEOUT = 5000, DISCONNECTED_PING_TIMEOUT = 500;
 
