@@ -14,14 +14,11 @@ namespace AccesoUPV.UnitTests
         private static VPN VPN_UPV, VPN_DSIC;
         private static INetworkDrive WDrive, DSICDrive;
 
-        private static string Username, DSICDrivePass;
+        private static string Username => SharedData.Username;
+        private static string DSICDrivePass => SharedData.DSICDrivePass;
 
         [TestInitialize]
-        public static void PromptCredentials()
-        {
-            Username = Interaction.InputBox("Username:");
-            DSICDrivePass = Interaction.InputBox("Password (DSIC Drive):");
-        }
+        public void PromptCredentials() => SharedData.PromptCredentials();
 
         private static async Task CanBeConnectedAsync(VPN vpn)
         {
@@ -63,7 +60,6 @@ namespace AccesoUPV.UnitTests
         {
             try
             {
-                // drive.Disconnect();
                 await drive.DisconnectAsync();
                 ConnectionAsserts.Assert_Disconnected(drive);
             }
@@ -77,7 +73,7 @@ namespace AccesoUPV.UnitTests
         public async Task VPN_UPVCanBeConnectedAsync()
         {
             // Arrange
-            AccesoUPVService service = new AccesoUPVService();
+            IAccesoUPVService service = new AccesoUPVService();
             VPN vpn = service.VPN_UPV;
             await vpn.SetNameAutoAsync();
             // Keep to disconnect in further testing
@@ -90,7 +86,7 @@ namespace AccesoUPV.UnitTests
         public async Task WDriveCanBeConnectedAsync()
         {
             // Arrange
-            AccesoUPVService Service = new AccesoUPVService();
+            IAccesoUPVService Service = new AccesoUPVService();
             INetworkDrive drive = Service.WDrive;
             drive.Username = Username;
             // Keep to disconnect in further testing
@@ -103,7 +99,7 @@ namespace AccesoUPV.UnitTests
         public async Task DSICDriveCanBeConnectedAsync()
         {
             // Arrange
-            AccesoUPVService Service = new AccesoUPVService();
+            IAccesoUPVService Service = new AccesoUPVService();
             INetworkDrive drive = Service.DSICDrive;
             drive.Username = Username;
             drive.Password = DSICDrivePass;
@@ -129,7 +125,7 @@ namespace AccesoUPV.UnitTests
         public async Task VPN_DSICCanBeConnectedAsync()
         {
             // Arrange
-            AccesoUPVService service = new AccesoUPVService();
+            IAccesoUPVService service = new AccesoUPVService();
             VPN vpn = service.VPN_DSIC;
             await vpn.SetNameAutoAsync();
             // Keep to disconnect in further testing

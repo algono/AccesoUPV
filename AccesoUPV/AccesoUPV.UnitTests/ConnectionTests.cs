@@ -13,14 +13,11 @@ namespace AccesoUPV.UnitTests
         private static VPN VPN_UPV, VPN_DSIC;
         private static INetworkDrive WDrive, DSICDrive;
 
-        private static string Username, DSICDrivePass;
+        private static string Username => SharedData.Username;
+        private static string DSICDrivePass => SharedData.DSICDrivePass;
 
         [TestInitialize]
-        public static void PromptCredentials()
-        {
-            Username = Interaction.InputBox("Username:");
-            DSICDrivePass = Interaction.InputBox("Password (DSIC Drive):");
-        }
+        public void PromptCredentials() => SharedData.PromptCredentials();
 
         private static void CanBeConnected(VPN vpn)
         {
@@ -75,7 +72,7 @@ namespace AccesoUPV.UnitTests
         public void VPN_UPVCanBeConnected()
         {
             // Arrange
-            AccesoUPVService service = new AccesoUPVService();
+            IAccesoUPVService service = new AccesoUPVService();
             VPN vpn = service.VPN_UPV;
             vpn.SetNameAuto();
             // Keep to disconnect in further testing
@@ -88,7 +85,7 @@ namespace AccesoUPV.UnitTests
         public void WDriveCanBeConnected()
         {
             // Arrange
-            AccesoUPVService Service = new AccesoUPVService();
+            IAccesoUPVService Service = new AccesoUPVService();
             INetworkDrive drive = Service.WDrive;
             drive.Username = Username;
             // Keep to disconnect in further testing
@@ -101,7 +98,7 @@ namespace AccesoUPV.UnitTests
         public void DSICDriveCanBeConnected()
         {
             // Arrange
-            AccesoUPVService Service = new AccesoUPVService();
+            IAccesoUPVService Service = new AccesoUPVService();
             INetworkDrive drive = Service.DSICDrive;
             drive.Username = Username;
             drive.Password = DSICDrivePass;
@@ -127,7 +124,7 @@ namespace AccesoUPV.UnitTests
         public void VPN_DSICCanBeConnected()
         {
             // Arrange
-            AccesoUPVService service = new AccesoUPVService();
+            IAccesoUPVService service = new AccesoUPVService();
             VPN vpn = service.VPN_DSIC;
             vpn.SetNameAuto();
             // Keep to disconnect in further testing

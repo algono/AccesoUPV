@@ -59,6 +59,7 @@
     <Compile Include="ConnectionTestsAsync.cs" />
     <Compile Include="ConnectionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SharedData.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AccesoUPV.Library\AccesoUPV.Library.csproj">
