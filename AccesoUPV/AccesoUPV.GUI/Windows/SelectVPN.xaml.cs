@@ -1,4 +1,5 @@
-﻿using AccesoUPV.Library.Connectors.VPN;
+﻿using System.Collections.Generic;
+using AccesoUPV.Library.Connectors.VPN;
 using System.Windows;
 
 namespace AccesoUPV.GUI.Windows
@@ -17,7 +18,7 @@ namespace AccesoUPV.GUI.Windows
             _server = server;
             this.Loaded += LoadNameList;
         }
-        public SelectVPN(string[] vpnList)
+        public SelectVPN(IEnumerable<string> vpnList)
         {
             InitializeComponent();
             VPNList.ItemsSource = vpnList;
@@ -28,7 +29,7 @@ namespace AccesoUPV.GUI.Windows
         {
             VPNList.ItemsSource = _server == null
                 ? await VPN.GetNameListAsync()
-                : await VPN.FindNamesAsync(_server);
+                : await VPNConfig.FindNamesAsync(_server);
 
             ShowList();
         }

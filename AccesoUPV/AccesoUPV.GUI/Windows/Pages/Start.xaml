@@ -25,6 +25,6 @@
         </Grid.RowDefinitions>
 
         <Button x:Name="ConnectButton" Grid.Column="1" Grid.Row="2" FontSize="36" Content="Conexión" VerticalAlignment="Center" HorizontalAlignment="Center" Click="ConnectButton_Click" />
-        <Button x:Name="PrefsButton" Grid.Column="1" Grid.Row="4" FontSize="36" Content="Ajustes" VerticalAlignment="Center" HorizontalAlignment="Center" Click="PrefsButton_Click" />
+        <Button x:Name="PreferencesButton" Grid.Column="1" Grid.Row="4" FontSize="36" Content="Ajustes" VerticalAlignment="Center" HorizontalAlignment="Center" Click="PreferencesButton_Click" />
     </Grid>
 </Page>

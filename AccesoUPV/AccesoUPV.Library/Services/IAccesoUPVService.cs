@@ -16,7 +16,7 @@ namespace AccesoUPV.Library.Services
         string User { get; set; }
         VPN VPN_DSIC { get; }
         VPN VPN_UPV { get; }
-        NetworkDriveUPV WDrive { get; }
+        NetworkDrive<UPVDomain> WDrive { get; }
 
         void ClearSettings();
         void SaveChanges();

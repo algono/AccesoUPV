@@ -10,14 +10,14 @@ namespace AccesoUPV.Library.Connectors.VPN
         public const string
             VPN_DSIC = "r1-vpn.dsic.upv.es", PORTAL_DSIC = "portal-ng.dsic.cloud";
 
-        private static readonly IDictionary UPVConfig = new Hashtable()
+        private static readonly IDictionary UPVCreationParameters = new Hashtable()
         {
             { "AuthenticationMethod", "Eap" },
             { "EncryptionLevel", "Required" },
             { "TunnelType", "Sstp" }
         };
 
-        private static readonly IDictionary DSICConfig = new Hashtable()
+        private static readonly IDictionary DSICCreationParameters = new Hashtable()
         {
             { "AuthenticationMethod", "MSChapv2" },
             { "EncryptionLevel", "Optional" },
@@ -26,25 +26,22 @@ namespace AccesoUPV.Library.Connectors.VPN
             { "Force", true }
         };
 
+        private static readonly VPNConfig UPVConfig = new VPNConfig(VPN_UPV, WEB_UPV, UPVCreationParameters);
+        private static readonly VPNConfig DSICConfig = new VPNConfig(VPN_DSIC, PORTAL_DSIC, DSICCreationParameters);
+
         static VPNFactory()
         {
-            XmlDocument ConfigXml = new XmlDocument();
-            ConfigXml.Load("Resources/UPV_Config.xml");
-            UPVConfig.Add("EapConfigXmlStream", ConfigXml);
+            XmlDocument configXml = new XmlDocument();
+            configXml.Load("Resources/UPV_Config.xml");
+            UPVCreationParameters.Add("EapConfigXmlStream", configXml);
         }
 
         public static VPN GetVPNToUPV(string name = null)
-            => new VPN(VPN_UPV, name)
-            {
-                TestServer = WEB_UPV,
-                Config = UPVConfig
-            };
+            => new VPN(UPVConfig, name);
 
         public static VPN GetVPNToDSIC(string name = null)
-            => new VPN(VPN_DSIC, name)
-            {
-                TestServer = PORTAL_DSIC,
-                Config = DSICConfig
-            };
+            => new VPN(DSICConfig, name);
+
     }
+
 }

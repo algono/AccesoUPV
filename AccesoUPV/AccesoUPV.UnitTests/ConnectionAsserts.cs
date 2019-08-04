@@ -7,34 +7,34 @@ namespace AccesoUPV.UnitTests
 {
     public static class ConnectionAsserts
     {
-        public static void Assert_Connected(VPN manager)
+        public static void Assert_Connected(VPN vpn)
         {
-            Assert.IsTrue(manager.Connected);
-            manager.CheckConnection();
-            Assert.IsTrue(manager.Connected);
+            Assert.IsTrue(vpn.Connected);
+            vpn.CheckConnection();
+            Assert.IsTrue(vpn.Connected);
         }
 
-        public static void Assert_Disconnected(VPN manager)
+        public static void Assert_Disconnected(VPN vpn)
         {
-            Assert.IsFalse(manager.Connected);
-            manager.CheckConnection();
-            Assert.IsFalse(manager.Connected);
+            Assert.IsFalse(vpn.Connected);
+            vpn.CheckConnection();
+            Assert.IsFalse(vpn.Connected);
         }
 
-        public static void Assert_Connected(INetworkDrive manager)
+        public static void Assert_Connected(NetworkDrive drive)
         {
-            Assert.IsTrue(manager.Connected);
-            Assert.IsNotNull(manager.ConnectedDrive);
-            Assert.IsTrue(NetworkDrive.GetMappedDrives().Contains(manager.ConnectedDrive));
-            Assert.IsTrue(Directory.Exists(manager.ConnectedDrive));
+            Assert.IsTrue(drive.Connected);
+            Assert.IsNotNull(drive.ConnectedDrive);
+            Assert.IsTrue(NetworkDrive.GetMappedDrives().Contains(drive.ConnectedDrive));
+            Assert.IsTrue(Directory.Exists(drive.ConnectedDrive));
         }
 
-        public static void Assert_Disconnected(INetworkDrive manager)
+        public static void Assert_Disconnected(NetworkDrive drive)
         {
-            Assert.IsFalse(manager.Connected);
-            Assert.IsNull(manager.ConnectedDrive);
-            Assert.IsFalse(Directory.Exists(manager.Drive));
-            Assert.IsFalse(NetworkDrive.GetMappedDrives().Contains(manager.Drive));
+            Assert.IsFalse(drive.Connected);
+            Assert.IsNull(drive.ConnectedDrive);
+            Assert.IsFalse(Directory.Exists(drive.Drive));
+            Assert.IsFalse(NetworkDrive.GetMappedDrives().Contains(drive.Drive));
         }
     }
 }

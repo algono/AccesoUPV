@@ -9,38 +9,58 @@ namespace AccesoUPV.Library.Connectors.Drive
     // Custom Exceptions
     // (Not having constructors defined creates an empty constructor automatically, and it calls its parent constructor as well)
     [Serializable]
-    public class NotAvailableDriveException : IOException { }
+    public class NotAvailableDriveException : IOException
+    {
+    }
+
     [Serializable]
     public class OpenedFilesException : IOException
     {
-        public Action Continue { get; private set; }
-        public Func<Task> ContinueAsync { get; private set; }
-
         public const string WarningTitle = "Archivos abiertos";
+
         public const string WarningMessage =
             "Existen archivos abiertos y/o búsquedas incompletas de directorios pendientes en el disco. Si no los cierra antes de desconectarse, podría perder datos.\n\n"
             + "¿Desea continuar la desconexión y forzar el cierre?";
 
-        public OpenedFilesException(Action continueMethod, Func<Task> continueMethodAsync = null) : base()
+        public Action Continue { get; }
+        public Func<Task> ContinueAsync { get; }
+
+        public OpenedFilesException(Action continueMethod, Func<Task> continueMethodAsync = null)
         {
             Continue = continueMethod;
             ContinueAsync = continueMethodAsync;
         }
     }
-    public class NetworkDrive : ProcessConnector, INetworkDrive
+
+    public class NetworkDrive<T> : NetworkDrive where T : Enum
     {
+        public NetworkDriveConfig<T> Config { get; }
+        public override string Address => Config.GetAddress(Username, base.Domain);
+        public new T Domain { get; set; }
+        protected override DriveDomain DriveDomain => Config.GetDriveDomain(Domain);
+
+        public NetworkDrive(NetworkDriveConfig<T> config, T domain,
+            string drive = null, string user = null, string password = null) : base(null, null, drive, user, password)
+        {
+            Config = config;
+            Domain = domain;
+        }
+    }
+
+    public class NetworkDrive : ProcessConnector, Openable
+    {
+        private readonly Func<string, DriveDomain, string> _getAddress;
+        public virtual string Address => _getAddress(Username, Domain);
+        public DriveDomain Domain => DriveDomain;
+        protected virtual DriveDomain DriveDomain { get; }
+        
         public string ConnectedDrive { get; private set; }
         public string Drive { get; set; }
-
-        protected readonly Func<string, DriveDomain, string> getAddress;
-        public string Address => getAddress(Username, Domain);
 
         public string Username { get; set; }
         public string Password { get; set; }
         public bool UseCredentials { get; set; }
         public bool YesToAll { get; set; }
-
-        public virtual DriveDomain Domain { get; protected set; }
 
         public override bool Connected
         {
@@ -48,18 +68,24 @@ namespace AccesoUPV.Library.Connectors.Drive
             protected set => ConnectedDrive = value ? Drive : null;
         }
 
-        public NetworkDrive(Func<string, DriveDomain, string> addressGetter, DriveDomain domain = null, string drive = null, string user = null, string password = null)
+        private static readonly ProcessStartInfo NetInfo = CreateProcessInfo("net.exe");
+
+        public NetworkDrive(Func<string, DriveDomain, string> getAddress, DriveDomain domain,
+            string drive = null, string user = null, string password = null)
         {
-            getAddress = addressGetter;
-            Domain = domain;
+            _getAddress = getAddress;
+            DriveDomain = domain;
 
             Drive = drive;
             Username = user;
             Password = password;
             UseCredentials = password != null;
+        }
 
-            conInfo.FileName = "net.exe";
-            disInfo.FileName = "net.exe";
+        public void Open()
+        {
+            if (Connected) Process.Start(ConnectedDrive);
+            else throw new InvalidOperationException("El disco debe estar conectado para poder abrirlo");
         }
 
         public static List<string> GetAvailableDrives()
@@ -75,6 +101,7 @@ namespace AccesoUPV.Library.Connectors.Drive
 
             return drives;
         }
+
         public static List<string> GetMappedDrives()
         {
             List<string> drives = new List<string>();
@@ -89,6 +116,7 @@ namespace AccesoUPV.Library.Connectors.Drive
                 string split = splits[i];
                 drives.Add(split[split.Length - 1] + ":");
             }
+
             return drives;
         }
 
@@ -110,13 +138,14 @@ namespace AccesoUPV.Library.Connectors.Drive
         {
             if (string.IsNullOrEmpty(Username)) throw new ArgumentNullException(nameof(Username));
 
-            conInfo.Arguments = $"use {Drive} {Address}";
+            NetInfo.Arguments = $"use {Drive} {Address}";
             if (UseCredentials)
             {
                 if (string.IsNullOrEmpty(Password)) throw new ArgumentNullException(nameof(Password));
-                conInfo.Arguments += $" \"{Password}\" /USER:{Domain?.GetFullUsername(Username) ?? Username}";
+                NetInfo.Arguments += $" \"{Password}\" /USER:{Domain?.GetFullUsername(Username) ?? Username}";
             }
-            if (YesToAll) conInfo.Arguments += " /y";
+
+            if (YesToAll) NetInfo.Arguments += " /y";
         }
 
         protected Process StartProcess(ProcessStartInfo info)
@@ -130,7 +159,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         {
             CheckDrive();
             CheckArguments();
-            return StartProcess(conInfo);
+            return StartProcess(NetInfo);
         }
 
         protected override void OnProcessConnected(ProcessEventArgs e)
@@ -139,11 +168,9 @@ namespace AccesoUPV.Library.Connectors.Drive
 
             if (!e.Succeeded)
             {
-                // 55 - Error del sistema "El recurso no se encuentra disponible" (es decir, la direccion no es valida).
+                // 55 - Error del sistema "El recurso no se encuentra disponible" (es decir, la dirección no es valida).
                 if (e.Output.Contains("55") || e.Error.Contains("55"))
-                {
                     throw new ArgumentOutOfRangeException(nameof(Address));
-                }
 
                 /**
                 * 86 - Error del sistema "La contraseña de red es incorrecta"
@@ -152,21 +179,17 @@ namespace AccesoUPV.Library.Connectors.Drive
                 */
 
                 if (e.Output.Contains("86") || e.Error.Contains("86"))
-                {
                     throw new ArgumentException(e.Error, nameof(Password));
-                }
                 if (e.Output.Contains("1326") || e.Error.Contains("1326"))
-                {
                     throw new ArgumentException(e.Error, nameof(Username));
-                }
             }
         }
 
         protected override Process DisconnectProcess()
         {
-            disInfo.Arguments = $"use {ConnectedDrive} /delete";
-            if (YesToAll) disInfo.Arguments += " /y";
-            return StartProcess(disInfo);
+            NetInfo.Arguments = $"use {ConnectedDrive} /delete";
+            if (YesToAll) NetInfo.Arguments += " /y";
+            return StartProcess(NetInfo);
         }
 
         protected override void OnProcessDisconnected(ProcessEventArgs e)
@@ -174,35 +197,25 @@ namespace AccesoUPV.Library.Connectors.Drive
             base.OnProcessDisconnected(e);
 
             if (!e.Succeeded)
-            {
                 //Esa secuencia es parte de "(S/N)", con lo que deducimos que nos pide confirmación (porque tenemos archivos abiertos)
                 if (e.Output.Contains("/N)") || e.Error.Contains("/N)"))
-                {
                     throw new OpenedFilesException(ForceDisconnect, ForceDisconnectAsync);
-                }
-            }
         }
 
         private void ForceDisconnect()
         {
-            bool oldYesToAll = this.YesToAll;
-            this.YesToAll = true;
-            this.Disconnect();
-            this.YesToAll = oldYesToAll;
+            bool oldYesToAll = YesToAll;
+            YesToAll = true;
+            Disconnect();
+            YesToAll = oldYesToAll;
         }
 
         private async Task ForceDisconnectAsync()
         {
-            bool oldYesToAll = this.YesToAll;
-            this.YesToAll = true;
-            await this.DisconnectAsync();
-            this.YesToAll = oldYesToAll;
-        }
-
-        public void Open()
-        {
-            if (Connected) Process.Start(ConnectedDrive);
-            else throw new InvalidOperationException("The drive must be connected in order to be opened");
+            bool oldYesToAll = YesToAll;
+            YesToAll = true;
+            await DisconnectAsync();
+            YesToAll = oldYesToAll;
         }
     }
 }

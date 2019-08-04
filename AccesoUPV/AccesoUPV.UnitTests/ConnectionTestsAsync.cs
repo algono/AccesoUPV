@@ -12,7 +12,7 @@ namespace AccesoUPV.UnitTests
     public class ConnectionTestsAsync
     {
         private static VPN VPN_UPV, VPN_DSIC;
-        private static INetworkDrive WDrive, DSICDrive;
+        private static NetworkDrive WDrive, DSICDrive;
 
         private static string Username => SharedData.Username;
         private static string DSICDrivePass => SharedData.DSICDrivePass;
@@ -44,7 +44,7 @@ namespace AccesoUPV.UnitTests
                 ConnectionAsserts.Assert_Connected(vpn);
             }
         }
-        private static async Task CanBeConnectedAsync(INetworkDrive drive)
+        private static async Task CanBeConnectedAsync(NetworkDrive drive)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace AccesoUPV.UnitTests
                 ConnectionAsserts.Assert_Disconnected(drive);
             }
         }
-        private static async Task CanBeDisconnectedAsync(INetworkDrive drive)
+        private static async Task CanBeDisconnectedAsync(NetworkDrive drive)
         {
             try
             {
@@ -86,8 +86,8 @@ namespace AccesoUPV.UnitTests
         public async Task WDriveCanBeConnectedAsync()
         {
             // Arrange
-            IAccesoUPVService Service = new AccesoUPVService();
-            INetworkDrive drive = Service.WDrive;
+            IAccesoUPVService service = new AccesoUPVService();
+            NetworkDrive drive = service.WDrive;
             drive.Username = Username;
             // Keep to disconnect in further testing
             WDrive = drive;
@@ -99,8 +99,8 @@ namespace AccesoUPV.UnitTests
         public async Task DSICDriveCanBeConnectedAsync()
         {
             // Arrange
-            IAccesoUPVService Service = new AccesoUPVService();
-            INetworkDrive drive = Service.DSICDrive;
+            IAccesoUPVService service = new AccesoUPVService();
+            NetworkDrive drive = service.DSICDrive;
             drive.Username = Username;
             drive.Password = DSICDrivePass;
             // Keep to disconnect in further testing

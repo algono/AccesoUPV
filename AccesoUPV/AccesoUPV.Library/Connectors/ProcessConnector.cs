@@ -10,22 +10,14 @@ namespace AccesoUPV.Library.Connectors
 
         public event EventHandler<ProcessEventArgs> ProcessConnected, ProcessDisconnected;
 
-        protected ProcessStartInfo conInfo, disInfo;
-
-        public ProcessConnector()
-        {
-            conInfo = CreateProcessInfo();
-            disInfo = CreateProcessInfo();
-        }
-
-        protected static ProcessStartInfo CreateProcessInfo(string fileName = null)
+        public static ProcessStartInfo CreateProcessInfo(string fileName)
         {
             return new ProcessStartInfo
             {
                 FileName = fileName,
                 CreateNoWindow = true,
                 UseShellExecute = false,
-                RedirectStandardInput = true, //Por si tienes que pasarle algo al proceso
+                RedirectStandardInput = true, //Por si le tienes que pasar algo al proceso
                 RedirectStandardOutput = true,
                 RedirectStandardError = true
             };

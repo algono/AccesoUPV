@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -47,11 +48,11 @@
   <ItemGroup>
     <Compile Include="Connectors\Drive\DriveDomain.cs" />
     <Compile Include="Connectors\Drive\DriveFactory.cs" />
-    <Compile Include="Connectors\Drive\INetworkDrive.cs" />
     <Compile Include="Connectors\Connectable.cs" />
-    <Compile Include="Connectors\Drive\NetworkDriveUPV.cs" />
+    <Compile Include="Connectors\Drive\NetworkDriveConfig.cs" />
     <Compile Include="Connectors\Openable.cs" />
     <Compile Include="Connectors\ProcessEventArgs.cs" />
+    <Compile Include="Connectors\VPN\VPNConfig.cs" />
     <Compile Include="Connectors\VPN\VPNFactory.cs" />
     <Compile Include="Connectors\VPN\VPN.cs" />
     <Compile Include="Services\IAccesoUPVService.cs" />

@@ -172,7 +172,7 @@ namespace AccesoUPV.ConsoleTesting
         }
 
         //Drive tests
-        static void DriveTest(INetworkDrive drive)
+        static void DriveTest(NetworkDrive drive)
         {
             Console.WriteLine("--------- DRIVE TEST ({0}) ---------", drive.Address);
 
@@ -182,7 +182,7 @@ namespace AccesoUPV.ConsoleTesting
             Console.WriteLine("--------- DRIVE TEST ENDED ---------");
 
         }
-        static void ConnectTest(INetworkDrive drive)
+        static void ConnectTest(NetworkDrive drive)
         {
             Console.WriteLine("Press any key to connect...");
             Console.ReadKey();
@@ -190,7 +190,7 @@ namespace AccesoUPV.ConsoleTesting
             drive.Connect();
             Console.WriteLine("Connected: {0}", drive.Connected);
         }
-        static void DisconnectTest(INetworkDrive drive)
+        static void DisconnectTest(NetworkDrive drive)
         {
             Console.WriteLine("Press any key to disconnect...");
             Console.ReadKey();

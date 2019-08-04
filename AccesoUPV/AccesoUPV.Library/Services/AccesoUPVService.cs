@@ -13,7 +13,7 @@ namespace AccesoUPV.Library.Services
     {
         public VPN VPN_UPV { get; }
         public VPN VPN_DSIC { get; }
-        public NetworkDriveUPV WDrive { get; }
+        public NetworkDrive<UPVDomain> WDrive { get; }
         public NetworkDrive DSICDrive { get; }
 
         private string _user;
@@ -119,7 +119,7 @@ namespace AccesoUPV.Library.Services
             }
         }
 
-        private async Task ShutdownDrive(INetworkDrive drive, string name, IProgress<string> progress = null)
+        private async Task ShutdownDrive(NetworkDrive drive, string name, IProgress<string> progress = null)
         {
             progress?.Report($"Desconectando { name }");
             await drive.DisconnectAsync();

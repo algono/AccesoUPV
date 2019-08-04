@@ -53,7 +53,7 @@ namespace AccesoUPV.GUI.Windows.Pages
             }
         }
 
-        private async Task<bool> CreateVPN(VPN vpn, string vpnMsgText = "la red")
+        private static async Task<bool> CreateVPN(VPN vpn, string vpnMsgText = "la red")
         {
             MessageBoxResult result = MessageBox.Show(
                                 $"Debe establecer una red VPN para poder acceder a {vpnMsgText}.\n\n"
@@ -67,10 +67,10 @@ namespace AccesoUPV.GUI.Windows.Pages
             }
             else if (result == MessageBoxResult.No)
             {
-                SelectVPN window = new SelectVPN(vpn.Server);
+                SelectVPN window = new SelectVPN(vpn.Config.Server);
                 window.ShowDialog();
                 if (window.SelectedName == null) return false;
-                else vpn.Name = window.SelectedName;
+                vpn.Name = window.SelectedName;
             }
             else
             {
@@ -80,10 +80,10 @@ namespace AccesoUPV.GUI.Windows.Pages
             return true;
         }
 
-        private void PrefsButton_Click(object sender, RoutedEventArgs e)
+        private void PreferencesButton_Click(object sender, RoutedEventArgs e)
         {
-            Window prefsWindow = new Preferences(_service);
-            prefsWindow.ShowDialog();
+            Window preferencesWindow = new Preferences(_service);
+            preferencesWindow.ShowDialog();
         }
 
         protected virtual void OnStarted(EventArgs e)

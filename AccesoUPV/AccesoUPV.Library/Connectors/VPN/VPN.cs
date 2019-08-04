@@ -11,15 +11,10 @@ namespace AccesoUPV.Library.Connectors.VPN
 {
     public class VPN : ProcessConnector, Openable
     {
-        public const int CONNECTED_PING_TIMEOUT = 5000, DISCONNECTED_PING_TIMEOUT = 500;
+        public const int ConnectedPingTimeout = 5000, DisconnectedPingTimeout = 500;
 
         public string ConnectedName { get; private set; }
         public string Name { get; set; }
-
-        public string Server { get; set; }
-        public string TestServer { get; set; }
-
-        public IDictionary Config { get; set; }
 
         public override bool Connected
         {
@@ -27,27 +22,27 @@ namespace AccesoUPV.Library.Connectors.VPN
             protected set => ConnectedName = value ? Name : null;
         }
 
-        public VPN(string server, string name = null)
+        public VPNConfig Config { get; }
+
+        private static readonly ProcessStartInfo ConnectionInfo, DisconnectionInfo;
+
+        static VPN()
         {
-            Server = server;
+            ConnectionInfo = CreateProcessInfo("rasphone.exe");
+            DisconnectionInfo = CreateProcessInfo("rasdial.exe");
+        }
+
+        public VPN(string server, string name = null) : this(new VPNConfig(server), name)
+        {
+        }
+
+        public VPN(VPNConfig config, string name = null)
+        {
+            Config = config;
             Name = name;
-
-            conInfo.FileName = "rasphone.exe";
-            disInfo.FileName = "rasdial.exe";
         }
 
-        public bool IsReachable() => IsReachable(Connected ? CONNECTED_PING_TIMEOUT : DISCONNECTED_PING_TIMEOUT);
-
-        public bool IsReachable(int timeout)
-        {
-            if (string.IsNullOrEmpty(TestServer)) throw new ArgumentNullException("The test server is not defined.");
-
-            ProcessStartInfo pingInfo = CreateProcessInfo("ping.exe");
-            pingInfo.Arguments = $"-n 1 -w {timeout} {TestServer}";
-            Process p = Process.Start(pingInfo);
-            p.WaitForExit();
-            return p.ExitCode == 0;
-        }
+        public bool IsReachable() => Config.IsReachable(Connected ? ConnectedPingTimeout : DisconnectedPingTimeout);
 
         public void CheckConnection()
         {
@@ -67,9 +62,9 @@ namespace AccesoUPV.Library.Connectors.VPN
 
         protected override Process ConnectProcess()
         {
-            if (string.IsNullOrEmpty(Name)) throw new ArgumentNullException("The name is not defined.");
-            conInfo.Arguments = $"-d \"{Name}\"";
-            return Process.Start(conInfo);
+            if (string.IsNullOrEmpty(Name)) throw new ArgumentNullException(nameof(Name));
+            ConnectionInfo.Arguments = $"-d \"{Name}\"";
+            return Process.Start(ConnectionInfo);
         }
         /**
          * @throws:
@@ -84,43 +79,46 @@ namespace AccesoUPV.Library.Connectors.VPN
                 {
                     if (!IsActuallyConnected()) throw new OperationCanceledException();
 
-                    if (!IsReachable(CONNECTED_PING_TIMEOUT))
+                    base.OnProcessConnected(e);
+
+                    if (!IsReachable())
                     {
-                        disInfo.Arguments = $"\"{Name}\" /DISCONNECT";
-                        Process.Start(disInfo).WaitAndCheck();
-                        throw new ArgumentException(); // VPN no puede acceder al TestServer
+                        Disconnect();
+                        throw new ArgumentException($"La VPN no puede acceder al servidor: {Config.TestServer}");
                     }
                 }
                 catch (IOException)
                 {
-                    //If the checking fails, it still continues
+                    // If the checking fails, it still continues
                 }
             }
-
-            base.OnProcessConnected(e);
+            else
+            {
+                base.OnProcessConnected(e);
+            }
 
         }
 
         protected override Process DisconnectProcess()
         {
-            disInfo.Arguments = $"\"{ConnectedName}\" /DISCONNECT";
-            return Process.Start(disInfo);
+            DisconnectionInfo.Arguments = $"\"{ConnectedName}\" /DISCONNECT";
+            return Process.Start(DisconnectionInfo);
         }
 
         protected virtual PowerShell CreateShell()
         {
-            if (string.IsNullOrEmpty(Name)) throw new ArgumentNullException("The name is not defined.");
-            else if (string.IsNullOrEmpty(Server)) throw new ArgumentNullException("The server is not defined.");
+            if (string.IsNullOrEmpty(Name)) throw new ArgumentNullException(nameof(Name));
+            if (string.IsNullOrEmpty(Config.Server)) throw new ArgumentNullException(nameof(Config.Server));
 
             PowerShell shell = PowerShell.Create();
             shell.AddCommand("Add-VpnConnection");
             shell.AddParameter("Name", Name);
-            shell.AddParameter("ServerAddress", Server);
+            shell.AddParameter("ServerAddress", Config.Server);
 
             //Es necesario para que las credenciales se guarden cuando el usuario lo indique en rasphone
             shell.AddParameter("RememberCredential");
 
-            shell.AddParameters(Config);
+            shell.AddParameters(Config.CreationParameters);
 
             return shell;
         }
@@ -145,46 +143,24 @@ namespace AccesoUPV.Library.Connectors.VPN
             });
         }
 
-        public void Open()
-        {
-            Process.Start("http://" + TestServer);
-        }
+        public void Open() => Config.Open();
 
         public bool SetNameAuto()
         {
             List<PSObject> vpnList = Find();
-            if (vpnList.Count > 0)
-            {
-                Name = vpnList[0].GetStringPropertyValue("Name");
-                return true;
-            }
+            if (vpnList.Count <= 0) return false;
+            Name = vpnList[0].GetStringPropertyValue("Name");
+            return true;
 
-            return false;
         }
 
         public bool Exists() => Find().Exists(vpn => vpn.GetStringPropertyValue("Name") == Name);
 
-        public List<PSObject> Find() => Find(Server);
+        public List<PSObject> Find() => VPNConfig.Find(Config.Server);
 
-        public bool Any() => Any(Server);
+        public bool Any() => VPNConfig.Any(Config.Server);
 
-        public static bool Any(string server) => Find(server).Count > 0;
-
-        public List<string> FindNames() => FindNames(Server);
-
-        public static List<string> FindNames(string server)
-            => Find(server).Select(vpn => vpn.GetStringPropertyValue("Name")).ToList();
-
-        public static List<PSObject> Find(string server)
-        {
-            using (PowerShell shell = PowerShell.Create())
-            {
-                shell.AddScript(GetFindScript(server));
-                List<PSObject> PSOutput = shell.Invoke().ToList();
-                PSOutput.RemoveAll(item => item == null);
-                return PSOutput;
-            }
-        }
+        public List<string> FindNames() => VPNConfig.FindNames(Config.Server);
 
         public static List<string> GetNameList() => GetList().Select(vpn => vpn.GetStringPropertyValue("Name")).ToList();
 
@@ -193,50 +169,28 @@ namespace AccesoUPV.Library.Connectors.VPN
             using (PowerShell shell = PowerShell.Create())
             {
                 shell.AddScript("Get-VpnConnection");
-                List<PSObject> PSOutput = shell.Invoke().ToList();
-                PSOutput.RemoveAll(item => item == null);
-                return PSOutput;
+                List<PSObject> psOutput = shell.Invoke().ToList();
+                psOutput.RemoveAll(item => item == null);
+                return psOutput;
             }
         }
 
         public async Task<bool> SetNameAutoAsync()
         {
             List<PSObject> vpnList = await FindAsync();
-            if (vpnList.Count > 0)
-            {
-                Name = vpnList[0].GetStringPropertyValue("Name");
-                return true;
-            }
+            if (vpnList.Count <= 0) return false;
+            Name = vpnList[0].GetStringPropertyValue("Name");
+            return true;
 
-            return false;
         }
 
         public async Task<bool> ExistsAsync() => (await FindAsync()).Exists(vpn => vpn.GetStringPropertyValue("Name") == Name);
 
-        public async Task<List<PSObject>> FindAsync() => await FindAsync(Server);
+        public async Task<List<PSObject>> FindAsync() => await VPNConfig.FindAsync(Config.Server);
 
-        public async Task<bool> AnyAsync() => await AnyAsync(Server);
+        public async Task<bool> AnyAsync() => await VPNConfig.AnyAsync(Config.Server);
 
-        public static async Task<bool> AnyAsync(string server) => (await FindAsync(server)).Count > 0;
-
-        public async Task<List<string>> FindNamesAsync() => await FindNamesAsync(Server);
-
-        public static async Task<List<string>> FindNamesAsync(string server)
-            => (await FindAsync(server)).Select(vpn => vpn.GetStringPropertyValue("Name")).ToList();
-
-        public static Task<List<PSObject>> FindAsync(string server)
-        {
-            PowerShell shell = PowerShell.Create();
-            shell.AddScript(GetFindScript(server));
-
-            return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) =>
-            {
-                List<PSObject> PSOutput = shell.EndInvoke(res).ToList();
-                shell.Dispose();
-                PSOutput.RemoveAll(item => item == null);
-                return PSOutput;
-            });
-        }
+        public async Task<List<string>> FindNamesAsync() => await VPNConfig.FindNamesAsync(Config.Server);
 
         public static async Task<List<string>> GetNameListAsync() => (await GetListAsync()).Select(vpn => vpn.GetStringPropertyValue("Name")).ToList();
 
@@ -247,14 +201,11 @@ namespace AccesoUPV.Library.Connectors.VPN
 
             return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) =>
             {
-                List<PSObject> PSOutput = shell.EndInvoke(res).ToList();
+                List<PSObject> psOutput = shell.EndInvoke(res).ToList();
                 shell.Dispose();
-                PSOutput.RemoveAll(item => item == null);
-                return PSOutput;
+                psOutput.RemoveAll(item => item == null);
+                return psOutput;
             });
         }
-
-        private static string GetFindScript(string server)
-            => "Get-VpnConnection | Where-Object {$_.ServerAddress -eq '" + server + "'}";
     }
 }
