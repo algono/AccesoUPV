@@ -30,7 +30,7 @@ namespace AccesoUPV.GUI.Windows
             Progress<string> progress = new Progress<string>(Progress_ProgressChanged);
             // ShutdownProgressBar.Maximum = AccesoUPVService.NumberOfConnectables;
 
-            bool done = false;
+            bool done = false, canceled = false;
             while (!done)
             {
                 try
@@ -49,11 +49,12 @@ namespace AccesoUPV.GUI.Windows
                     else
                     {
                         done = true;
+                        canceled = true;
                         OnCanceled(EventArgs.Empty);
                     }
                 }
             }
-            OnFinished(EventArgs.Empty);
+            if (!canceled) OnFinished(EventArgs.Empty);
             this.Close();
         }
 

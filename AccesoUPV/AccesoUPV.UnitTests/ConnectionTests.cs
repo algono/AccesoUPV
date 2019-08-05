@@ -1,7 +1,6 @@
 ﻿using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Services;
-using Microsoft.VisualBasic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 

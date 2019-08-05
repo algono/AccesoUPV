@@ -1,4 +1,5 @@
-﻿using AccesoUPV.Library.Connectors.Drive;
+﻿using System;
+using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Services;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,7 +25,15 @@ namespace AccesoUPV.GUI.Windows.Pages
 
         private async void ConnectWButton_Click(object sender, RoutedEventArgs e)
         {
-            await _service.WDrive.ConnectAsync();
+            try
+            {
+                await _service.WDrive.ConnectAsync();
+            }
+            catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(_service.WDrive.Username)))
+            {
+                MessageBox.Show("No ha indicado ningún nombre de usuario. Indique uno en los ajustes.");
+                new Preferences(_service).ShowDialog();
+            }
         }
 
         private async void DisconnectWButton_Click(object sender, RoutedEventArgs e)
