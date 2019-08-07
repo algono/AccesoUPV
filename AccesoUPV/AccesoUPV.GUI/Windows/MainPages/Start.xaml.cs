@@ -1,12 +1,12 @@
-﻿using AccesoUPV.Library.Connectors.VPN;
-using AccesoUPV.Library.Services;
-using Microsoft.VisualBasic;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using AccesoUPV.Library.Connectors.VPN;
+using AccesoUPV.Library.Services;
+using Microsoft.VisualBasic;
 
-namespace AccesoUPV.GUI.Windows.Pages
+namespace AccesoUPV.GUI.Windows.MainPages
 {
     /// <summary>
     /// Lógica de interacción para Start.xaml
@@ -90,6 +90,11 @@ namespace AccesoUPV.GUI.Windows.Pages
         {
             EventHandler handler = Started;
             handler?.Invoke(this, e);
+        }
+
+        private void HelpButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            new Help().ShowDialog();
         }
     }
 }

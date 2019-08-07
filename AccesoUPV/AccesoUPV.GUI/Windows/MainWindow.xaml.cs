@@ -1,4 +1,4 @@
-﻿using AccesoUPV.GUI.Windows.Pages;
+﻿using AccesoUPV.GUI.Windows.MainPages;
 using AccesoUPV.Library.Services;
 using System;
 using System.ComponentModel;

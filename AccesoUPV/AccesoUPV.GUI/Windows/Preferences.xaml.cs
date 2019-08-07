@@ -1,13 +1,15 @@
 ﻿using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Services;
+using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace AccesoUPV.GUI.Windows
 {
     /// <summary>
     /// Lógica de interacción para Preferences.xaml
     /// </summary>
-    public partial class Preferences : Window
+    public partial class Preferences
     {
         private readonly IAccesoUPVService _service;
 
@@ -19,12 +21,52 @@ namespace AccesoUPV.GUI.Windows
         public Preferences(IAccesoUPVService service) : this()
         {
             _service = service;
+            Load();
         }
 
         private void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
             SaveChanges();
             this.Close();
+        }
+
+        private void Load()
+        {
+            UserBox.Text = _service.User;
+
+            VPNToUPVBox.Text = _service.VPN_UPV.Name;
+            VPNToDSICBox.Text = _service.VPN_DSIC.Name;
+
+            List<string> availableDrives = NetworkDrive.GetAvailableDrives();
+            WDriveBox.ItemsSource = availableDrives;
+            DSICDriveBox.ItemsSource = availableDrives;
+
+            string WDriveLetter = _service.WDrive.Drive;
+            if (!string.IsNullOrEmpty(WDriveLetter))
+            {
+                WDriveCheckBox.IsChecked = true;
+                WDriveBox.SelectedItem = WDriveLetter;
+            }
+
+            string DSICDriveLetter = _service.DSICDrive.Drive;
+            if (!string.IsNullOrEmpty(DSICDriveLetter))
+            {
+                DSICDriveCheckBox.IsChecked = true;
+                DSICDriveBox.SelectedItem = DSICDriveLetter;
+            }
+
+            foreach (RadioButton domain in DomainsUPV.Children)
+            {
+                if (_service.WDrive.Domain.Equals((UPVDomain)domain.Tag))
+                {
+                    domain.IsChecked = true;
+                    break;
+                }
+            }
+
+            PassDSICBox.Text = _service.DSICDrive.Password;
+            SavePassCheckBox.IsChecked = _service.SavePasswords;
+
         }
 
         private void SaveChanges()
@@ -34,32 +76,23 @@ namespace AccesoUPV.GUI.Windows
             _service.VPN_UPV.Name = VPNToUPVBox.Text;
             _service.VPN_DSIC.Name = VPNToDSICBox.Text;
 
-            if (DriveWCheckBox.IsChecked ?? false)
-            {
-                _service.WDrive.Drive = WDriveBox.SelectedItem.ToString();
-            }
-            else
-            {
-                _service.WDrive.Drive = null;
-            }
+            _service.WDrive.Drive =
+                (WDriveCheckBox.IsChecked ?? false)
+                ? WDriveBox.SelectedItem.ToString()
+                : null;
 
-            if (DriveDSICCheckBox.IsChecked ?? false)
-            {
-                _service.DSICDrive.Drive = DSICDriveBox.SelectedItem.ToString();
-            }
-            else
-            {
-                _service.DSICDrive.Drive = null;
-            }
+            _service.DSICDrive.Drive =
+                (DSICDriveCheckBox.IsChecked ?? false)
+                ? DSICDriveBox.SelectedItem.ToString()
+                : null;
 
-
-            if (DominioAlumnoRadio.IsChecked ?? false)
+            foreach (RadioButton domain in DomainsUPV.Children)
             {
-                _service.WDrive.Domain = UPVDomain.Alumno;
-            }
-            else
-            {
-                _service.WDrive.Domain = UPVDomain.UPVNET;
+                if (domain.IsChecked ?? false)
+                {
+                    _service.WDrive.Domain = (UPVDomain)domain.Tag;
+                    break;
+                }
             }
 
             _service.DSICDrive.Password = PassDSICBox.Text;
@@ -70,9 +103,9 @@ namespace AccesoUPV.GUI.Windows
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Si continúa, se reestablecerán los valores por defecto, y el programa se cerrará.\n\n"
+            MessageBoxResult result = MessageBox.Show("Si continúa, se restablecerán los valores por defecto, y el programa se cerrará.\n\n"
             + "Al volverlo a abrir, será como si acabaras de ejecutar el programa por primera vez.\n\n"
-            + "¿Desea continuar?", "Reestablecer valores", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            + "¿Desea continuar?", "Restablecer valores", MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.OK)
             {

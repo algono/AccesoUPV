@@ -45,7 +45,7 @@ namespace AccesoUPV.Library.Services
             WDrive = DriveFactory.GetDriveW(Settings.Default.WDriveLetter, User, (UPVDomain) Settings.Default.WDriveDomain);
 
             DSICDrive = DriveFactory.GetDriveDSIC(Settings.Default.DSICDriveLetter, User, Settings.Default.DSICDrivePassword);
-            SavePasswords = DSICDrive.Password != null;
+            SavePasswords = !string.IsNullOrEmpty(DSICDrive.Password);
         }
 
         protected virtual void Default_SettingsLoaded(object sender, SettingsLoadedEventArgs e)

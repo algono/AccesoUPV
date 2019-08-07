@@ -1,10 +1,10 @@
 ﻿using System;
-using AccesoUPV.Library.Connectors.Drive;
-using AccesoUPV.Library.Services;
 using System.Windows;
 using System.Windows.Controls;
+using AccesoUPV.Library.Connectors.Drive;
+using AccesoUPV.Library.Services;
 
-namespace AccesoUPV.GUI.Windows.Pages
+namespace AccesoUPV.GUI.Windows.MainPages
 {
     /// <summary>
     /// Lógica de interacción para Main.xaml

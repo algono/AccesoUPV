@@ -1,12 +1,12 @@
-﻿<Page x:Class="AccesoUPV.GUI.Windows.Pages.Start"
+﻿<Page x:Class="AccesoUPV.GUI.Windows.MainPages.Main"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:AccesoUPV.GUI.Windows.Pages"
+      xmlns:local="clr-namespace:AccesoUPV.GUI.Windows.MainPages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Start">
+      Title="Main">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -20,11 +20,14 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="20" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
 
-        <Button x:Name="ConnectButton" Grid.Column="1" Grid.Row="2" FontSize="36" Content="Conexión" VerticalAlignment="Center" HorizontalAlignment="Center" Click="ConnectButton_Click" />
-        <Button x:Name="PreferencesButton" Grid.Column="1" Grid.Row="4" FontSize="36" Content="Ajustes" VerticalAlignment="Center" HorizontalAlignment="Center" Click="PreferencesButton_Click" />
+        <Button x:Name="ConnectWButton" Grid.Column="1" Grid.Row="2" FontSize="36" Content="Conectar Disco W" VerticalAlignment="Center" HorizontalAlignment="Center" Click="ConnectWButton_Click" />
+        <Button x:Name="DisconnectWButton" Grid.Column="1" Grid.Row="4" FontSize="36" Content="Desconectar Disco W" VerticalAlignment="Center" HorizontalAlignment="Center" Click="DisconnectWButton_Click" />
+        <Button x:Name="OpenWButton" Grid.Column="1" Grid.Row="6" FontSize="36" Content="Abrir Disco W" VerticalAlignment="Center" HorizontalAlignment="Center" Click="OpenWButton_Click" />
     </Grid>
 </Page>
