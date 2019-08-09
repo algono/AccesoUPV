@@ -1,0 +1,134 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using AccesoUPV.Library.Connectors;
+
+namespace AccesoUPV.GUI.Windows.UserControls
+{
+    /// <summary>
+    /// Lógica de interacción para ConnectableButton.xaml
+    /// </summary>
+    public partial class ConnectableButton : UserControl
+    {
+        public Connectable Connectable
+        {
+            get => (Connectable)GetValue(ConnectableProperty);
+            set => SetValue(ConnectableProperty, value);
+        }
+
+        public string ConnectText
+        {
+            get => (string)GetValue(ConnectTextProperty);
+            set => SetValue(ConnectTextProperty, value);
+        }
+
+        public string DisconnectText
+        {
+            get => (string)GetValue(DisconnectTextProperty);
+            set => SetValue(DisconnectTextProperty, value);
+        }
+
+        public int ConnectFontSize
+        {
+            get => (int)GetValue(ConnectFontSizeProperty);
+            set => SetValue(ConnectFontSizeProperty, value);
+        }
+
+        public int DisconnectFontSize
+        {
+            get => (int)GetValue(DisconnectFontSizeProperty);
+            set => SetValue(DisconnectFontSizeProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for Connectable.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ConnectableProperty =
+            DependencyProperty.Register("Connectable", typeof(Connectable), typeof(ConnectableButton), new PropertyMetadata());
+
+        // Using a DependencyProperty as the backing store for ConnectText.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ConnectTextProperty =
+            DependencyProperty.Register("ConnectText", typeof(string), typeof(ConnectableButton), new PropertyMetadata("Conectar"));
+
+        // Using a DependencyProperty as the backing store for DisconnectText.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DisconnectTextProperty =
+            DependencyProperty.Register("DisconnectText", typeof(string), typeof(ConnectableButton), new PropertyMetadata("Desconectar"));
+
+        // Using a DependencyProperty as the backing store for ConnectFontSize.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ConnectFontSizeProperty =
+            DependencyProperty.Register("ConnectFontSize", typeof(int), typeof(ConnectableButton), new PropertyMetadata(14));
+
+        // Using a DependencyProperty as the backing store for DisconnectFontSize.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DisconnectFontSizeProperty =
+            DependencyProperty.Register("DisconnectFontSize", typeof(int), typeof(ConnectableButton), new PropertyMetadata(11));
+
+
+        public Func<object, ConnectionEventArgs, Task> ConnectHandler { get; set; }
+        public Func<object, ConnectionEventArgs, Task> DisconnectHandler { get; set; }
+
+        public ConnectableButton()
+        {
+            InitializeComponent();
+        }
+
+        private async void ConnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ConnectHandler == null)
+            {
+                await Connect();
+            }
+            else
+            {
+                ConnectionEventArgs ce = new ConnectionEventArgs
+                {
+                    Connectable = Connectable,
+                    ConnectionFunc = Connect,
+                    RoutedEventArgs = e
+                };
+                await ConnectHandler(sender, ce);
+            }
+
+            if (Connectable.Connected) DisconnectButton.Visibility = Visibility.Visible;
+        }
+
+        private async Task Connect()
+        {
+            if (!Connectable.Connected) await Connectable.ConnectAsync();
+            if (Connectable is Openable openable) openable.Open();
+        }
+
+        private async void DisconnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DisconnectHandler == null)
+            {
+                await Disconnect();
+            }
+            else
+            {
+                ConnectionEventArgs ce = new ConnectionEventArgs
+                {
+                    Connectable = Connectable,
+                    ConnectionFunc = Disconnect,
+                    RoutedEventArgs = e
+                };
+                await DisconnectHandler(sender, ce);
+            }
+
+            if (!Connectable.Connected) DisconnectButton.Visibility = Visibility.Hidden;
+        }
+
+        private async Task Disconnect()
+        {
+            await Connectable.DisconnectAsync();
+        }
+    }
+}

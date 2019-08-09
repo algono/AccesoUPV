@@ -92,6 +92,10 @@
     <Compile Include="Windows\Shutdown.xaml.cs">
       <DependentUpon>Shutdown.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\UserControls\ConnectableButton.xaml.cs">
+      <DependentUpon>ConnectableButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\UserControls\ConnectionEventArgs.cs" />
     <Page Include="Windows\Help.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -140,6 +144,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Shutdown.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\UserControls\ConnectableButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
