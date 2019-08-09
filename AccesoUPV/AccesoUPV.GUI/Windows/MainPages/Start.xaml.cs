@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using AccesoUPV.GUI.Help;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Services;
 using Microsoft.VisualBasic;
@@ -94,7 +95,8 @@ namespace AccesoUPV.GUI.Windows.MainPages
 
         private void HelpButton_OnClick(object sender, RoutedEventArgs e)
         {
-            new Help().ShowDialog();
+            // new Help().ShowDialog();
+            HelpProvider.ShowHelpTableOfContents();
         }
     }
 }
