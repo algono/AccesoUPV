@@ -31,6 +31,9 @@ namespace AccesoUPV.GUI.Help
 
         private static void DownloadHelp()
         {
+            // Set cursor as hourglass
+            System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
+
             try
             {
                 using (WebClient client = new WebClient())
@@ -45,6 +48,9 @@ namespace AccesoUPV.GUI.Help
                 // If the download fails, return the local help anyway
                 Debug.WriteLine(ex.Message);
             }
+
+            // Set cursor as default arrow
+            System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
         }
 
         /// <summary>
