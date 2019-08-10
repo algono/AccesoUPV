@@ -51,6 +51,19 @@ namespace AccesoUPV.GUI.Windows.UserControls
             set => SetValue(DisconnectFontSizeProperty, value);
         }
 
+        public string ConnectIconKind
+        {
+            get => (string)GetValue(ConnectIconKindProperty);
+            set => SetValue(ConnectIconKindProperty, value);
+        }
+
+        public string DisconnectIconKind
+        {
+            get => (string)GetValue(DisconnectIconKindProperty);
+            set => SetValue(DisconnectIconKindProperty, value);
+        }
+
+
         // Using a DependencyProperty as the backing store for Connectable.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ConnectableProperty =
             DependencyProperty.Register("Connectable", typeof(Connectable), typeof(ConnectableButton), new PropertyMetadata());
@@ -70,6 +83,14 @@ namespace AccesoUPV.GUI.Windows.UserControls
         // Using a DependencyProperty as the backing store for DisconnectFontSize.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DisconnectFontSizeProperty =
             DependencyProperty.Register("DisconnectFontSize", typeof(int), typeof(ConnectableButton), new PropertyMetadata(11));
+
+        // Using a DependencyProperty as the backing store for ConnectIconKind.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ConnectIconKindProperty =
+            DependencyProperty.Register("ConnectIconKind", typeof(string), typeof(ConnectableButton), new PropertyMetadata("Connect"));
+
+        // Using a DependencyProperty as the backing store for DisconnectIconKind.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DisconnectIconKindProperty =
+            DependencyProperty.Register("DisconnectIconKind", typeof(string), typeof(ConnectableButton), new PropertyMetadata("Power"));
 
 
         public Func<object, ConnectionEventArgs, Task> ConnectHandler { get; set; }
