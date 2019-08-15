@@ -94,7 +94,7 @@ namespace AccesoUPV.Debug.GUI
         private void OpenButton_Click(object sender, EventArgs e)
         {
             var item = ((ListItem)listaConectar.SelectedItem).Value;
-            ((Openable) item)?.Open();
+            ((Openable)item)?.Open();
         }
 
     }

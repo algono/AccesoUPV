@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using AccesoUPV.Library.Connectors.VPN;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using AccesoUPV.Library.Connectors.VPN;
 using System.Windows;
 
 namespace AccesoUPV.GUI.Windows

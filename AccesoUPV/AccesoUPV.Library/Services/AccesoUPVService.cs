@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Threading.Tasks;
-using AccesoUPV.Library.Connectors;
+﻿using AccesoUPV.Library.Connectors;
 using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Properties;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Services
 {
@@ -59,7 +59,7 @@ namespace AccesoUPV.Library.Services
             VPN_UPV = VPNFactory.GetVPNToUPV(Settings.Default.VPN_UPVName);
             VPN_DSIC = VPNFactory.GetVPNToDSIC(Settings.Default.VPN_DSICName);
 
-            Disco_W = DriveFactory.GetDriveW(Settings.Default.WDriveLetter, User, (UPVDomain) Settings.Default.WDriveDomain);
+            Disco_W = DriveFactory.GetDriveW(Settings.Default.WDriveLetter, User, (UPVDomain)Settings.Default.WDriveDomain);
 
             Disco_DSIC = DriveFactory.GetDriveDSIC(Settings.Default.DSICDriveLetter, User, Settings.Default.DSICDrivePassword);
             SavePasswords = !string.IsNullOrEmpty(Disco_DSIC.Password);

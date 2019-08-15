@@ -31,7 +31,7 @@ namespace AccesoUPV.Library
 
             handler?.Invoke(new ProcessEventArgs(succeeded, output, error));
 
-            if (!succeeded) throw new IOException($"Output:\n{output}\n\nError:\n{error}");
+            ThrowExceptionIfNotSucceeded(succeeded, output, error);
         }
 
         public static async Task WaitAndCheckAsync(this Process process, Action<ProcessEventArgs> handler = null)
@@ -47,6 +47,11 @@ namespace AccesoUPV.Library
 
             handler?.Invoke(new ProcessEventArgs(succeeded, output, error)); // TODO: Convertir llamada a async
 
+            ThrowExceptionIfNotSucceeded(succeeded, output, error);
+        }
+
+        private static void ThrowExceptionIfNotSucceeded(bool succeeded, string output, string error)
+        {
             if (!succeeded) throw new IOException($"Output:\n{output}\n\nError:\n{error}");
         }
 
@@ -92,7 +97,7 @@ namespace AccesoUPV.Library
         #endregion
 
         #region VPN
-        public static string GetStringPropertyValue(this PSObject obj, string propertyName) => (string)obj.Properties[propertyName].Value; 
+        public static string GetStringPropertyValue(this PSObject obj, string propertyName) => (string)obj.Properties[propertyName].Value;
         #endregion
 
     }

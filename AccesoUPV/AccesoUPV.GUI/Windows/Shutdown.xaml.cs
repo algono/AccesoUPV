@@ -11,7 +11,7 @@ namespace AccesoUPV.GUI.Windows
     public partial class Shutdown : Window
     {
         private readonly IAccesoUPVService _service;
-        private bool init;
+        private bool running;
 
         public event EventHandler Finished, Canceled;
 
@@ -61,8 +61,8 @@ namespace AccesoUPV.GUI.Windows
 
         private void Progress_ProgressChanged(string report)
         {
-            if (init) ShutdownProgressBar.Value++;
-            else init = true;
+            if (running) ShutdownProgressBar.Value++;
+            else running = true;
 
             ProgressTextBlock.Text = report + "...";
         }

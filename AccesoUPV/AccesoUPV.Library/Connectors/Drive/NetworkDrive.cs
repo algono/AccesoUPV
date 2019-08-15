@@ -53,7 +53,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         public virtual string Address => _getAddress(Username, Domain);
         public DriveDomain Domain => DriveDomain;
         protected virtual DriveDomain DriveDomain { get; }
-        
+
         public string ConnectedDrive { get; private set; }
         public string Drive { get; set; }
 

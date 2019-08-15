@@ -21,7 +21,7 @@ namespace AccesoUPV.Library.Connectors.Drive
             + "Si se encuentra conectado a la UPV desde una red WiFi (como UPVNET), reconecte la red manualmente.\n\n"
             + "Si se encuentra conectado desde la VPN, se comenzará ahora el proceso de reconexión.";
         public CredentialsBugException() : base(ERROR_BUG) { }
-    } 
+    }
     #endregion
 
     public static class DriveFactory
@@ -60,7 +60,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         public static NetworkDrive GetDriveDSIC(string drive = null, string user = null, string password = null)
             => new NetworkDrive(GetAddressDSIC, DSICDomain, drive, user, password);
 
-        private static string GetAddressDSIC(string username, DriveDomain domain) => $@"\\fileserver.dsic.upv.es\{username}"; 
+        private static string GetAddressDSIC(string username, DriveDomain domain) => $@"\\fileserver.dsic.upv.es\{username}";
         #endregion
     }
 }

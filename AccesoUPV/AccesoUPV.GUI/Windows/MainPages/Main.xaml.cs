@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using AccesoUPV.GUI.Windows.UserControls;
+﻿using AccesoUPV.GUI.Windows.UserControls;
 using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Services;
 using AccesoUPV.Library.Static;
+using System;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace AccesoUPV.GUI.Windows.MainPages
 {
@@ -40,18 +40,6 @@ namespace AccesoUPV.GUI.Windows.MainPages
             }
         }
 
-        private async Task DisconnectWDrive(object sender, ConnectionEventArgs e)
-        {
-            try
-            {
-                await e.ConnectionFunc();
-            }
-            catch (OpenedFilesException ex)
-            {
-                await Drive_OpenedFiles(ex);
-            }
-        }
-
         private async Task ConnectDSICDrive(object sender, ConnectionEventArgs e)
         {
             try
@@ -69,7 +57,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
             }
         }
 
-        private async Task DisconnectDSICDrive(object sender, ConnectionEventArgs e)
+        private async Task DisconnectDrive(object sender, ConnectionEventArgs e)
         {
             try
             {
@@ -126,7 +114,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
             {
                 // El usuario canceló algo, así que no importa
             }
-           
+
         }
 
         private static Window CreatePortalDSICDialog() => new Window()
