@@ -1,21 +1,26 @@
-﻿using AccesoUPV.Library.Connectors;
-using AccesoUPV.Library.Connectors.Drive;
-using AccesoUPV.Library.Connectors.VPN;
-using AccesoUPV.Library.Properties;
-using System;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
+using AccesoUPV.Library.Connectors;
+using AccesoUPV.Library.Connectors.Drive;
+using AccesoUPV.Library.Connectors.VPN;
+using AccesoUPV.Library.Properties;
+using System.Reflection;
 
 namespace AccesoUPV.Library.Services
 {
     public class AccesoUPVService : IAccesoUPVService
     {
+        #region Connectables
         public VPN VPN_UPV { get; }
         public VPN VPN_DSIC { get; }
-        public NetworkDrive<UPVDomain> WDrive { get; }
-        public NetworkDrive DSICDrive { get; }
+        public NetworkDrive<UPVDomain> Disco_W { get; }
+        public NetworkDrive Disco_DSIC { get; }
+        #endregion
 
+        #region Preferences
         private string _user;
 
         public string User
@@ -24,14 +29,26 @@ namespace AccesoUPV.Library.Services
             set
             {
                 _user = value;
-                WDrive.Username = value;
-                DSICDrive.Username = value;
+                Disco_W.Username = value;
+                Disco_DSIC.Username = value;
             }
         }
         public bool SavePasswords { get; set; }
 
+        #endregion
+
+        #region Settings Properties
         public bool AreUninitializedSettings => UninitializedSettings.Count > 0;
         public List<SettingsPropertyValue> UninitializedSettings { get; } = new List<SettingsPropertyValue>();
+        #endregion
+
+        #region Connectables Reflection
+        private IEnumerable<Connectable> Connectables => connectablesInfo.GetValues<Connectable>(this);
+
+        private static readonly IEnumerable<PropertyInfo> connectablesInfo = typeof(AccesoUPVService).GetProperties().AsEnumerable().WherePropertiesAreOfType<Connectable>();
+        #endregion
+
+        public event EventHandler<ShutdownEventArgs> ShuttingDown;
 
         public AccesoUPVService()
         {
@@ -42,12 +59,13 @@ namespace AccesoUPV.Library.Services
             VPN_UPV = VPNFactory.GetVPNToUPV(Settings.Default.VPN_UPVName);
             VPN_DSIC = VPNFactory.GetVPNToDSIC(Settings.Default.VPN_DSICName);
 
-            WDrive = DriveFactory.GetDriveW(Settings.Default.WDriveLetter, User, (UPVDomain) Settings.Default.WDriveDomain);
+            Disco_W = DriveFactory.GetDriveW(Settings.Default.WDriveLetter, User, (UPVDomain) Settings.Default.WDriveDomain);
 
-            DSICDrive = DriveFactory.GetDriveDSIC(Settings.Default.DSICDriveLetter, User, Settings.Default.DSICDrivePassword);
-            SavePasswords = !string.IsNullOrEmpty(DSICDrive.Password);
+            Disco_DSIC = DriveFactory.GetDriveDSIC(Settings.Default.DSICDriveLetter, User, Settings.Default.DSICDrivePassword);
+            SavePasswords = !string.IsNullOrEmpty(Disco_DSIC.Password);
         }
 
+        #region Settings methods
         protected virtual void Default_SettingsLoaded(object sender, SettingsLoadedEventArgs e)
         {
             foreach (SettingsPropertyValue property in Settings.Default.PropertyValues)
@@ -66,11 +84,11 @@ namespace AccesoUPV.Library.Services
             Settings.Default.VPN_UPVName = VPN_UPV.Name;
             Settings.Default.VPN_DSICName = VPN_DSIC.Name;
 
-            Settings.Default.WDriveLetter = WDrive.Drive;
-            Settings.Default.WDriveDomain = (int) WDrive.Domain;
+            Settings.Default.WDriveLetter = Disco_W.Drive;
+            Settings.Default.WDriveDomain = (int)Disco_W.Domain;
 
-            Settings.Default.DSICDriveLetter = DSICDrive.Drive;
-            Settings.Default.DSICDrivePassword = SavePasswords ? DSICDrive.Password : null;
+            Settings.Default.DSICDriveLetter = Disco_DSIC.Drive;
+            Settings.Default.DSICDrivePassword = SavePasswords ? Disco_DSIC.Password : null;
 
             Settings.Default.Save();
         }
@@ -79,12 +97,12 @@ namespace AccesoUPV.Library.Services
         {
             Settings.Default.Reset();
         }
+        #endregion
 
+        #region Shutdown
         public void Shutdown()
         {
-            Connectable[] connectables = { DSICDrive, WDrive, VPN_DSIC, VPN_UPV };
-
-            foreach (Connectable connectable in connectables)
+            foreach (Connectable connectable in Connectables)
             {
                 if (connectable.Connected) connectable.Disconnect();
             }
@@ -92,38 +110,63 @@ namespace AccesoUPV.Library.Services
 
         public async Task ShutdownAsync(IProgress<string> progress = null)
         {
-            List<Task> driveTasks = new List<Task>();
+            List<Func<Task>> driveTasks = new List<Func<Task>>();
+            List<Func<Task>> VPNTasks = new List<Func<Task>>();
 
-            if (DSICDrive.Connected)
+            int steps = 0;
+
+            foreach (PropertyInfo info in connectablesInfo)
             {
-                driveTasks.Add(ShutdownDrive(DSICDrive, "Disco DSIC", progress));
+                Connectable connectable = info.GetValue(this) as Connectable;
+                if (connectable.Connected)
+                {
+                    steps++;
+                    string nameToDisplay = info.Name.Replace('_', ' ');
+                    Task shutdownTask() => ShutdownConnectable(connectable, nameToDisplay, progress);
+
+                    switch (connectable)
+                    {
+                        case NetworkDrive _:
+                            driveTasks.Add(shutdownTask);
+                            break;
+                        case VPN _:
+                            VPNTasks.Add(shutdownTask);
+                            break;
+                    }
+                }
             }
 
-            if (WDrive.Connected)
-            {
-                driveTasks.Add(ShutdownDrive(WDrive, "Disco W", progress));
-            }
+            OnShuttingDown(this, new ShutdownEventArgs(steps));
 
-            if (driveTasks.Count > 0) await Task.WhenAll(driveTasks);
+            if (driveTasks.Count > 0) await Task.WhenAll(driveTasks.Select(func => func()));
 
-            if (VPN_DSIC.Connected)
-            {
-                progress?.Report("Desconectando VPN al DSIC");
-                await VPN_DSIC.DisconnectAsync();
-            }
+            foreach (Func<Task> disconnectVPN in VPNTasks) await disconnectVPN();
 
-            if (VPN_UPV.Connected)
-            {
-                progress?.Report("Desconectando VPN a la UPV");
-                await VPN_UPV.DisconnectAsync();
-            }
+            progress?.Report("Saliendo");
         }
 
-        private async Task ShutdownDrive(NetworkDrive drive, string name, IProgress<string> progress = null)
+        protected virtual void OnShuttingDown(object sender, ShutdownEventArgs e)
+        {
+            ShuttingDown?.Invoke(sender, e);
+        }
+
+        private async Task ShutdownConnectable(Connectable connectable, string name, IProgress<string> progress = null)
         {
             progress?.Report($"Desconectando { name }");
-            await drive.DisconnectAsync();
+            await connectable.DisconnectAsync();
         }
 
+        #endregion
+
+    }
+
+    public class ShutdownEventArgs : EventArgs
+    {
+        public int Steps { get; }
+
+        public ShutdownEventArgs(int steps)
+        {
+            Steps = steps;
+        }
     }
 }

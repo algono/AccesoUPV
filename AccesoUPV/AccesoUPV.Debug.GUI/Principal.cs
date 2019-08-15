@@ -55,8 +55,8 @@ namespace AccesoUPV.Debug.GUI
         {
             UsuarioBox.TextChanged += (sender, e) => _service.User = UsuarioBox.Text;
             UsuarioBox.TextChanged += (sender, e) => InitializeConnectList();
-            PassUPVBox.TextChanged += (sender, e) => _service.WDrive.Password = PassUPVBox.Text;
-            PassDSICBox.TextChanged += (sender, e) => _service.DSICDrive.Password = PassDSICBox.Text;
+            PassUPVBox.TextChanged += (sender, e) => _service.Disco_W.Password = PassUPVBox.Text;
+            PassDSICBox.TextChanged += (sender, e) => _service.Disco_DSIC.Password = PassDSICBox.Text;
         }
 
         private void InitializeConnectList()
@@ -64,8 +64,8 @@ namespace AccesoUPV.Debug.GUI
             if (_service.VPN_DSIC.Name == null) _service.VPN_DSIC.SetNameAuto();
 
             listaConectar.Items.Clear();
-            listaConectar.Items.Add(new ListItem("Disco W", _service.WDrive));
-            listaConectar.Items.Add(new ListItem("Disco DSIC", _service.DSICDrive));
+            listaConectar.Items.Add(new ListItem("Disco W", _service.Disco_W));
+            listaConectar.Items.Add(new ListItem("Disco DSIC", _service.Disco_DSIC));
             listaConectar.Items.Add(new ListItem("Portal DSIC", _service.VPN_DSIC));
         }
 

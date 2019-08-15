@@ -1,16 +1,19 @@
 ﻿using AccesoUPV.Library.Connectors;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Management.Automation;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace AccesoUPV.Library
 {
     public static class Utilities
     {
-        // PROCESS
 
+        #region Process
         public static void WaitAndCheck(this Process process, Action<ProcessEventArgs> handler = null)
         {
             string output = "", error = "";
@@ -80,10 +83,17 @@ namespace AccesoUPV.Library
 
             return tcs.Task;
         }
+        #endregion
 
-        // OTHERS
+        #region Connectables Reflection
+        public static IEnumerable<T> GetValuesOfType<T>(this IEnumerable<PropertyInfo> info, object obj) where T : class => info.WherePropertiesAreOfType<T>().GetValues<T>(obj);
+        public static IEnumerable<PropertyInfo> WherePropertiesAreOfType<T>(this IEnumerable<PropertyInfo> info) => info.Where(prop => typeof(T).IsAssignableFrom(prop.PropertyType));
+        public static IEnumerable<T> GetValues<T>(this IEnumerable<PropertyInfo> info, object obj) where T : class => info.Select(prop => prop.GetValue(obj) as T);
+        #endregion
 
-        public static string GetStringPropertyValue(this PSObject obj, string propertyName) => (string)obj.Properties[propertyName].Value;
+        #region VPN
+        public static string GetStringPropertyValue(this PSObject obj, string propertyName) => (string)obj.Properties[propertyName].Value; 
+        #endregion
 
     }
 }

@@ -10,13 +10,15 @@ namespace AccesoUPV.Library.Services
     public interface IAccesoUPVService
     {
         bool AreUninitializedSettings { get; }
-        NetworkDrive DSICDrive { get; }
+        NetworkDrive Disco_DSIC { get; }
         bool SavePasswords { get; set; }
         List<SettingsPropertyValue> UninitializedSettings { get; }
         string User { get; set; }
         VPN VPN_DSIC { get; }
         VPN VPN_UPV { get; }
-        NetworkDrive<UPVDomain> WDrive { get; }
+        NetworkDrive<UPVDomain> Disco_W { get; }
+
+        event EventHandler<ShutdownEventArgs> ShuttingDown;
 
         void ClearSettings();
         void SaveChanges();

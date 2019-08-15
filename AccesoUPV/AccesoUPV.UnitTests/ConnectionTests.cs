@@ -85,7 +85,7 @@ namespace AccesoUPV.UnitTests
         {
             // Arrange
             IAccesoUPVService service = new AccesoUPVService();
-            NetworkDrive drive = service.WDrive;
+            NetworkDrive drive = service.Disco_W;
             drive.Username = Username;
             // Keep to disconnect in further testing
             WDrive = drive;
@@ -98,7 +98,7 @@ namespace AccesoUPV.UnitTests
         {
             // Arrange
             IAccesoUPVService service = new AccesoUPVService();
-            NetworkDrive drive = service.DSICDrive;
+            NetworkDrive drive = service.Disco_DSIC;
             drive.Username = Username;
             drive.Password = DSICDrivePass;
             // Keep to disconnect in further testing

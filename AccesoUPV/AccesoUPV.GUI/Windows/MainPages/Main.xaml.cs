@@ -34,7 +34,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
             {
                 await e.ConnectionFunc();
             }
-            catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(Service.WDrive.Username)))
+            catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(Service.Disco_W.Username)))
             {
                 Drive_UsernameWasNull();
             }
@@ -58,11 +58,11 @@ namespace AccesoUPV.GUI.Windows.MainPages
             {
                 await e.ConnectionFunc();
             }
-            catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(Service.DSICDrive.Username)))
+            catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(Service.Disco_DSIC.Username)))
             {
                 Drive_UsernameWasNull();
             }
-            catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(Service.DSICDrive.Password)))
+            catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(Service.Disco_DSIC.Password)))
             {
                 MessageBox.Show("No ha indicado ninguna contraseña. Indíquela en los ajustes.", "Falta contraseña", MessageBoxButton.OK, MessageBoxImage.Warning);
                 new Preferences(Service).ShowDialog();

@@ -35,22 +35,22 @@ namespace AccesoUPV.ConsoleTesting
                 Console.Write("Type your user: ");
                 service.User = Console.ReadLine();
                 Console.Write("Type the drive (i.e: 'C:'): ");
-                service.WDrive.Drive = Console.ReadLine();
+                service.Disco_W.Drive = Console.ReadLine();
                 Console.WriteLine("Type your domain:");
                 foreach (var value in Enum.GetValues(typeof(UPVDomain)))
                 {
                     Console.WriteLine($"{(int)value} - {(UPVDomain)value}");
                 }
                 Console.Write("Type here: ");
-                service.WDrive.Domain = (UPVDomain)int.Parse(Console.ReadLine());
+                service.Disco_W.Domain = (UPVDomain)int.Parse(Console.ReadLine());
 
-                DriveTest(service.WDrive);
+                DriveTest(service.Disco_W);
 
                 try
                 {
                     Console.Write("Type your DSIC password: ");
-                    service.DSICDrive.Password = ReadPassword();
-                    DriveTest(service.DSICDrive);
+                    service.Disco_DSIC.Password = ReadPassword();
+                    DriveTest(service.Disco_DSIC);
                 }
                 catch (OperationCanceledException)
                 {

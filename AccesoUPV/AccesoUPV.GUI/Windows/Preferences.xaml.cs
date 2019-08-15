@@ -41,14 +41,14 @@ namespace AccesoUPV.GUI.Windows
             WDriveBox.ItemsSource = availableDrives;
             DSICDriveBox.ItemsSource = availableDrives;
 
-            string WDriveLetter = _service.WDrive.Drive;
+            string WDriveLetter = _service.Disco_W.Drive;
             if (!string.IsNullOrEmpty(WDriveLetter))
             {
                 WDriveCheckBox.IsChecked = true;
                 WDriveBox.SelectedItem = WDriveLetter;
             }
 
-            string DSICDriveLetter = _service.DSICDrive.Drive;
+            string DSICDriveLetter = _service.Disco_DSIC.Drive;
             if (!string.IsNullOrEmpty(DSICDriveLetter))
             {
                 DSICDriveCheckBox.IsChecked = true;
@@ -57,14 +57,14 @@ namespace AccesoUPV.GUI.Windows
 
             foreach (RadioButton domain in DomainsUPV.Children)
             {
-                if (_service.WDrive.Domain.Equals((UPVDomain)domain.Tag))
+                if (_service.Disco_W.Domain.Equals((UPVDomain)domain.Tag))
                 {
                     domain.IsChecked = true;
                     break;
                 }
             }
 
-            PassDSICBox.Text = _service.DSICDrive.Password;
+            PassDSICBox.Text = _service.Disco_DSIC.Password;
             SavePassCheckBox.IsChecked = _service.SavePasswords;
 
         }
@@ -76,12 +76,12 @@ namespace AccesoUPV.GUI.Windows
             _service.VPN_UPV.Name = VPNToUPVBox.Text;
             _service.VPN_DSIC.Name = VPNToDSICBox.Text;
 
-            _service.WDrive.Drive =
+            _service.Disco_W.Drive =
                 (WDriveCheckBox.IsChecked ?? false)
                 ? WDriveBox.SelectedItem.ToString()
                 : null;
 
-            _service.DSICDrive.Drive =
+            _service.Disco_DSIC.Drive =
                 (DSICDriveCheckBox.IsChecked ?? false)
                 ? DSICDriveBox.SelectedItem.ToString()
                 : null;
@@ -90,12 +90,12 @@ namespace AccesoUPV.GUI.Windows
             {
                 if (domain.IsChecked ?? false)
                 {
-                    _service.WDrive.Domain = (UPVDomain)domain.Tag;
+                    _service.Disco_W.Domain = (UPVDomain)domain.Tag;
                     break;
                 }
             }
 
-            _service.DSICDrive.Password = PassDSICBox.Text;
+            _service.Disco_DSIC.Password = PassDSICBox.Text;
             _service.SavePasswords = SavePassCheckBox.IsChecked ?? false;
 
             _service.SaveChanges();

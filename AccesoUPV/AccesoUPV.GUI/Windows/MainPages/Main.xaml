@@ -30,8 +30,8 @@
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
 
-        <userControls:ConnectableButton Grid.Column="1" Grid.Row="2" Connectable="{Binding ElementName=MainMenu, Path=Service.WDrive}" ConnectText="Disco W" ConnectIconKind="NetworkServerConnecting" DisconnectIconKind="NetworkServerDisconnect" VerticalAlignment="Center" HorizontalAlignment="Center" ConnectHandler="ConnectWDrive" DisconnectHandler="DisconnectWDrive" />
-        <userControls:ConnectableButton Grid.Column="2" Grid.Row="2" Connectable="{Binding ElementName=MainMenu, Path=Service.DSICDrive}" ConnectText="Disco DSIC" ConnectIconKind="NetworkServerConnecting" DisconnectIconKind="NetworkServerDisconnect" VerticalAlignment="Center" HorizontalAlignment="Center" ConnectHandler="ConnectDSICDrive" DisconnectHandler="DisconnectDSICDrive" />
+        <userControls:ConnectableButton Grid.Column="1" Grid.Row="2" Connectable="{Binding ElementName=MainMenu, Path=Service.Disco_W}" ConnectText="Disco W" ConnectIconKind="NetworkServerConnecting" DisconnectIconKind="NetworkServerDisconnect" VerticalAlignment="Center" HorizontalAlignment="Center" ConnectHandler="ConnectWDrive" DisconnectHandler="DisconnectWDrive" />
+        <userControls:ConnectableButton Grid.Column="2" Grid.Row="2" Connectable="{Binding ElementName=MainMenu, Path=Service.Disco_DSIC}" ConnectText="Disco DSIC" ConnectIconKind="NetworkServerConnecting" DisconnectIconKind="NetworkServerDisconnect" VerticalAlignment="Center" HorizontalAlignment="Center" ConnectHandler="ConnectDSICDrive" DisconnectHandler="DisconnectDSICDrive" />
         
         <StackPanel Grid.Column="1" Grid.Row="4">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18">Escritorios DSIC</TextBlock>

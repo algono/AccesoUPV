@@ -11,6 +11,7 @@ namespace AccesoUPV.GUI.Windows
     public partial class Shutdown : Window
     {
         private readonly IAccesoUPVService _service;
+        private bool init;
 
         public event EventHandler Finished, Canceled;
 
@@ -28,7 +29,7 @@ namespace AccesoUPV.GUI.Windows
         private async void Shutdown_Loaded(object sender, RoutedEventArgs e)
         {
             Progress<string> progress = new Progress<string>(Progress_ProgressChanged);
-            // ShutdownProgressBar.Maximum = AccesoUPVService.NumberOfConnectables;
+            _service.ShuttingDown += (s, se) => ShutdownProgressBar.Maximum = se.Steps;
 
             bool done = false, canceled = false;
             while (!done)
@@ -60,8 +61,10 @@ namespace AccesoUPV.GUI.Windows
 
         private void Progress_ProgressChanged(string report)
         {
+            if (init) ShutdownProgressBar.Value++;
+            else init = true;
+
             ProgressTextBlock.Text = report + "...";
-            ShutdownProgressBar.Value++;
         }
 
         protected virtual void OnFinished(EventArgs e)
