@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using AccesoUPV.GUI.Windows.UserControls;
-using AccesoUPV.Library.Connectors;
 using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Services;
@@ -109,7 +108,12 @@ namespace AccesoUPV.GUI.Windows.MainPages
             try
             {
                 await e.ConnectionFunc();
-                OpenPortalDSIC();
+
+                #region Portal DSIC Dialog
+                Window portalWindow = CreatePortalDSICDialog();
+                portalWindow.Closed += async (s, ce) => await e.Connectable.DisconnectAsync();
+                portalWindow.ShowDialog();
+                #endregion
             }
             catch (ArgumentNullException)
             {
@@ -122,18 +126,16 @@ namespace AccesoUPV.GUI.Windows.MainPages
             {
                 // El usuario canceló algo, así que no importa
             }
+           
         }
 
-        private static void OpenPortalDSIC()
+        private static Window CreatePortalDSICDialog() => new Window()
         {
-            new Window()
+            Title = "Portal DSIC",
+            Content = new WebBrowser
             {
-                Title = "Portal DSIC",
-                Content = new WebBrowser
-                {
-                    Source = new Uri("http://" + VPNFactory.PORTAL_DSIC)
-                }
-            }.ShowDialog();
-        }
+                Source = new Uri("http://" + VPNFactory.PORTAL_DSIC)
+            }
+        };
     }
 }

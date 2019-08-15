@@ -21,6 +21,7 @@ namespace AccesoUPV.GUI.Windows.UserControls
     /// </summary>
     public partial class ConnectableButton : UserControl
     {
+        #region Dependency Properties
         public Connectable Connectable
         {
             get => (Connectable)GetValue(ConnectableProperty);
@@ -92,9 +93,13 @@ namespace AccesoUPV.GUI.Windows.UserControls
         public static readonly DependencyProperty DisconnectIconKindProperty =
             DependencyProperty.Register("DisconnectIconKind", typeof(string), typeof(ConnectableButton), new PropertyMetadata("Power"));
 
+        #endregion
 
+        #region Event Handlers
         public Func<object, ConnectionEventArgs, Task> ConnectHandler { get; set; }
         public Func<object, ConnectionEventArgs, Task> DisconnectHandler { get; set; }
+
+        #endregion
 
         public ConnectableButton()
         {
