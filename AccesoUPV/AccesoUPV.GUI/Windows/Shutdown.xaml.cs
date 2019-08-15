@@ -41,7 +41,7 @@ namespace AccesoUPV.GUI.Windows
                 }
                 catch (OpenedFilesException ex)
                 {
-                    MessageBoxResult result = MessageBox.Show(OpenedFilesException.WarningMessage, OpenedFilesException.WarningTitle, MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                    MessageBoxResult result = MessageBox.Show(ex.Message, OpenedFilesException.WarningTitle, MessageBoxButton.OKCancel, MessageBoxImage.Warning);
 
                     if (result == MessageBoxResult.OK)
                     {

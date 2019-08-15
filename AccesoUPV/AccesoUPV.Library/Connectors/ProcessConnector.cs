@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors
 {
-    public abstract class ProcessConnector : Connectable
+    public abstract class ProcessConnector : Connectable<ProcessEventArgs>
     {
-        public abstract bool Connected { get; protected set; }
+        public abstract bool IsConnected { get; protected set; }
 
-        public event EventHandler<ProcessEventArgs> ProcessConnected, ProcessDisconnected;
+        public event EventHandler<ProcessEventArgs> Connected, Disconnected;
 
         public static ProcessStartInfo CreateProcessInfo(string fileName)
         {
@@ -26,14 +26,14 @@ namespace AccesoUPV.Library.Connectors
         protected abstract Process ConnectProcess();
         protected virtual void OnProcessConnected(ProcessEventArgs e)
         {
-            if (e.Succeeded) Connected = true;
-            ProcessConnected?.Invoke(this, e);
+            if (e.Succeeded) IsConnected = true;
+            Connected?.Invoke(this, e);
         }
         protected abstract Process DisconnectProcess();
         protected virtual void OnProcessDisconnected(ProcessEventArgs e)
         {
-            if (e.Succeeded) Connected = false;
-            ProcessDisconnected?.Invoke(this, e);
+            if (e.Succeeded) IsConnected = false;
+            Disconnected?.Invoke(this, e);
         }
 
         public void Connect() => ConnectProcess().WaitAndCheck(OnProcessConnected);

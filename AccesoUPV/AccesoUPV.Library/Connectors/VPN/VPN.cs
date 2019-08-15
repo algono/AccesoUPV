@@ -15,7 +15,7 @@ namespace AccesoUPV.Library.Connectors.VPN
         public string ConnectedName { get; private set; }
         public string Name { get; set; }
 
-        public override bool Connected
+        public override bool IsConnected
         {
             get => ConnectedName != null;
             protected set => ConnectedName = value ? Name : null;
@@ -41,11 +41,11 @@ namespace AccesoUPV.Library.Connectors.VPN
             Name = name;
         }
 
-        public bool IsReachable() => Config.IsReachable(Connected ? ConnectedPingTimeout : DisconnectedPingTimeout);
+        public bool IsReachable() => Config.IsReachable(IsConnected ? ConnectedPingTimeout : DisconnectedPingTimeout);
 
         public void CheckConnection()
         {
-            Connected = IsActuallyConnected();
+            IsConnected = IsActuallyConnected();
         }
 
         private bool IsActuallyConnected()

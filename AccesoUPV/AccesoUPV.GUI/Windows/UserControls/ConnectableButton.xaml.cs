@@ -123,12 +123,12 @@ namespace AccesoUPV.GUI.Windows.UserControls
                 await ConnectHandler(sender, ce);
             }
 
-            if (Connectable.Connected) DisconnectButton.Visibility = Visibility.Visible;
+            if (Connectable.IsConnected) DisconnectButton.Visibility = Visibility.Visible;
         }
 
         private async Task Connect()
         {
-            if (!Connectable.Connected) await Connectable.ConnectAsync();
+            if (!Connectable.IsConnected) await Connectable.ConnectAsync();
             if (Connectable is Openable openable) openable.Open();
         }
 
@@ -149,7 +149,7 @@ namespace AccesoUPV.GUI.Windows.UserControls
                 await DisconnectHandler(sender, ce);
             }
 
-            if (!Connectable.Connected) DisconnectButton.Visibility = Visibility.Hidden;
+            if (!Connectable.IsConnected) DisconnectButton.Visibility = Visibility.Hidden;
         }
 
         private async Task Disconnect()

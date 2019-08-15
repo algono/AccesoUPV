@@ -71,7 +71,7 @@ namespace AccesoUPV.ConsoleTesting
                 Console.WriteLine("Press any key when the Windows Desktop is closed");
                 Console.ReadKey();
 
-                if (service.VPN_UPV.Connected) DisconnectTest(service.VPN_UPV);
+                if (service.VPN_UPV.IsConnected) DisconnectTest(service.VPN_UPV);
             }
             catch (OperationCanceledException)
             {
@@ -158,7 +158,7 @@ namespace AccesoUPV.ConsoleTesting
             Console.ReadKey();
             Console.WriteLine("Connecting...");
             vpn.Connect();
-            Console.WriteLine("Connected: {0}", vpn.Connected);
+            Console.WriteLine("Connected: {0}", vpn.IsConnected);
             Console.WriteLine("Reachable after connecting: {0}", vpn.IsReachable());
         }
         static void DisconnectTest(VPN vpn)
@@ -167,7 +167,7 @@ namespace AccesoUPV.ConsoleTesting
             Console.ReadKey();
             Console.WriteLine("Disconnecting...");
             vpn.Disconnect();
-            Console.WriteLine("Disconnected: {0}", !vpn.Connected);
+            Console.WriteLine("Disconnected: {0}", !vpn.IsConnected);
             Console.WriteLine("Reachable after disconnecting: {0}", vpn.IsReachable());
         }
 
@@ -188,7 +188,7 @@ namespace AccesoUPV.ConsoleTesting
             Console.ReadKey();
             Console.WriteLine("Connecting...");
             drive.Connect();
-            Console.WriteLine("Connected: {0}", drive.Connected);
+            Console.WriteLine("Connected: {0}", drive.IsConnected);
         }
         static void DisconnectTest(NetworkDrive drive)
         {
@@ -196,7 +196,7 @@ namespace AccesoUPV.ConsoleTesting
             Console.ReadKey();
             Console.WriteLine("Disconnecting...");
             drive.Disconnect();
-            Console.WriteLine("Disconnected: {0}", !drive.Connected);
+            Console.WriteLine("Disconnected: {0}", !drive.IsConnected);
         }
     }
 }

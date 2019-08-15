@@ -14,5 +14,7 @@ namespace AccesoUPV.Library.Connectors
             Output = output;
             Error = error;
         }
+
+        public bool OutputOrErrorContains(string value) => Output.Contains(value) || Error.Contains(value);
     }
 }

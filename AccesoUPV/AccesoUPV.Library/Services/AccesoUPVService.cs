@@ -104,7 +104,7 @@ namespace AccesoUPV.Library.Services
         {
             foreach (Connectable connectable in Connectables)
             {
-                if (connectable.Connected) connectable.Disconnect();
+                if (connectable.IsConnected) connectable.Disconnect();
             }
         }
 
@@ -118,7 +118,7 @@ namespace AccesoUPV.Library.Services
             foreach (PropertyInfo info in connectablesInfo)
             {
                 Connectable connectable = info.GetValue(this) as Connectable;
-                if (connectable.Connected)
+                if (connectable.IsConnected)
                 {
                     steps++;
                     string nameToDisplay = info.Name.Replace('_', ' ');

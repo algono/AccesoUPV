@@ -25,7 +25,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         public Action Continue { get; }
         public Func<Task> ContinueAsync { get; }
 
-        public OpenedFilesException(Action continueMethod, Func<Task> continueMethodAsync = null)
+        public OpenedFilesException(Action continueMethod, Func<Task> continueMethodAsync = null) : base(WarningMessage)
         {
             Continue = continueMethod;
             ContinueAsync = continueMethodAsync;
@@ -39,11 +39,11 @@ namespace AccesoUPV.Library.Connectors.Drive
         public new T Domain { get; set; }
         protected override DriveDomain DriveDomain => Config.GetDriveDomain(Domain);
 
-        public NetworkDrive(NetworkDriveConfig<T> config, T domain,
+        public NetworkDrive(NetworkDriveConfig<T> config, T defaultDomain,
             string drive = null, string user = null, string password = null) : base(null, null, drive, user, password)
         {
             Config = config;
-            Domain = domain;
+            Domain = defaultDomain;
         }
     }
 
@@ -62,7 +62,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         public bool UseCredentials { get; set; }
         public bool YesToAll { get; set; }
 
-        public override bool Connected
+        public override bool IsConnected
         {
             get => ConnectedDrive != null;
             protected set => ConnectedDrive = value ? Drive : null;
@@ -84,7 +84,7 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public void Open()
         {
-            if (Connected) Process.Start(ConnectedDrive);
+            if (IsConnected) Process.Start(ConnectedDrive);
             else throw new InvalidOperationException("El disco debe estar conectado para poder abrirlo");
         }
 
@@ -169,18 +169,21 @@ namespace AccesoUPV.Library.Connectors.Drive
             if (!e.Succeeded)
             {
                 // 55 - Error del sistema "El recurso no se encuentra disponible" (es decir, la dirección no es valida).
-                if (e.Output.Contains("55") || e.Error.Contains("55"))
+                if (e.OutputOrErrorContains("55"))
                     throw new ArgumentOutOfRangeException(nameof(Address));
 
                 /**
                 * 86 - Error del sistema "La contraseña de red es incorrecta"
                 * 1326 - Error del sistema "El usuario o la contraseña son incorrectos"
                 * Cuando las credenciales son erróneas, da uno de estos dos errores de forma arbitraria.
+                * 
+                * Suponemos que en el primer caso el error fue de la contraseña y en el segundo del usuario,
+                * pero no lo sabemos con seguridad.
                 */
 
-                if (e.Output.Contains("86") || e.Error.Contains("86"))
+                if (e.OutputOrErrorContains("86"))
                     throw new ArgumentException(e.Error, nameof(Password));
-                if (e.Output.Contains("1326") || e.Error.Contains("1326"))
+                if (e.OutputOrErrorContains("1326"))
                     throw new ArgumentException(e.Error, nameof(Username));
             }
         }
@@ -198,7 +201,7 @@ namespace AccesoUPV.Library.Connectors.Drive
 
             if (!e.Succeeded)
                 //Esa secuencia es parte de "(S/N)", con lo que deducimos que nos pide confirmación (porque tenemos archivos abiertos)
-                if (e.Output.Contains("/N)") || e.Error.Contains("/N)"))
+                if (e.OutputOrErrorContains("/N)"))
                     throw new OpenedFilesException(ForceDisconnect, ForceDisconnectAsync);
         }
 

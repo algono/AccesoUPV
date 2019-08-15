@@ -83,7 +83,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
 
         private static async Task Drive_OpenedFiles(OpenedFilesException ex)
         {
-            MessageBoxResult result = MessageBox.Show(OpenedFilesException.WarningMessage, OpenedFilesException.WarningTitle,
+            MessageBoxResult result = MessageBox.Show(ex.Message, OpenedFilesException.WarningTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Warning);
 
             if (result == MessageBoxResult.OK)

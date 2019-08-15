@@ -9,21 +9,21 @@ namespace AccesoUPV.UnitTests
     {
         public static void Assert_Connected(VPN vpn)
         {
-            Assert.IsTrue(vpn.Connected);
+            Assert.IsTrue(vpn.IsConnected);
             vpn.CheckConnection();
-            Assert.IsTrue(vpn.Connected);
+            Assert.IsTrue(vpn.IsConnected);
         }
 
         public static void Assert_Disconnected(VPN vpn)
         {
-            Assert.IsFalse(vpn.Connected);
+            Assert.IsFalse(vpn.IsConnected);
             vpn.CheckConnection();
-            Assert.IsFalse(vpn.Connected);
+            Assert.IsFalse(vpn.IsConnected);
         }
 
         public static void Assert_Connected(NetworkDrive drive)
         {
-            Assert.IsTrue(drive.Connected);
+            Assert.IsTrue(drive.IsConnected);
             Assert.IsNotNull(drive.ConnectedDrive);
             Assert.IsTrue(NetworkDrive.GetMappedDrives().Contains(drive.ConnectedDrive));
             Assert.IsTrue(Directory.Exists(drive.ConnectedDrive));
@@ -31,7 +31,7 @@ namespace AccesoUPV.UnitTests
 
         public static void Assert_Disconnected(NetworkDrive drive)
         {
-            Assert.IsFalse(drive.Connected);
+            Assert.IsFalse(drive.IsConnected);
             Assert.IsNull(drive.ConnectedDrive);
             Assert.IsFalse(Directory.Exists(drive.Drive));
             Assert.IsFalse(NetworkDrive.GetMappedDrives().Contains(drive.Drive));
