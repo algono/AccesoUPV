@@ -23,17 +23,11 @@ namespace AccesoUPV.Library.Connectors.VPN
 
         public VPNConfig Config { get; }
 
-        private static readonly ProcessStartInfo ConnectionInfo, DisconnectionInfo;
-
-        static VPN()
-        {
-            ConnectionInfo = CreateProcessInfo("rasphone.exe");
+        private static readonly ProcessStartInfo 
+            ConnectionInfo = CreateProcessInfo("rasphone.exe"),
             DisconnectionInfo = CreateProcessInfo("rasdial.exe");
-        }
 
-        public VPN(string server, string name = null) : this(new VPNConfig(server), name)
-        {
-        }
+        public VPN(string server, string name = null) : this(new VPNConfig(server), name) { }
 
         public VPN(VPNConfig config, string name = null)
         {

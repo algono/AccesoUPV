@@ -13,19 +13,17 @@
             PreferredStyle = style;
             Folder = folder;
         }
-        public string GetFullUsername(string userName)
-        {
-            return GetFullUserName(userName, PreferredStyle);
-        }
+        public string GetFullUsername(string userName) => GetFullUserName(userName, PreferredStyle);
         public string GetFullUserName(string userName, DomainStyle style)
         {
-            if (style == DomainStyle.AtSignStyle)
+            switch (style)
             {
-                return $"{userName}@{Name}";
-            }
-            else // DomainStyle.BackSlashStyle
-            {
-                return $@"{Name}\{userName}";
+                case DomainStyle.AtSignStyle:
+                    return $"{userName}@{Name}";
+                case DomainStyle.BackSlashStyle:
+                    return $@"{Name}\{userName}";
+                default:
+                    return null;
             }
         }
     }

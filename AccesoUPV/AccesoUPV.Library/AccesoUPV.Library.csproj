@@ -49,7 +49,6 @@
     <Compile Include="Connectors\Drive\DriveDomain.cs" />
     <Compile Include="Connectors\Drive\DriveFactory.cs" />
     <Compile Include="Connectors\Connectable.cs" />
-    <Compile Include="Connectors\Drive\NetworkDriveConfig.cs" />
     <Compile Include="Connectors\Openable.cs" />
     <Compile Include="Connectors\ProcessEventArgs.cs" />
     <Compile Include="Connectors\VPN\VPNConfig.cs" />

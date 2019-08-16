@@ -34,25 +34,32 @@ namespace AccesoUPV.Library.Connectors.Drive
 
     public class NetworkDrive<T> : NetworkDrive where T : Enum
     {
-        public NetworkDriveConfig<T> Config { get; }
-        public override string Address => Config.GetAddress(Username, base.Domain);
-        public new T Domain { get; set; }
-        protected override DriveDomain DriveDomain => Config.GetDriveDomain(Domain);
+        public IDictionary<T, DriveDomain> Domains { get; }
 
-        public NetworkDrive(NetworkDriveConfig<T> config, T defaultDomain,
-            string drive = null, string user = null, string password = null) : base(null, null, drive, user, password)
+        private T _domain;
+        public new T Domain
         {
-            Config = config;
-            Domain = defaultDomain;
+            get => _domain;
+            set
+            {
+                _domain = value;
+                base.Domain = Domains[value];
+            }
         }
+
+        public NetworkDrive(Func<string, DriveDomain, string> getAddress, IDictionary<T, DriveDomain> domains, string drive = null, string user = null, string password = null) : base(getAddress, drive, null, user, password)
+        {
+            Domains = domains;
+            base.Domain = Domains[Domain];
+        }
+
     }
 
     public class NetworkDrive : ProcessConnector, Openable
     {
         private readonly Func<string, DriveDomain, string> _getAddress;
-        public virtual string Address => _getAddress(Username, Domain);
-        public DriveDomain Domain => DriveDomain;
-        protected virtual DriveDomain DriveDomain { get; }
+        public string Address => _getAddress(Username, Domain);
+        public DriveDomain Domain { get; set; }
 
         public string ConnectedDrive { get; private set; }
         public string Drive { get; set; }
@@ -70,11 +77,11 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         private static readonly ProcessStartInfo NetInfo = CreateProcessInfo("net.exe");
 
-        public NetworkDrive(Func<string, DriveDomain, string> getAddress, DriveDomain domain,
-            string drive = null, string user = null, string password = null)
+        public NetworkDrive(Func<string, DriveDomain, string> getAddress, string drive = null,
+            DriveDomain domain = null, string user = null, string password = null)
         {
             _getAddress = getAddress;
-            DriveDomain = domain;
+            Domain = domain;
 
             Drive = drive;
             Username = user;
