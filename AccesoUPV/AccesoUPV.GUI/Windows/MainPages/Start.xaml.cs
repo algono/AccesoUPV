@@ -89,8 +89,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
 
         protected virtual void OnStarted(EventArgs e)
         {
-            EventHandler handler = Started;
-            handler?.Invoke(this, e);
+            Started?.Invoke(this, e);
         }
 
         private void HelpButton_OnClick(object sender, RoutedEventArgs e)

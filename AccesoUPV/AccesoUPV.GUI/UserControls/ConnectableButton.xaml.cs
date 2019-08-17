@@ -9,7 +9,7 @@ namespace AccesoUPV.GUI.UserControls
     /// <summary>
     /// Lógica de interacción para ConnectableButton.xaml
     /// </summary>
-    public partial class ConnectableButton : UserControl
+    public partial class ConnectableButton
     {
         #region Dependency Properties
         public Connectable Connectable
