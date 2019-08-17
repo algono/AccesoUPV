@@ -113,7 +113,7 @@ namespace AccesoUPV.Library.Services
             List<Func<Task>> driveTasks = new List<Func<Task>>();
             List<Func<Task>> VPNTasks = new List<Func<Task>>();
 
-            int steps = 0;
+            int steps = 1; // El "Saliendo" final se considera un paso
 
             foreach (PropertyInfo info in connectablesInfo)
             {

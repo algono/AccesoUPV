@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors.Drive
 {
-    // Custom Exceptions
+    #region Custom Exceptions
     // (Not having constructors defined creates an empty constructor automatically, and it calls its parent constructor as well)
     [Serializable]
-    public class NotAvailableDriveException : IOException
-    {
-    }
+    public class NotAvailableDriveException : IOException { }
 
     [Serializable]
     public class OpenedFilesException : IOException
@@ -30,7 +28,8 @@ namespace AccesoUPV.Library.Connectors.Drive
             Continue = continueMethod;
             ContinueAsync = continueMethodAsync;
         }
-    }
+    } 
+    #endregion
 
     public class NetworkDrive<T> : NetworkDrive where T : Enum
     {

@@ -26,7 +26,7 @@
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
 
-        <Button x:Name="ConnectButton" Grid.Column="1" Grid.Row="2" FontSize="36" Content="Acceder" VerticalAlignment="Center" HorizontalAlignment="Center" Click="ConnectButton_Click" />
+        <Button x:Name="ConnectButton" Grid.Column="1" Grid.Row="2" FontSize="36" Content="Conexión" VerticalAlignment="Center" HorizontalAlignment="Center" Click="ConnectButton_Click" />
         <Button x:Name="PreferencesButton" Grid.Column="1" Grid.Row="4" FontSize="24" Content="Ajustes" VerticalAlignment="Center" HorizontalAlignment="Center" Click="PreferencesButton_Click" />
         <Button x:Name="HelpButton" Grid.Column="1" Grid.Row="6" FontSize="24" Content="Ayuda" VerticalAlignment="Center" HorizontalAlignment="Center" Click="HelpButton_OnClick" />
     </Grid>

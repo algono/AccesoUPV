@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace AccesoUPV.GUI.Windows.UserControls
+namespace AccesoUPV.GUI.UserControls
 {
     /// <summary>
     /// Lógica de interacción para ConnectableButton.xaml

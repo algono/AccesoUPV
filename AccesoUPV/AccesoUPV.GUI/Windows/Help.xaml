@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AccesoUPV.GUI.Windows"
-        xmlns:helpEntries="clr-namespace:AccesoUPV.GUI.Windows.HelpEntries"
         mc:Ignorable="d"
         Title="Ayuda" Height="450" Width="800" WindowStartupLocation="CenterScreen">
     <Grid>
@@ -21,11 +20,11 @@
         </Grid.RowDefinitions>
 
         <ListView x:Name="Index" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" SelectionChanged="Index_OnSelected">
-            <ListViewItem Tag="{x:Static helpEntries:Manuals.VPN_UPV}">Cómo crear una VPN manualmente (UPV)</ListViewItem>
-            <ListViewItem Tag="{x:Static helpEntries:Manuals.VPN_DSIC}">Cómo crear una VPN manualmente (DSIC)</ListViewItem>
-            <ListViewItem Tag="{x:Type helpEntries:EscritoriosDSICCredentials}">(Escritorios DSIC) Cómo guardar el usuario y contraseña</ListViewItem>
-            <ListViewItem Tag="{x:Type helpEntries:DSICErrorVPN}">¡No puedo acceder a la VPN del DSIC! Qué hago?</ListViewItem>
-            <ListViewItem Tag="{x:Type helpEntries:ManualSSH}">Conectarse manualmente a los sitios SSH</ListViewItem>
+            <ListViewItem >Cómo crear una VPN manualmente (UPV)</ListViewItem>
+            <ListViewItem >Cómo crear una VPN manualmente (DSIC)</ListViewItem>
+            <ListViewItem >(Escritorios DSIC) Cómo guardar el usuario y contraseña</ListViewItem>
+            <ListViewItem >¡No puedo acceder a la VPN del DSIC! Qué hago?</ListViewItem>
+            <ListViewItem >Conectarse manualmente a los sitios SSH</ListViewItem>
         </ListView>
 
         <Frame x:Name="EntryFrame" NavigationUIVisibility="Hidden" Grid.Column="2" Grid.Row="1" />

@@ -37,6 +37,9 @@ namespace AccesoUPV.GUI.Windows
             Shutdown shutdownWindow = new Shutdown(_service);
             shutdownWindow.Canceled += (s, ev) => e.Cancel = true;
             shutdownWindow.ShowDialog();
+
+            // close all active threads (this prevents a weird TaskCanceledException from happening)
+            if (!e.Cancel) Environment.Exit(0);
         }
 
     }

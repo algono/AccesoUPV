@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace AccesoUPV.GUI.Windows.UserControls
+namespace AccesoUPV.GUI.UserControls
 {
     public class ConnectionEventArgs : EventArgs
     {

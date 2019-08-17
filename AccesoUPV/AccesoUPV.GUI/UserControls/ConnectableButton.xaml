@@ -1,15 +1,15 @@
 ﻿<UserControl 
         x:Name="MyConnectableButton"
-        x:Class="AccesoUPV.GUI.Windows.UserControls.ConnectableButton"
+        x:Class="AccesoUPV.GUI.UserControls.ConnectableButton"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-        xmlns:local="clr-namespace:AccesoUPV.GUI.Windows.UserControls"
+        xmlns:local="clr-namespace:AccesoUPV.GUI.UserControls"
         mc:Ignorable="d"
-        d:DesignHeight="{Binding ElementName=MyConnectableButton, Path=Height}" d:DesignWidth="{Binding ElementName=MyConnectableButton, Path=Width}">
+        d:DesignHeight="70" d:DesignWidth="100">
 
     <Grid>
         <Grid.RowDefinitions>

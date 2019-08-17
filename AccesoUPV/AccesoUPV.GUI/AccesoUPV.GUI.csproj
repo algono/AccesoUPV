@@ -70,16 +70,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Help\HelpProvider.cs" />
-    <Compile Include="Windows\HelpEntries\DSICErrorVPN.xaml.cs">
-      <DependentUpon>DSICErrorVPN.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\HelpEntries\EscritoriosDSICCredentials.xaml.cs">
-      <DependentUpon>EscritoriosDSICCredentials.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\HelpEntries\Manuals.cs" />
-    <Compile Include="Windows\HelpEntries\ManualSSH.xaml.cs">
-      <DependentUpon>ManualSSH.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\MainPages\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
@@ -92,23 +82,11 @@
     <Compile Include="Windows\Shutdown.xaml.cs">
       <DependentUpon>Shutdown.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\UserControls\ConnectableButton.xaml.cs">
+    <Compile Include="UserControls\ConnectableButton.xaml.cs">
       <DependentUpon>ConnectableButton.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\UserControls\ConnectionEventArgs.cs" />
+    <Compile Include="UserControls\ConnectionEventArgs.cs" />
     <Page Include="Windows\Help.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\HelpEntries\DSICErrorVPN.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\HelpEntries\EscritoriosDSICCredentials.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\HelpEntries\ManualSSH.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -147,7 +125,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\UserControls\ConnectableButton.xaml">
+    <Page Include="UserControls\ConnectableButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

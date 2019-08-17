@@ -1,4 +1,5 @@
-﻿using AccesoUPV.GUI.UserControls;
+﻿using AccesoUPV.GUI.Windows;
+using AccesoUPV.GUI.Windows.UserControls;
 using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Services;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace AccesoUPV.GUI.Windows.MainPages
+namespace AccesoUPV.GUI.Main.Pages
 {
     /// <summary>
     /// Lógica de interacción para Main.xaml
