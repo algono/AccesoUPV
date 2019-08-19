@@ -18,70 +18,29 @@ namespace AccesoUPV.GUI.UserControls
             set => SetValue(ConnectableProperty, value);
         }
 
-        public string ConnectText
+        public string Text
         {
-            get => (string)GetValue(ConnectTextProperty);
-            set => SetValue(ConnectTextProperty, value);
+            get => (string)GetValue(TextProperty);
+            set => SetValue(TextProperty, value);
         }
 
-        public string DisconnectText
+        public string IconKind
         {
-            get => (string)GetValue(DisconnectTextProperty);
-            set => SetValue(DisconnectTextProperty, value);
+            get => (string)GetValue(IconKindProperty);
+            set => SetValue(IconKindProperty, value);
         }
 
-        public int ConnectFontSize
-        {
-            get => (int)GetValue(ConnectFontSizeProperty);
-            set => SetValue(ConnectFontSizeProperty, value);
-        }
+        // Using a DependencyProperty as the backing store for IconKind.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IconKindProperty =
+            DependencyProperty.Register("IconKind", typeof(string), typeof(ConnectableButton), new PropertyMetadata("Connect"));
 
-        public int DisconnectFontSize
-        {
-            get => (int)GetValue(DisconnectFontSizeProperty);
-            set => SetValue(DisconnectFontSizeProperty, value);
-        }
-
-        public string ConnectIconKind
-        {
-            get => (string)GetValue(ConnectIconKindProperty);
-            set => SetValue(ConnectIconKindProperty, value);
-        }
-
-        public string DisconnectIconKind
-        {
-            get => (string)GetValue(DisconnectIconKindProperty);
-            set => SetValue(DisconnectIconKindProperty, value);
-        }
-
+        // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TextProperty =
+            DependencyProperty.Register("Text", typeof(string), typeof(ConnectableButton), new PropertyMetadata("Conectar"));
 
         // Using a DependencyProperty as the backing store for Connectable.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ConnectableProperty =
             DependencyProperty.Register("Connectable", typeof(Connectable), typeof(ConnectableButton), new PropertyMetadata());
-
-        // Using a DependencyProperty as the backing store for ConnectText.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ConnectTextProperty =
-            DependencyProperty.Register("ConnectText", typeof(string), typeof(ConnectableButton), new PropertyMetadata("Conectar"));
-
-        // Using a DependencyProperty as the backing store for DisconnectText.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DisconnectTextProperty =
-            DependencyProperty.Register("DisconnectText", typeof(string), typeof(ConnectableButton), new PropertyMetadata("Desconectar"));
-
-        // Using a DependencyProperty as the backing store for ConnectFontSize.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ConnectFontSizeProperty =
-            DependencyProperty.Register("ConnectFontSize", typeof(int), typeof(ConnectableButton), new PropertyMetadata(14));
-
-        // Using a DependencyProperty as the backing store for DisconnectFontSize.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DisconnectFontSizeProperty =
-            DependencyProperty.Register("DisconnectFontSize", typeof(int), typeof(ConnectableButton), new PropertyMetadata(11));
-
-        // Using a DependencyProperty as the backing store for ConnectIconKind.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ConnectIconKindProperty =
-            DependencyProperty.Register("ConnectIconKind", typeof(string), typeof(ConnectableButton), new PropertyMetadata("Connect"));
-
-        // Using a DependencyProperty as the backing store for DisconnectIconKind.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DisconnectIconKindProperty =
-            DependencyProperty.Register("DisconnectIconKind", typeof(string), typeof(ConnectableButton), new PropertyMetadata("Power"));
 
         #endregion
 
@@ -96,55 +55,46 @@ namespace AccesoUPV.GUI.UserControls
             InitializeComponent();
         }
 
-        private async void ConnectButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ConnectHandler == null)
-            {
-                await Connect();
-            }
-            else
-            {
-                ConnectionEventArgs ce = new ConnectionEventArgs
-                {
-                    Connectable = Connectable,
-                    ConnectionFunc = Connect,
-                    RoutedEventArgs = e
-                };
-                await ConnectHandler(sender, ce);
-            }
+        private async Task Connect(object sender, RoutedEventArgs e)
+            => await Handle(sender, e, StartConnecting, ConnectHandler);
 
-            if (Connectable.IsConnected) DisconnectButton.Visibility = Visibility.Visible;
-        }
-
-        private async Task Connect()
+        private async Task StartConnecting()
         {
             if (!Connectable.IsConnected) await Connectable.ConnectAsync();
-            if (Connectable is Openable openable) openable.Open();
         }
 
-        private async void DisconnectButton_Click(object sender, RoutedEventArgs e)
+        private async Task Disconnect(object sender, RoutedEventArgs e)
+            => await Handle(sender, e, Connectable.DisconnectAsync, DisconnectHandler);
+
+        private async Task Handle(object sender, RoutedEventArgs e, Func<Task> function, Func<object, ConnectionEventArgs, Task> handler)
         {
-            if (DisconnectHandler == null)
+            if (handler == null)
             {
-                await Disconnect();
+                await function();
             }
             else
             {
                 ConnectionEventArgs ce = new ConnectionEventArgs
                 {
                     Connectable = Connectable,
-                    ConnectionFunc = Disconnect,
+                    ConnectionFunc = function,
                     RoutedEventArgs = e
                 };
-                await DisconnectHandler(sender, ce);
+                await handler(sender, ce);
             }
-
-            if (!Connectable.IsConnected) DisconnectButton.Visibility = Visibility.Hidden;
         }
 
-        private async Task Disconnect()
+        private async void ConnectionSwitch_Click(object sender, RoutedEventArgs e)
         {
-            await Connectable.DisconnectAsync();
+            if (Connectable.IsConnected) await Disconnect(sender, e);
+            else await Connect(sender, e);
+
+            ConnectionSwitch.IsChecked = Connectable.IsConnected;
+        }
+
+        private void OpenButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Connectable.IsConnected && Connectable is Openable openable) openable.Open();
         }
     }
 }

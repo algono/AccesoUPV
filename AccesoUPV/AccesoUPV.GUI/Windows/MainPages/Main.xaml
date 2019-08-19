@@ -25,8 +25,8 @@
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
 
-        <userControls:ConnectableButton Grid.Column="1" Grid.Row="1" Connectable="{Binding ElementName=MainMenu, Path=Service.Disco_W}" ConnectText="Disco W" ConnectIconKind="NetworkServerConnecting" DisconnectIconKind="NetworkServerDisconnect" VerticalAlignment="Center" HorizontalAlignment="Center" ConnectHandler="ConnectWDrive" DisconnectHandler="DisconnectDrive" />
-        <userControls:ConnectableButton Grid.Column="2" Grid.Row="1" Connectable="{Binding ElementName=MainMenu, Path=Service.Disco_DSIC}" ConnectText="Disco DSIC" ConnectIconKind="NetworkServerConnecting" DisconnectIconKind="NetworkServerDisconnect" VerticalAlignment="Center" HorizontalAlignment="Center" ConnectHandler="ConnectDSICDrive" DisconnectHandler="DisconnectDrive" />
+        <userControls:ConnectableButton Grid.Column="1" Grid.Row="1" Connectable="{Binding ElementName=MainMenu, Path=Service.Disco_W}" Text="Disco W" IconKind="NetworkServerConnecting" VerticalAlignment="Center" HorizontalAlignment="Center" ConnectHandler="ConnectWDrive" DisconnectHandler="DisconnectDrive" />
+        <userControls:ConnectableButton Grid.Column="2" Grid.Row="1" Connectable="{Binding ElementName=MainMenu, Path=Service.Disco_DSIC}" Text="Disco DSIC" IconKind="NetworkServerConnecting" VerticalAlignment="Center" HorizontalAlignment="Center" ConnectHandler="ConnectDSICDrive" DisconnectHandler="DisconnectDrive" />
 
         <StackPanel Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBlock FontSize="18" Text="Escritorios DSIC" />
@@ -34,6 +34,6 @@
             <Button x:Name="EvirWindowsButton" Content="Windows" Click="EvirWindowsButton_Click"/>
         </StackPanel>
 
-        <userControls:ConnectableButton x:Name="PortalButton" Grid.Column="2" Grid.Row="2" Connectable="{Binding ElementName=MainMenu, Path=Service.VPN_DSIC}" DisconnectIconKind="NetworkDisconnect" VerticalAlignment="Center" HorizontalAlignment="Center" ConnectText="Portal DSIC" ConnectHandler="ConnectPortalDSIC"/>
+        <userControls:ConnectableButton x:Name="PortalButton" Grid.Column="2" Grid.Row="2" Connectable="{Binding ElementName=MainMenu, Path=Service.VPN_DSIC}" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Portal DSIC" ConnectHandler="ConnectPortalDSIC"/>
     </Grid>
 </Page>

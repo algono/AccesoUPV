@@ -11,70 +11,23 @@
         mc:Ignorable="d"
         d:DesignHeight="70" d:DesignWidth="100" TransitionsEnabled="False">
 
-    <controls:MetroContentControl.Resources>
-        <Style x:Key="DisconnectButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Background" Value="#FFAC1010" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="FontSize" Value="{DynamicResource FlatButtonFontSize}" />
-            <Setter Property="Foreground" Value="#FFFFDEDE" />
-            <Setter Property="Padding" Value="10 5 10 5" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}" xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro">
-                        <Border x:Name="Border"
-                            Margin="0"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="2"
-                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
-                            <Controls:ContentControlEx x:Name="PART_ContentPresenter"
-                                                   Padding="{TemplateBinding Padding}"
-                                                   HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                   VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                   Content="{TemplateBinding Content}"
-                                                   ContentCharacterCasing="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ControlsHelper.ContentCharacterCasing)}"
-                                                   ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                                                   ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                   ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-                                                   RecognizesAccessKey="True"
-                                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#FF6C0909" />
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource FlatButtonPressedBackgroundBrush}" />
-                    <Setter Property="Foreground" Value="{DynamicResource FlatButtonPressedForegroundBrush}" />
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Foreground" Value="{DynamicResource GrayBrush2}" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </controls:MetroContentControl.Resources>
+    <Border BorderThickness="1" CornerRadius="2" BorderBrush="LightGray" Padding="5">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
+            <controls:ToggleSwitch Grid.Column="0" VerticalAlignment="Center" x:Name="ConnectionSwitch" OnLabel="" OffLabel="" Click="ConnectionSwitch_Click" />
 
-        <Button x:Name="ConnectButton" Grid.Row="0" Click="ConnectButton_Click" FontSize="{Binding ElementName=MyConnectableButton, Path=ConnectFontSize}">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <iconPacks:PackIconModern Kind="{Binding ElementName=MyConnectableButton, Path=ConnectIconKind}" />
-                <TextBlock Text="{Binding ElementName=MyConnectableButton, Path=ConnectText}" Margin="5 0 0 0"/>
-            </StackPanel>
-        </Button>
-        <Button x:Name="DisconnectButton" Grid.Row="1" BorderBrush="{x:Null}" Click="DisconnectButton_Click" Visibility="Hidden" Margin="5 0 5 0" Style="{StaticResource DisconnectButtonStyle}" FontSize="{Binding ElementName=MyConnectableButton, Path=DisconnectFontSize}">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <iconPacks:PackIconModern Kind="{Binding ElementName=MyConnectableButton, Path=DisconnectIconKind}" />
-                <TextBlock Text="{Binding ElementName=MyConnectableButton, Path=DisconnectText}" Margin="5 0 0 0"/>
-            </StackPanel>
-        </Button>
-    </Grid>
+            <Button Grid.Column="2" x:Name="OpenButton" VerticalAlignment="Center" Click="OpenButton_Click" IsEnabled="{Binding ElementName=ConnectionSwitch, Path=IsChecked}" Margin="0 0 10 0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
+                    <iconPacks:PackIconModern VerticalAlignment="Center" x:Name="ConnectableIcon" Kind="{Binding ElementName=MyConnectableButton, Path=IconKind}" Margin="0 0 5 0" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=MyConnectableButton, Path=Text}" FontSize="{Binding ElementName=MyConnectableButton, Path=FontSize}" />
+                </StackPanel>
+            </Button>
+        </Grid>
+    </Border>
+
 </controls:MetroContentControl>
