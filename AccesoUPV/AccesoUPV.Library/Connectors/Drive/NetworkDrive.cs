@@ -68,10 +68,9 @@ namespace AccesoUPV.Library.Connectors.Drive
             }
         }
 
-        public NetworkDrive(Func<string, DriveDomain, string> getAddress, IDictionary<T, DriveDomain> domains, string drive = null, string user = null, string password = null) : base(getAddress, drive, null, user, password)
+        public NetworkDrive(Func<string, DriveDomain, string> getAddress, IDictionary<T, DriveDomain> domains, string drive = null, string user = null, string password = null) : base(getAddress, drive, domains[default], user, password)
         {
             Domains = domains;
-            base.Domain = Domains[Domain];
         }
 
     }
@@ -116,7 +115,7 @@ namespace AccesoUPV.Library.Connectors.Drive
             else throw new InvalidOperationException("El disco debe estar conectado para poder abrirlo");
         }
 
-        public static List<string> GetDrives(bool onlyIfAvailable)
+        public static List<string> GetDrives(bool onlyIfAvailable = false)
         {
             List<string> drives = new List<string>();
             List<string> mappedDrives = GetMappedDrives();
