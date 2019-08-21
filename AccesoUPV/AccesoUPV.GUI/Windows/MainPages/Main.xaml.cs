@@ -38,6 +38,25 @@ namespace AccesoUPV.GUI.Windows.MainPages
             {
                 Drive_UsernameWasNull();
             }
+            catch (NotAvailableDriveException ex) when (ex.Drive == null)
+            {
+                MessageBox.Show(ex.Message, "Ninguna unidad disponible", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (NotAvailableDriveException ex)
+            {
+                string WARNING_W =
+                    ex.Message + "\n" +
+                    "(Continúe si prefiere que se elija la primera unidad disponible solo durante esta conexión).\n ";
+
+                MessageBoxResult result = MessageBox.Show(WARNING_W, $"Unidad {ex.Drive} contiene disco", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.OK)
+                {
+                    NetworkDrive Disco_W = (e.Connectable as NetworkDrive);
+                    Disco_W.Drive = null;
+                    await e.ConnectionFunc().ContinueWith((t) => Disco_W.Drive = ex.Drive);
+                }
+            }
         }
 
         private async Task ConnectDSICDrive(object sender, ConnectionEventArgs e)
@@ -95,6 +114,24 @@ namespace AccesoUPV.GUI.Windows.MainPages
         {
             try
             {
+                #region Conflicto con Disco W
+                if (Service.Disco_W.IsConnected)
+                {
+                    MessageBoxResult result = MessageBox.Show("No se puede acceder a la VPN del DSIC teniendo el Disco W conectado.\n"
+                                    + "Si continúa, este será desconectado automáticamente.\n\n"
+                                    + "¿Desea continuar?", "Conflicto entre conexiones", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+
+                    if (result == MessageBoxResult.OK)
+                    {
+                        await Service.Disco_W.DisconnectAsync();
+                    }
+                    else
+                    {
+                        throw new OperationCanceledException();
+                    }
+                } 
+                #endregion
+
                 await Service.VPN_DSIC.ConnectAsync();
 
                 #region Portal DSIC Dialog

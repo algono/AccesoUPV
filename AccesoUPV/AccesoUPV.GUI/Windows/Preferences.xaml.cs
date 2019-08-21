@@ -37,9 +37,22 @@ namespace AccesoUPV.GUI.Windows
             VPNToUPVBox.Text = _service.VPN_UPV.Name;
             VPNToDSICBox.Text = _service.VPN_DSIC.Name;
 
-            List<string> availableDrives = NetworkDrive.GetAvailableDrives();
-            WDriveBox.ItemsSource = availableDrives;
-            DSICDriveBox.ItemsSource = availableDrives;
+            // TODO: Refactor VPN and Drive preferences to generic User Controls
+            LoadDrives();
+            ShowBusyDrives.Click += (s, e) =>
+            {
+                if (ShowBusyDrives.IsChecked ?? false)
+                {
+                    LoadDrives();
+                }
+                else
+                {
+                    WDriveBox.ItemsSource
+                    = NetworkDrive.SelectAvailable(
+                        WDriveBox.ItemsSource
+                        as IEnumerable<string>);
+                }
+            };
 
             string WDriveLetter = _service.Disco_W.Drive;
             if (!string.IsNullOrEmpty(WDriveLetter))
@@ -67,6 +80,14 @@ namespace AccesoUPV.GUI.Windows
             PassDSICBox.Text = _service.Disco_DSIC.Password;
             SavePassCheckBox.IsChecked = _service.SavePasswords;
 
+        }
+
+        private void LoadDrives()
+        {
+            bool onlyIfAvailable = !(ShowBusyDrives.IsChecked ?? false);
+            List<string> availableDrives = NetworkDrive.GetDrives(onlyIfAvailable);
+            WDriveBox.ItemsSource = availableDrives;
+            DSICDriveBox.ItemsSource = availableDrives;
         }
 
         private void SaveChanges()

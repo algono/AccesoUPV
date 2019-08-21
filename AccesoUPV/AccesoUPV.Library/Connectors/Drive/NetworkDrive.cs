@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors.Drive
@@ -9,7 +10,28 @@ namespace AccesoUPV.Library.Connectors.Drive
     #region Custom Exceptions
     // (Not having constructors defined creates an empty constructor automatically, and it calls its parent constructor as well)
     [Serializable]
-    public class NotAvailableDriveException : IOException { }
+    public class NotAvailableDriveException : IOException
+    {
+        public string Drive { get; }
+
+        public string DriveMessage => GetDriveMessage(Drive);
+
+        public const string NoDriveMessage = "No existe ninguna unidad disponible. Libere alguna unidad y vuelva a intentarlo.";
+
+        public NotAvailableDriveException() : base(NoDriveMessage)
+        {
+
+        }
+
+        public NotAvailableDriveException(string drive) : base(GetDriveMessage(drive))
+        {
+            Drive = drive;
+        }
+
+        private static string GetDriveMessage(string drive)
+            => $"La unidad definida para el disco ({drive}) ya contiene un disco asociado.\n\n"
+            + "Antes de continuar, desconecte el disco asociado, o cambie la unidad utilizada para el disco.";
+    }
 
     [Serializable]
     public class OpenedFilesException : IOException
@@ -94,19 +116,34 @@ namespace AccesoUPV.Library.Connectors.Drive
             else throw new InvalidOperationException("El disco debe estar conectado para poder abrirlo");
         }
 
-        public static List<string> GetAvailableDrives()
+        public static List<string> GetDrives(bool onlyIfAvailable)
         {
             List<string> drives = new List<string>();
             List<string> mappedDrives = GetMappedDrives();
 
-            for (char letter = 'Z'; letter >= 'D'; letter--)
+            for (char letter = 'A'; letter <= 'Z'; letter++)
             {
                 string drive = letter + ":";
-                if (!Directory.Exists(drive) && !mappedDrives.Contains(drive)) drives.Add(drive);
+                if (!(onlyIfAvailable && !IsAvailable(drive, mappedDrives)))
+                {
+                    drives.Add(drive);
+                }
             }
 
             return drives;
         }
+
+        public static IEnumerable<string> SelectAvailable(IEnumerable<string> drives)
+        {
+            List<string> mappedDrives = GetMappedDrives();
+            return drives.Where((drive) => IsAvailable(drive, mappedDrives));
+        }
+
+        public static bool IsAvailable(string drive) => IsAvailable(drive, GetMappedDrives());
+
+        private static bool IsAvailable(string drive, List<string> mappedDrives) 
+            => !mappedDrives.Contains(drive)
+               && !Directory.Exists(drive);
 
         public static List<string> GetMappedDrives()
         {
@@ -130,7 +167,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         {
             if (string.IsNullOrEmpty(Drive))
             {
-                List<string> availableDrives = GetAvailableDrives();
+                List<string> availableDrives = GetDrives(onlyIfAvailable: true);
                 if (availableDrives.Count == 0) throw new NotAvailableDriveException();
                 Drive = availableDrives[0];
             }
