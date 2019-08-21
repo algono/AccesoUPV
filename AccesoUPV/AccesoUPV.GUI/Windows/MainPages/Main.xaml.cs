@@ -100,7 +100,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
                 #region Portal DSIC Dialog
                 Window portalWindow = CreatePortalDSICDialog();
                 portalWindow.Closed += async (s, ce) => await Service.VPN_DSIC.DisconnectAsync();
-                portalWindow.Show();
+                portalWindow.ShowDialog();
                 #endregion
             }
             catch (ArgumentNullException)
