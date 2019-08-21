@@ -70,6 +70,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Help\HelpProvider.cs" />
+    <Compile Include="UserControls\Preferences\DrivePreferences.xaml.cs">
+      <DependentUpon>DrivePreferences.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Preferences\VisibilityToGridRowHeightConverter.cs" />
+    <Compile Include="UserControls\Preferences\VPNPreferences.xaml.cs">
+      <DependentUpon>VPNPreferences.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\MainPages\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
@@ -86,6 +93,14 @@
       <DependentUpon>ConnectableButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\ConnectionEventArgs.cs" />
+    <Page Include="UserControls\Preferences\DrivePreferences.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\Preferences\VPNPreferences.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Help.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

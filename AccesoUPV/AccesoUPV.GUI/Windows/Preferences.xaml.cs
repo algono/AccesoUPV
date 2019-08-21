@@ -11,16 +11,17 @@ namespace AccesoUPV.GUI.Windows
     /// </summary>
     public partial class Preferences
     {
-        private readonly IAccesoUPVService _service;
+        public IAccesoUPVService Service { get; }
 
         public Preferences()
         {
             InitializeComponent();
         }
 
-        public Preferences(IAccesoUPVService service) : this()
+        public Preferences(IAccesoUPVService service)
         {
-            _service = service;
+            Service = service;
+            InitializeComponent();
             Load();
         }
 
@@ -32,94 +33,45 @@ namespace AccesoUPV.GUI.Windows
 
         private void Load()
         {
-            UserBox.Text = _service.User;
+            UserBox.Text = Service.User;
 
-            VPNToUPVBox.Text = _service.VPN_UPV.Name;
-            VPNToDSICBox.Text = _service.VPN_DSIC.Name;
+            VPNToUPVPrefs.Load();
+            VPNToDSICPrefs.Load();
 
-            // TODO: Refactor VPN and Drive preferences to generic User Controls
-            LoadDrives();
-            ShowBusyDrives.Click += (s, e) =>
-            {
-                if (ShowBusyDrives.IsChecked ?? false)
-                {
-                    LoadDrives();
-                }
-                else
-                {
-                    WDriveBox.ItemsSource
-                    = NetworkDrive.SelectAvailable(
-                        WDriveBox.ItemsSource
-                        as IEnumerable<string>);
-                }
-            };
-
-            string WDriveLetter = _service.Disco_W.Drive;
-            if (!string.IsNullOrEmpty(WDriveLetter))
-            {
-                WDriveCheckBox.IsChecked = true;
-                WDriveBox.SelectedItem = WDriveLetter;
-            }
-
-            string DSICDriveLetter = _service.Disco_DSIC.Drive;
-            if (!string.IsNullOrEmpty(DSICDriveLetter))
-            {
-                DSICDriveCheckBox.IsChecked = true;
-                DSICDriveBox.SelectedItem = DSICDriveLetter;
-            }
+            DiscoWPrefs.Load();
+            DiscoDSICPrefs.Load();
 
             foreach (RadioButton domain in DomainsUPV.Children)
             {
-                if (_service.Disco_W.Domain.Equals((UPVDomain)domain.Tag))
+                if (Service.Disco_W.Domain.Equals((UPVDomain)domain.Tag))
                 {
                     domain.IsChecked = true;
                     break;
                 }
             }
 
-            PassDSICBox.Text = _service.Disco_DSIC.Password;
-            SavePassCheckBox.IsChecked = _service.SavePasswords;
-
-        }
-
-        private void LoadDrives()
-        {
-            bool onlyIfAvailable = !(ShowBusyDrives.IsChecked ?? false);
-            List<string> availableDrives = NetworkDrive.GetDrives(onlyIfAvailable);
-            WDriveBox.ItemsSource = availableDrives;
-            DSICDriveBox.ItemsSource = availableDrives;
         }
 
         private void SaveChanges()
         {
-            _service.User = UserBox.Text;
+            Service.User = UserBox.Text;
 
-            _service.VPN_UPV.Name = VPNToUPVBox.Text;
-            _service.VPN_DSIC.Name = VPNToDSICBox.Text;
+            VPNToUPVPrefs.Save();
+            VPNToDSICPrefs.Save();
 
-            _service.Disco_W.Drive =
-                (WDriveCheckBox.IsChecked ?? false)
-                ? WDriveBox.SelectedItem.ToString()
-                : null;
-
-            _service.Disco_DSIC.Drive =
-                (DSICDriveCheckBox.IsChecked ?? false)
-                ? DSICDriveBox.SelectedItem.ToString()
-                : null;
+            DiscoWPrefs.Save();
+            DiscoDSICPrefs.Save();
 
             foreach (RadioButton domain in DomainsUPV.Children)
             {
                 if (domain.IsChecked ?? false)
                 {
-                    _service.Disco_W.Domain = (UPVDomain)domain.Tag;
+                    Service.Disco_W.Domain = (UPVDomain)domain.Tag;
                     break;
                 }
             }
 
-            _service.Disco_DSIC.Password = PassDSICBox.Text;
-            _service.SavePasswords = SavePassCheckBox.IsChecked ?? false;
-
-            _service.SaveChanges();
+            Service.SaveChanges();
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
@@ -130,7 +82,7 @@ namespace AccesoUPV.GUI.Windows
 
             if (result == MessageBoxResult.OK)
             {
-                _service.ClearSettings();
+                Service.ClearSettings();
                 Application.Current.Shutdown();
             }
         }
