@@ -34,6 +34,6 @@
             <Button x:Name="EvirWindowsButton" Content="Windows" Click="EvirWindowsButton_Click"/>
         </StackPanel>
 
-        <userControls:ConnectableButton x:Name="PortalButton" Grid.Column="2" Grid.Row="2" Connectable="{Binding ElementName=MainMenu, Path=Service.VPN_DSIC}" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Portal DSIC" ConnectHandler="ConnectPortalDSIC"/>
+        <Button x:Name="PortalButton" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Portal DSIC" Click="ConnectPortalDSIC"/>
     </Grid>
 </Page>

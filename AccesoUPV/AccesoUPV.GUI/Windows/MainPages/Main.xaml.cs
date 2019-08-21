@@ -91,15 +91,15 @@ namespace AccesoUPV.GUI.Windows.MainPages
 
         private void EvirWindowsButton_Click(object sender, RoutedEventArgs e) => RemoteDesktop.ConnectToWindowsDesktop();
 
-        private async Task ConnectPortalDSIC(object sender, ConnectionEventArgs e)
+        private async void ConnectPortalDSIC(object sender, RoutedEventArgs e)
         {
             try
             {
-                await e.ConnectionFunc();
+                await Service.VPN_DSIC.ConnectAsync();
 
                 #region Portal DSIC Dialog
                 Window portalWindow = CreatePortalDSICDialog();
-                portalWindow.Closed += async (s, ce) => await e.Connectable.DisconnectAsync();
+                portalWindow.Closed += async (s, ce) => await Service.VPN_DSIC.DisconnectAsync();
                 portalWindow.Show();
                 #endregion
             }
