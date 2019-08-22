@@ -11,6 +11,8 @@ namespace AccesoUPV.GUI.Windows
     /// </summary>
     public partial class Preferences
     {
+        private bool _resetDone;
+
         public IAccesoUPVService Service { get; }
 
         public Preferences()
@@ -82,9 +84,18 @@ namespace AccesoUPV.GUI.Windows
 
             if (result == MessageBoxResult.OK)
             {
-                Service.ClearSettings();
-                Application.Current.Shutdown();
+                Window mainWindow = Application.Current.MainWindow;
+                mainWindow.Closed += MainWindow_Closed; // If the window is closed, clear the settings
+                mainWindow.Close(); // Closes the main window to trigger shutdown (if needed)
+                if (!_resetDone) mainWindow.Closed -= MainWindow_Closed; // If it was somehow canceled, dont do it anymore
             }
         }
+
+        private void MainWindow_Closed(object sender, System.EventArgs e)
+        {
+            Service.ClearSettings();
+            _resetDone = true;
+        }
+
     }
 }

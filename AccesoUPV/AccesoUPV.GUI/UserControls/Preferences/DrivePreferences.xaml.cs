@@ -73,29 +73,28 @@ namespace AccesoUPV.GUI.UserControls.Preferences
                 DriveBox.SelectedItem = driveLetter;
             }
 
-            ShowUnavailableDrives.Click += (s, e) =>
+            ShowOnlyAvailableDrives.Click += (s, e) =>
             {
-                if (ShowUnavailableDrives.IsChecked ?? false)
-                {
-                    LoadDriveBox();
-                }
-                else
+                if (ShowOnlyAvailableDrives.IsChecked ?? false)
                 {
                     DriveBox.ItemsSource
                     = NetworkDrive.SelectAvailable(
                         DriveBox.ItemsSource
                         as IEnumerable<string>);
                 }
+                else
+                {
+                    LoadDriveBox();
+                }
             };
 
             PassBox.Password = Drive.Password;
-            // TODO: Crear propdp para poder bindear esto y lo del save
-            // SavePassCheckBox.IsChecked = Service.SavePasswords;
+            SavePassCheckBox.IsChecked = SavePasswords;
         }
 
         private void LoadDriveBox()
         {
-            bool onlyIfAvailable = !(ShowUnavailableDrives.IsChecked ?? false);
+            bool onlyIfAvailable = ShowOnlyAvailableDrives.IsChecked ?? false;
             DriveBox.ItemsSource = NetworkDrive.GetDrives(onlyIfAvailable);
         }
 
@@ -107,15 +106,14 @@ namespace AccesoUPV.GUI.UserControls.Preferences
                 : null;
 
             Drive.Password = PassBox.Password;
-            // TODO: Crear propdp para poder bindear esto y lo del load
-            // Service.SavePasswords = SavePassCheckBox.IsChecked ?? false;
+            SavePasswords = SavePassCheckBox.IsChecked ?? false;
         }
 
         public void Clear()
         {
             DriveBox.ItemsSource = null;
             DriveCheckBox.IsChecked = null;
-            ShowUnavailableDrives.IsChecked = null;
+            ShowOnlyAvailableDrives.IsChecked = null;
             SavePassCheckBox.IsChecked = null;
             PassBox.Clear();
         }

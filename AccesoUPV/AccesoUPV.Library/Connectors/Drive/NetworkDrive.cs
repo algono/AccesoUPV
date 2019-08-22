@@ -120,7 +120,7 @@ namespace AccesoUPV.Library.Connectors.Drive
             List<string> drives = new List<string>();
             List<string> mappedDrives = GetMappedDrives();
 
-            for (char letter = 'A'; letter <= 'Z'; letter++)
+            for (char letter = 'Z'; letter >= 'A'; letter--)
             {
                 string drive = letter + ":";
                 if (!(onlyIfAvailable && !IsAvailable(drive, mappedDrives)))

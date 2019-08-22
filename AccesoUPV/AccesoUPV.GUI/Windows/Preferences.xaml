@@ -83,7 +83,7 @@
                     </Grid.RowDefinitions>
 
                     <userControls:VPNPreferences x:Name="VPNToDSICPrefs" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Title="Conexión VPN" VPN="{Binding ElementName=MyPreferences, Path=Service.VPN_DSIC}" />
-                    <userControls:DrivePreferences x:Name="DiscoDSICPrefs" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Title="Disco DSIC" Drive="{Binding ElementName=MyPreferences, Path=Service.Disco_DSIC}" />
+                    <userControls:DrivePreferences x:Name="DiscoDSICPrefs" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Title="Disco DSIC" Drive="{Binding ElementName=MyPreferences, Path=Service.Disco_DSIC}" SavePasswords="{Binding ElementName=MyPreferences, Path=Service.SavePasswords, Mode=TwoWay}" />
                 </Grid>
             </TabItem>
         </TabControl>

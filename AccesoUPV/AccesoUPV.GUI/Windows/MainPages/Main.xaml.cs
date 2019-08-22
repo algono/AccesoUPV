@@ -1,4 +1,5 @@
-﻿using AccesoUPV.GUI.UserControls;
+﻿using AccesoUPV.GUI.Help;
+using AccesoUPV.GUI.UserControls;
 using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Services;
@@ -162,5 +163,15 @@ namespace AccesoUPV.GUI.Windows.MainPages
                 Source = new Uri("http://" + VPNFactory.PORTAL_DSIC)
             }
         };
+
+        private void PreferencesButton_Click(object sender, RoutedEventArgs e)
+        {
+            new Preferences(Service).ShowDialog();
+        }
+
+        private void HelpButton_Click(object sender, RoutedEventArgs e)
+        {
+            HelpProvider.ShowHelpTableOfContents();
+        }
     }
 }
