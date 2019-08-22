@@ -18,39 +18,44 @@ namespace AccesoUPV.GUI.Help
             RemoteHelp = "Help/AccesoUPV-Remote.chm",
             RemoteHelpLink = "http://github.com/algono/AccesoUPV-help/releases/latest/download/AccesoUPV.chm";
 
-        private static bool _helpDownloaded;
+        //private static bool _helpDownloaded;
         public static string Help
         {
             get
             {
-                if (!_helpDownloaded) DownloadHelp();
-                return _helpDownloaded ? RemoteHelp : LocalHelp;
+                return LocalHelp;
+                #region Download from remote
+                //if (!_helpDownloaded) DownloadHelp();
+                //return _helpDownloaded ? RemoteHelp : LocalHelp; 
+                #endregion
             }
         }
 
-        private static void DownloadHelp()
-        {
-            // Set cursor as hourglass
-            System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
+        #region Remote Help (Git Repo)
+        //private static void DownloadHelp()
+        //{
+        //    // Set cursor as hourglass
+        //    System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
 
-            try
-            {
-                using (WebClient client = new WebClient())
-                {
-                    client.DownloadFile(RemoteHelpLink, RemoteHelp);
-                }
+        //    try
+        //    {
+        //        using (WebClient client = new WebClient())
+        //        {
+        //            client.DownloadFile(RemoteHelpLink, RemoteHelp);
+        //        }
 
-                _helpDownloaded = true;
-            }
-            catch (Exception ex)
-            {
-                // If the download fails, return the local help anyway
-                Debug.WriteLine(ex.Message);
-            }
+        //        _helpDownloaded = true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // If the download fails, return the local help anyway
+        //        Debug.WriteLine(ex.Message);
+        //    }
 
-            // Set cursor as default arrow
-            System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
-        }
+        //    // Set cursor as default arrow
+        //    System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
+        //} 
+        #endregion
 
         /// <summary>
         /// Help topic dependency property. 
