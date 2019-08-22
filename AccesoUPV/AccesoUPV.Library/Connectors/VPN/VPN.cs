@@ -12,6 +12,7 @@ namespace AccesoUPV.Library.Connectors.VPN
     {
         public const int ConnectedPingTimeout = 5000, DisconnectedPingTimeout = 500;
 
+        #region Properties
         public string ConnectedName { get; private set; }
         public string Name { get; set; }
 
@@ -23,9 +24,10 @@ namespace AccesoUPV.Library.Connectors.VPN
 
         public VPNConfig Config { get; }
 
-        private static readonly ProcessStartInfo 
+        private static readonly ProcessStartInfo
             ConnectionInfo = CreateProcessInfo("rasphone.exe"),
-            DisconnectionInfo = CreateProcessInfo("rasdial.exe");
+            DisconnectionInfo = CreateProcessInfo("rasdial.exe"); 
+        #endregion
 
         public VPN(string server, string name = null) : this(new VPNConfig(server), name) { }
 
@@ -35,24 +37,7 @@ namespace AccesoUPV.Library.Connectors.VPN
             Name = name;
         }
 
-        public bool IsReachable() => Config.IsReachable(IsConnected ? ConnectedPingTimeout : DisconnectedPingTimeout);
-
-        public void CheckConnection()
-        {
-            IsConnected = IsActuallyConnected();
-        }
-
-        private bool IsActuallyConnected()
-        {
-            bool res = false;
-            Process checkingProcess = Process.Start(CreateProcessInfo("rasdial.exe"));
-            checkingProcess.WaitAndCheck((args) =>
-            {
-                res = args.Succeeded && args.Output.Contains(Name);
-            });
-            return res;
-        }
-
+        #region Connection methods
         protected override Process ConnectProcess()
         {
             if (string.IsNullOrEmpty(Name)) throw new ArgumentNullException(nameof(Name));
@@ -96,8 +81,10 @@ namespace AccesoUPV.Library.Connectors.VPN
         {
             DisconnectionInfo.Arguments = $"\"{ConnectedName}\" /DISCONNECT";
             return Process.Start(DisconnectionInfo);
-        }
+        } 
+        #endregion
 
+        #region Creation methods
         protected virtual PowerShell CreateShell()
         {
             if (string.IsNullOrEmpty(Name)) throw new ArgumentNullException(nameof(Name));
@@ -130,13 +117,33 @@ namespace AccesoUPV.Library.Connectors.VPN
             return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) =>
             {
                 shell.EndInvoke(res);
-                bool succeeded = shell.HadErrors;
+                bool succeeded = !shell.HadErrors;
                 shell.Dispose();
                 return succeeded;
             });
-        }
+        } 
+        #endregion
 
         public void Open() => Config.Open();
+
+        #region Utility methods
+        public bool IsReachable() => Config.IsReachable(IsConnected ? ConnectedPingTimeout : DisconnectedPingTimeout);
+
+        public void CheckConnection()
+        {
+            IsConnected = IsActuallyConnected();
+        }
+
+        private bool IsActuallyConnected()
+        {
+            bool res = false;
+            Process checkingProcess = Process.Start(CreateProcessInfo("rasdial.exe"));
+            checkingProcess.WaitAndCheck((args) =>
+            {
+                res = args.Succeeded && args.Output.Contains(Name);
+            });
+            return res;
+        }
 
         public bool SetNameAuto()
         {
@@ -199,6 +206,7 @@ namespace AccesoUPV.Library.Connectors.VPN
                 psOutput.RemoveAll(item => item == null);
                 return psOutput;
             });
-        }
+        } 
+        #endregion
     }
 }

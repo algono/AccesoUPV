@@ -10,6 +10,7 @@ namespace AccesoUPV.Library.Connectors.VPN
         public const string
             VPN_DSIC = "r1-vpn.dsic.upv.es", PORTAL_DSIC = "portal-ng.dsic.cloud";
 
+        #region Configs
         private static readonly IDictionary UPVCreationParameters = new Hashtable()
         {
             { "AuthenticationMethod", "Eap" },
@@ -34,7 +35,8 @@ namespace AccesoUPV.Library.Connectors.VPN
             XmlDocument configXml = new XmlDocument();
             configXml.Load("Resources/UPV_Config.xml");
             UPVCreationParameters.Add("EapConfigXmlStream", configXml);
-        }
+        } 
+        #endregion
 
         public static VPN GetVPNToUPV(string name = null)
             => new VPN(UPVConfig, name);
