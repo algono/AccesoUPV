@@ -1,5 +1,6 @@
 ﻿using AccesoUPV.GUI.Help;
 using AccesoUPV.GUI.UserControls;
+using AccesoUPV.Library.Connectors;
 using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Services;
@@ -111,7 +112,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
 
         private void EvirWindowsButton_Click(object sender, RoutedEventArgs e) => RemoteDesktop.ConnectToWindowsDesktop();
 
-        private async void ConnectPortalDSIC(object sender, RoutedEventArgs e)
+        private async Task ConnectPortalDSIC(object sender, ConnectionEventArgs e)
         {
             try
             {
@@ -130,16 +131,10 @@ namespace AccesoUPV.GUI.Windows.MainPages
                     {
                         throw new OperationCanceledException();
                     }
-                } 
+                }
                 #endregion
 
-                await Service.VPN_DSIC.ConnectAsync();
-
-                #region Portal DSIC Dialog
-                Window portalWindow = CreatePortalDSICDialog();
-                portalWindow.Closed += async (s, ce) => await Service.VPN_DSIC.DisconnectAsync();
-                portalWindow.ShowDialog();
-                #endregion
+                await e.ConnectionFunc();
             }
             catch (ArgumentNullException)
             {
@@ -155,14 +150,24 @@ namespace AccesoUPV.GUI.Windows.MainPages
 
         }
 
-        private static Window CreatePortalDSICDialog() => new Window()
+        #region Website Window (Obsolete)
+        [Obsolete]
+        public static Window CreatePortalDSICDialog() => new Window()
         {
             Title = "Portal DSIC",
             Content = new WebBrowser
             {
-                Source = new Uri("http://" + VPNFactory.PORTAL_DSIC)
+                Source = new Uri("http://" + VPNFactory.PORTAL_DSIC),
+                
             }
         };
+        [Obsolete]
+        public static void OpenConnectableWindow(Connectable connectable, Window window)
+        {
+            window.Closed += async (s, ce) => await connectable.DisconnectAsync();
+            window.ShowDialog();
+        } 
+        #endregion
 
         private void PreferencesButton_Click(object sender, RoutedEventArgs e)
         {

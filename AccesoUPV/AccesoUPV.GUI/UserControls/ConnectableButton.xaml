@@ -21,7 +21,7 @@
 
             <controls:ToggleSwitch Grid.Column="0" VerticalAlignment="Center" x:Name="ConnectionSwitch" OnLabel="" OffLabel="" Click="ConnectionSwitch_Click" />
 
-            <Button Grid.Column="2" x:Name="OpenButton" VerticalAlignment="Center" Click="OpenButton_Click" IsEnabled="{Binding ElementName=ConnectionSwitch, Path=IsChecked}" Margin="0 0 10 0">
+            <Button Grid.Column="2" x:Name="OpenButton" VerticalAlignment="Center" Click="TryToOpen_Click" IsEnabled="{Binding ElementName=ConnectionSwitch, Path=IsChecked}" Margin="0 0 10 0">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
                     <iconPacks:PackIconModern VerticalAlignment="Center" x:Name="ConnectableIcon" Kind="{Binding ElementName=MyConnectableButton, Path=IconKind}" Margin="0 0 5 0" />
                     <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=MyConnectableButton, Path=Text}" FontSize="{Binding ElementName=MyConnectableButton, Path=FontSize}" />

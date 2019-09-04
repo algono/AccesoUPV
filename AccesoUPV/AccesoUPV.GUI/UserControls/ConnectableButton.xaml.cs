@@ -47,6 +47,7 @@ namespace AccesoUPV.GUI.UserControls
         #region Event Handlers
         public Func<object, ConnectionEventArgs, Task> ConnectHandler { get; set; }
         public Func<object, ConnectionEventArgs, Task> DisconnectHandler { get; set; }
+        public Action<Connectable> OpenHandler { get; set; } = TryToOpen;
 
         #endregion
 
@@ -92,9 +93,11 @@ namespace AccesoUPV.GUI.UserControls
             ConnectionSwitch.IsChecked = Connectable.IsConnected;
         }
 
-        private void OpenButton_Click(object sender, RoutedEventArgs e)
+        private void TryToOpen_Click(object sender, RoutedEventArgs e) => OpenHandler(Connectable);
+
+        private static void TryToOpen(Connectable connectable)
         {
-            if (Connectable.IsConnected && Connectable is Openable openable) openable.Open();
+            if (connectable.IsConnected && connectable is Openable openable) openable.Open();
         }
     }
 }
