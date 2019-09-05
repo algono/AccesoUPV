@@ -1,4 +1,5 @@
-﻿using AccesoUPV.Library.Connectors.VPN;
+﻿using AccesoUPV.GUI.Windows;
+using AccesoUPV.Library.Connectors.VPN;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
@@ -52,6 +53,19 @@ namespace AccesoUPV.GUI.UserControls.Preferences
         {
             NameBox.Clear();
         }
+
+        public void Select()
+        {
+            SelectVPN window = new SelectVPN(VPN);
+            window.ShowDialog();
+
+            if (!window.Canceled) NameBox.Text = window.SelectedName;
+        }
         #endregion
+
+        private void SelectButton_Click(object sender, RoutedEventArgs e)
+        {
+            Select();
+        }
     }
 }

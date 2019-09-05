@@ -68,9 +68,9 @@ namespace AccesoUPV.GUI.Windows.MainPages
             }
             else if (result == MessageBoxResult.No)
             {
-                SelectVPN window = new SelectVPN(vpn.Config.Server);
+                SelectVPN window = new SelectVPN(vpn);
                 window.ShowDialog();
-                if (window.SelectedName == null) return false;
+                if (window.Canceled) return false;
                 vpn.Name = window.SelectedName;
             }
             else

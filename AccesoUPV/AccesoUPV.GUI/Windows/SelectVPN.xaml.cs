@@ -11,26 +11,32 @@ namespace AccesoUPV.GUI.Windows
     public partial class SelectVPN
     {
         public string SelectedName { get; private set; }
-
-        public bool DetectList { get; }
+        public bool Canceled { get; private set; }
 
         private readonly string _server;
-        public SelectVPN(string server = null)
+
+        public SelectVPN()
         {
             InitializeComponent();
+        }
+
+        public SelectVPN(VPN vpn) : this(vpn.Config.Server)
+        {
+
+        }
+
+        public SelectVPN(string server = null) : this()
+        {
             _server = server;
-            DetectList = true;
             this.Loaded += async (sender, e) =>
             {
                 await LoadNameList();
                 ShowList();
             };
         }
-        public SelectVPN(IEnumerable<string> vpnList)
+        public SelectVPN(IEnumerable<string> vpnList) : this()
         {
-            InitializeComponent();
             VPNList.ItemsSource = vpnList;
-            DetectList = false;
             ShowList();
         }
 
@@ -61,6 +67,7 @@ namespace AccesoUPV.GUI.Windows
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            Canceled = true;
             this.Close();
         }
 
