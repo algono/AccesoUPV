@@ -12,7 +12,7 @@ namespace AccesoUPV.Library.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.1.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.2.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -49,10 +49,10 @@ namespace AccesoUPV.Library.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string WDriveLetter {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public char WDriveLetter {
             get {
-                return ((string)(this["WDriveLetter"]));
+                return ((char)(this["WDriveLetter"]));
             }
             set {
                 this["WDriveLetter"] = value;
@@ -73,10 +73,10 @@ namespace AccesoUPV.Library.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DSICDriveLetter {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public char DSICDriveLetter {
             get {
-                return ((string)(this["DSICDriveLetter"]));
+                return ((char)(this["DSICDriveLetter"]));
             }
             set {
                 this["DSICDriveLetter"] = value;

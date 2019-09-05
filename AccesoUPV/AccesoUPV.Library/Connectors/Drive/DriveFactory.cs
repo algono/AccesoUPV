@@ -34,13 +34,15 @@ namespace AccesoUPV.Library.Connectors.Drive
             { UPVDomain.UPVNET, new DriveDomain("upvnet.upv.es", DomainStyle.AtSignStyle, "discos") }
         };
 
-        public static NetworkDrive<UPVDomain> GetDriveW(string drive = null, string user = null, UPVDomain domain = UPVDomain.Alumno)
+        public static NetworkDrive<UPVDomain> GetDriveW(char drive = default, string user = null, UPVDomain domain = UPVDomain.Alumno)
         {
             NetworkDrive<UPVDomain> driveW = new NetworkDrive<UPVDomain>(GetAddressW, UPVDomains, drive, user)
             {
                 Domain = domain
             };
-            driveW.Connected += DriveW_ProcessConnected;
+
+            driveW.ProcessConnected += DriveW_ProcessConnected;
+
             return driveW;
         }
 
@@ -58,7 +60,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         #region Disco DSIC
         public static readonly DriveDomain DSICDomain = new DriveDomain("DSIC");
 
-        public static NetworkDrive GetDriveDSIC(string drive = null, string user = null, string password = null)
+        public static NetworkDrive GetDriveDSIC(char drive = default, string user = null, string password = null)
             => new NetworkDrive(GetAddressDSIC, drive, DSICDomain, user, password);
 
         private static string GetAddressDSIC(string username, DriveDomain domain) => $@"\\fileserver.dsic.upv.es\{username}";

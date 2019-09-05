@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace AccesoUPV.Library.Connectors.Drive
 {
     #region Custom Exceptions
-    // (Not having constructors defined creates an empty constructor automatically, and it calls its parent constructor as well)
     [Serializable]
     public class NotAvailableDriveException : IOException
     {
-        public string Drive { get; }
+        public string DriveLetter => DriveLetterTools.ToDriveLetter(Letter);
+        public char Letter { get; }
 
-        public string DriveMessage => GetDriveMessage(Drive);
+        public string DriveMessage => GetDriveMessage(DriveLetter);
 
         public const string NoDriveMessage = "No existe ninguna unidad disponible. Libere alguna unidad y vuelva a intentarlo.";
 
@@ -23,13 +23,13 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         }
 
-        public NotAvailableDriveException(string drive) : base(GetDriveMessage(drive))
+        public NotAvailableDriveException(char letter) : base(GetDriveMessage(DriveLetterTools.ToDriveLetter(letter)))
         {
-            Drive = drive;
+            Letter = letter;
         }
 
-        private static string GetDriveMessage(string drive)
-            => $"La unidad definida para el disco ({drive}) ya contiene un disco asociado.\n\n"
+        private static string GetDriveMessage(string letter)
+            => $"La unidad definida para el disco ({letter}) ya contiene un disco asociado.\n\n"
             + "Antes de continuar, desconecte el disco asociado, o cambie la unidad utilizada para el disco.";
     }
 
@@ -68,7 +68,7 @@ namespace AccesoUPV.Library.Connectors.Drive
             }
         }
 
-        public NetworkDrive(Func<string, DriveDomain, string> getAddress, IDictionary<T, DriveDomain> domains, string drive = null, string user = null, string password = null) : base(getAddress, drive, domains[default], user, password)
+        public NetworkDrive(Func<string, DriveDomain, string> getAddress, IDictionary<T, DriveDomain> domains, char drive = default, string user = null, string password = null) : base(getAddress, drive, domains[default], user, password)
         {
             Domains = domains;
         }
@@ -81,8 +81,28 @@ namespace AccesoUPV.Library.Connectors.Drive
         public string Address => _getAddress(Username, Domain);
         public DriveDomain Domain { get; set; }
 
-        public string ConnectedDrive { get; private set; }
-        public string Drive { get; set; }
+        public string ConnectedDriveLetter
+            => DriveLetterTools.ToDriveLetter(ConnectedLetter);
+        public char ConnectedLetter { get; private set; }
+
+        public string DriveLetter
+            => DriveLetterTools.ToDriveLetter(Letter);
+        public char Letter
+        {
+            get => letter;
+            set
+            {
+                if (value == default || DriveLetterTools.IsValid(value))
+                {
+                    letter = value;
+                    letterWasAutoAssigned = false;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException(nameof(Letter), value, DriveLetterTools.InvalidDriveLetterMessage);
+                }
+            }
+        }
 
         public string Username { get; set; }
         public string Password { get; set; }
@@ -91,19 +111,25 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public override bool IsConnected
         {
-            get => ConnectedDrive != null;
-            protected set => ConnectedDrive = value ? Drive : null;
+            get => ConnectedLetter != default;
+            protected set => ConnectedLetter = value ? Letter : default;
         }
 
         private static readonly ProcessStartInfo NetInfo = CreateProcessInfo("net.exe");
+        private bool letterWasAutoAssigned;
+        private char letter;
 
-        public NetworkDrive(Func<string, DriveDomain, string> getAddress, string drive = null,
+        public NetworkDrive(Func<string, DriveDomain, string> getAddress, char letter = default,
             DriveDomain domain = null, string user = null, string password = null)
         {
             _getAddress = getAddress;
             Domain = domain;
 
-            Drive = drive;
+            if (letter != default)
+            {
+                Letter = letter;
+            }
+
             Username = user;
             Password = password;
             UseCredentials = password != null;
@@ -111,42 +137,26 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public void Open()
         {
-            if (IsConnected) Process.Start(ConnectedDrive);
+            if (IsConnected) Process.Start(ConnectedDriveLetter);
             else throw new InvalidOperationException("El disco debe estar conectado para poder abrirlo");
         }
 
-        public static List<string> GetDrives(bool onlyIfAvailable = false)
+        #region Mapped Drives Static Methods
+        public static IEnumerable<char> SelectAvailable(IEnumerable<char> drives)
         {
-            List<string> drives = new List<string>();
-            List<string> mappedDrives = GetMappedDrives();
-
-            for (char letter = 'Z'; letter >= 'A'; letter--)
-            {
-                string drive = letter + ":";
-                if (!(onlyIfAvailable && !IsAvailable(drive, mappedDrives)))
-                {
-                    drives.Add(drive);
-                }
-            }
-
-            return drives;
-        }
-
-        public static IEnumerable<string> SelectAvailable(IEnumerable<string> drives)
-        {
-            List<string> mappedDrives = GetMappedDrives();
+            List<char> mappedDrives = GetMappedDrives();
             return drives.Where((drive) => IsAvailable(drive, mappedDrives));
         }
 
-        public static bool IsAvailable(string drive) => IsAvailable(drive, GetMappedDrives());
+        public static bool IsAvailable(char drive) => IsAvailable(drive, GetMappedDrives());
 
-        private static bool IsAvailable(string drive, List<string> mappedDrives) 
+        private static bool IsAvailable(char drive, List<char> mappedDrives)
             => !mappedDrives.Contains(drive)
-               && !Directory.Exists(drive);
+               && DriveLetterTools.IsAvailable(drive);
 
-        public static List<string> GetMappedDrives()
+        public static List<char> GetMappedDrives()
         {
-            List<string> drives = new List<string>();
+            List<char> drives = new List<char>();
 
             ProcessStartInfo info = CreateProcessInfo("net.exe");
             info.Arguments = "use";
@@ -156,31 +166,19 @@ namespace AccesoUPV.Library.Connectors.Drive
             for (int i = 0; i < splits.Length - 1; i++)
             {
                 string split = splits[i];
-                drives.Add(split[split.Length - 1] + ":");
+                drives.Add(split[split.Length - 1]);
             }
 
             return drives;
         }
+        #endregion
 
-        protected void CheckDrive()
-        {
-            if (string.IsNullOrEmpty(Drive))
-            {
-                List<string> availableDrives = GetDrives(onlyIfAvailable: true);
-                if (availableDrives.Count == 0) throw new NotAvailableDriveException();
-                Drive = availableDrives[0];
-            }
-            else if (Directory.Exists(Drive))
-            {
-                throw new NotAvailableDriveException();
-            }
-        }
-
+        #region Connection Process
         protected void CheckArguments()
         {
             if (string.IsNullOrEmpty(Username)) throw new ArgumentNullException(nameof(Username));
 
-            NetInfo.Arguments = $"use {Drive} {Address}";
+            NetInfo.Arguments = $"use {DriveLetter} {Address}";
             if (UseCredentials)
             {
                 if (string.IsNullOrEmpty(Password)) throw new ArgumentNullException(nameof(Password));
@@ -199,7 +197,12 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         protected override Process ConnectProcess()
         {
-            CheckDrive();
+            if (!DriveLetterTools.IsValid(Letter))
+            {
+                letter = DriveLetterTools.GetFirstAvailable();
+                letterWasAutoAssigned = true;
+            }
+
             CheckArguments();
             return StartProcess(NetInfo);
         }
@@ -207,6 +210,12 @@ namespace AccesoUPV.Library.Connectors.Drive
         protected override void OnProcessConnected(ProcessEventArgs e)
         {
             base.OnProcessConnected(e);
+
+            if (letterWasAutoAssigned)
+            {
+                letter = default;
+                letterWasAutoAssigned = false;
+            }
 
             if (!e.Succeeded)
             {
@@ -232,7 +241,7 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         protected override Process DisconnectProcess()
         {
-            NetInfo.Arguments = $"use {ConnectedDrive} /delete";
+            NetInfo.Arguments = $"use {ConnectedDriveLetter} /delete";
             if (YesToAll) NetInfo.Arguments += " /y";
             return StartProcess(NetInfo);
         }
@@ -261,6 +270,7 @@ namespace AccesoUPV.Library.Connectors.Drive
             YesToAll = true;
             await DisconnectAsync();
             YesToAll = oldYesToAll;
-        }
+        } 
+        #endregion
     }
 }

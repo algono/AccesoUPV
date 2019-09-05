@@ -34,13 +34,31 @@ namespace AccesoUPV.GUI.Windows.MainPages
         {
             try
             {
+                await ConnectDrive(sender, e);
+            }
+            catch (CredentialsBugException ex)
+            {
+                MessageBox.Show(ex.Message, "Error de credenciales", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                #region Reconexión UPV
+                VPN VPN_UPV = Service.VPN_UPV;
+                if (VPN_UPV.IsConnected)
+                {
+                    await VPN_UPV.DisconnectAsync();
+                    await VPN_UPV.ConnectAsync();
+                } 
+                #endregion
+            }
+        }
+
+        private async Task ConnectDrive(object sender, ConnectionEventArgs e)
+        {
+            NetworkDrive networkDrive = e.Connectable as NetworkDrive;
+            try
+            {
                 await e.ConnectionFunc();
             }
-            catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(Service.Disco_W.Username)))
-            {
-                Drive_UsernameWasNull();
-            }
-            catch (NotAvailableDriveException ex) when (ex.Drive == null)
+            catch (NotAvailableDriveException ex) when (ex.Letter == default)
             {
                 MessageBox.Show(ex.Message, "Ninguna unidad disponible", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -50,28 +68,21 @@ namespace AccesoUPV.GUI.Windows.MainPages
                     ex.Message + "\n" +
                     "(Continúe si prefiere que se elija la primera unidad disponible solo durante esta conexión).\n ";
 
-                MessageBoxResult result = MessageBox.Show(WARNING_W, $"Unidad {ex.Drive} contiene disco", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                MessageBoxResult result = MessageBox.Show(WARNING_W, $"Unidad {ex.Letter} contiene disco", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
 
                 if (result == MessageBoxResult.OK)
                 {
-                    NetworkDrive Disco_W = (e.Connectable as NetworkDrive);
-                    Disco_W.Drive = null;
-                    await e.ConnectionFunc().ContinueWith((t) => Disco_W.Drive = ex.Drive);
+                    networkDrive.Letter = default;
+                    await e.ConnectionFunc().ContinueWith((t) => networkDrive.Letter = ex.Letter);
                 }
             }
-        }
-
-        private async Task ConnectDSICDrive(object sender, ConnectionEventArgs e)
-        {
-            try
+            catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(networkDrive.Username)))
             {
-                await e.ConnectionFunc();
+                MessageBox.Show("No ha indicado ningún nombre de usuario. Indique uno en los ajustes.", "Falta usuario",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+                new Preferences(Service).ShowDialog();
             }
-            catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(Service.Disco_DSIC.Username)))
-            {
-                Drive_UsernameWasNull();
-            }
-            catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(Service.Disco_DSIC.Password)))
+            catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(networkDrive.Password)))
             {
                 MessageBox.Show("No ha indicado ninguna contraseña. Indíquela en los ajustes.", "Falta contraseña", MessageBoxButton.OK, MessageBoxImage.Warning);
                 new Preferences(Service).ShowDialog();
@@ -99,13 +110,6 @@ namespace AccesoUPV.GUI.Windows.MainPages
             {
                 await ex.ContinueAsync();
             }
-        }
-
-        private void Drive_UsernameWasNull()
-        {
-            MessageBox.Show("No ha indicado ningún nombre de usuario. Indique uno en los ajustes.", "Falta usuario",
-                MessageBoxButton.OK, MessageBoxImage.Warning);
-            new Preferences(Service).ShowDialog();
         }
 
         private void EvirLinuxButton_Click(object sender, RoutedEventArgs e) => RemoteDesktop.ConnectToLinuxDesktop();
@@ -162,7 +166,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
             }
         };
         [Obsolete]
-        public static void OpenConnectableWindow(Connectable connectable, Window window)
+        public static void OpenConnectableWindow(IConnectable connectable, Window window)
         {
             window.Closed += async (s, ce) => await connectable.DisconnectAsync();
             window.ShowDialog();

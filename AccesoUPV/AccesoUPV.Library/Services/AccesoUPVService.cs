@@ -43,9 +43,9 @@ namespace AccesoUPV.Library.Services
         #endregion
 
         #region Connectables Reflection
-        private IEnumerable<Connectable> Connectables => connectablesInfo.GetValues<Connectable>(this);
+        private IEnumerable<IConnectable> Connectables => connectablesInfo.GetValues<IConnectable>(this);
 
-        private static readonly IEnumerable<PropertyInfo> connectablesInfo = typeof(AccesoUPVService).GetProperties().AsEnumerable().WherePropertiesAreOfType<Connectable>();
+        private static readonly IEnumerable<PropertyInfo> connectablesInfo = typeof(AccesoUPVService).GetProperties().AsEnumerable().WherePropertiesAreOfType<IConnectable>();
         #endregion
 
         public event EventHandler<ShutdownEventArgs> ShuttingDown;
@@ -59,9 +59,13 @@ namespace AccesoUPV.Library.Services
             VPN_UPV = VPNFactory.GetVPNToUPV(Settings.Default.VPN_UPVName);
             VPN_DSIC = VPNFactory.GetVPNToDSIC(Settings.Default.VPN_DSICName);
 
-            Disco_W = DriveFactory.GetDriveW(Settings.Default.WDriveLetter, User, (UPVDomain)Settings.Default.WDriveDomain);
+            char wDriveLetter = DriveLetterTools.ValidOrDefault(Settings.Default.WDriveLetter);
 
-            Disco_DSIC = DriveFactory.GetDriveDSIC(Settings.Default.DSICDriveLetter, User, Settings.Default.DSICDrivePassword);
+            Disco_W = DriveFactory.GetDriveW(wDriveLetter, User, (UPVDomain)Settings.Default.WDriveDomain);
+
+            char DSICDriveLetter = DriveLetterTools.ValidOrDefault(Settings.Default.DSICDriveLetter);
+
+            Disco_DSIC = DriveFactory.GetDriveDSIC(DSICDriveLetter, User, Settings.Default.DSICDrivePassword);
             SavePasswords = !string.IsNullOrEmpty(Disco_DSIC.Password);
         }
 
@@ -84,10 +88,10 @@ namespace AccesoUPV.Library.Services
             Settings.Default.VPN_UPVName = VPN_UPV.Name;
             Settings.Default.VPN_DSICName = VPN_DSIC.Name;
 
-            Settings.Default.WDriveLetter = Disco_W.Drive;
+            Settings.Default.WDriveLetter = Disco_W.Letter;
             Settings.Default.WDriveDomain = (int)Disco_W.Domain;
 
-            Settings.Default.DSICDriveLetter = Disco_DSIC.Drive;
+            Settings.Default.DSICDriveLetter = Disco_DSIC.Letter;
             Settings.Default.DSICDrivePassword = SavePasswords ? Disco_DSIC.Password : null;
 
             Settings.Default.Save();
@@ -102,7 +106,7 @@ namespace AccesoUPV.Library.Services
         #region Shutdown
         public void Shutdown()
         {
-            foreach (Connectable connectable in Connectables)
+            foreach (IConnectable connectable in Connectables)
             {
                 if (connectable.IsConnected) connectable.Disconnect();
             }
@@ -117,7 +121,7 @@ namespace AccesoUPV.Library.Services
 
             foreach (PropertyInfo info in connectablesInfo)
             {
-                Connectable connectable = info.GetValue(this) as Connectable;
+                IConnectable connectable = info.GetValue(this) as IConnectable;
                 if (connectable.IsConnected)
                 {
                     steps++;
@@ -150,7 +154,7 @@ namespace AccesoUPV.Library.Services
             ShuttingDown?.Invoke(sender, e);
         }
 
-        private async Task ShutdownConnectable(Connectable connectable, string name, IProgress<string> progress = null)
+        private async Task ShutdownConnectable(IConnectable connectable, string name, IProgress<string> progress = null)
         {
             progress?.Report($"Desconectando { name }");
             await connectable.DisconnectAsync();

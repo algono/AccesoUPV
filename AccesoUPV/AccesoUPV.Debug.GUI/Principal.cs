@@ -72,13 +72,13 @@ namespace AccesoUPV.Debug.GUI
         private async void ConnectButton_Click(object sender, EventArgs e)
         {
             var item = ((ListItem)listaConectar.SelectedItem).Value;
-            if (item != null) await ((Connectable)item).ConnectAsync();
+            if (item != null) await ((IConnectable)item).ConnectAsync();
         }
 
         private async void DisconnectButton_Click(object sender, EventArgs e)
         {
             var item = ((ListItem)listaConectar.SelectedItem).Value;
-            if (item != null) await ((Connectable)item).DisconnectAsync();
+            if (item != null) await ((IConnectable)item).DisconnectAsync();
         }
 
         private void LinuxButton_Click(object sender, EventArgs e)

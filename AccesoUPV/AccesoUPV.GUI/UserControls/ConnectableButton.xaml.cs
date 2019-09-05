@@ -12,9 +12,9 @@ namespace AccesoUPV.GUI.UserControls
     public partial class ConnectableButton
     {
         #region Dependency Properties
-        public Connectable Connectable
+        public IConnectable Connectable
         {
-            get => (Connectable)GetValue(ConnectableProperty);
+            get => (IConnectable)GetValue(ConnectableProperty);
             set => SetValue(ConnectableProperty, value);
         }
 
@@ -40,14 +40,14 @@ namespace AccesoUPV.GUI.UserControls
 
         // Using a DependencyProperty as the backing store for Connectable.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ConnectableProperty =
-            DependencyProperty.Register("Connectable", typeof(Connectable), typeof(ConnectableButton), new PropertyMetadata());
+            DependencyProperty.Register("Connectable", typeof(IConnectable), typeof(ConnectableButton), new PropertyMetadata());
 
         #endregion
 
         #region Event Handlers
         public Func<object, ConnectionEventArgs, Task> ConnectHandler { get; set; }
         public Func<object, ConnectionEventArgs, Task> DisconnectHandler { get; set; }
-        public Action<Connectable> OpenHandler { get; set; } = TryToOpen;
+        public Action<IConnectable> OpenHandler { get; set; } = TryToOpen;
 
         #endregion
 
@@ -95,7 +95,7 @@ namespace AccesoUPV.GUI.UserControls
 
         private void TryToOpen_Click(object sender, RoutedEventArgs e) => OpenHandler(Connectable);
 
-        private static void TryToOpen(Connectable connectable)
+        private static void TryToOpen(IConnectable connectable)
         {
             if (connectable.IsConnected && connectable is Openable openable) openable.Open();
         }

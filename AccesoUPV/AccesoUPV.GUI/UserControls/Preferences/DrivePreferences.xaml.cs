@@ -66,8 +66,8 @@ namespace AccesoUPV.GUI.UserControls.Preferences
         {
             LoadDriveBox();
 
-            string driveLetter = Drive.Drive;
-            if (!string.IsNullOrEmpty(driveLetter))
+            char driveLetter = Drive.Letter;
+            if (DriveLetterTools.IsValid(driveLetter))
             {
                 DriveCheckBox.IsChecked = true;
                 DriveBox.SelectedItem = driveLetter;
@@ -80,7 +80,7 @@ namespace AccesoUPV.GUI.UserControls.Preferences
                     DriveBox.ItemsSource
                     = NetworkDrive.SelectAvailable(
                         DriveBox.ItemsSource
-                        as IEnumerable<string>);
+                        as IEnumerable<char>);
                 }
                 else
                 {
@@ -95,15 +95,15 @@ namespace AccesoUPV.GUI.UserControls.Preferences
         private void LoadDriveBox()
         {
             bool onlyIfAvailable = ShowOnlyAvailableDrives.IsChecked ?? false;
-            DriveBox.ItemsSource = NetworkDrive.GetDrives(onlyIfAvailable);
+            DriveBox.ItemsSource = DriveLetterTools.GetDriveLetters(onlyIfAvailable);
         }
 
         public void Save()
         {
-            Drive.Drive =
+            Drive.Letter =
                 (DriveCheckBox.IsChecked ?? false)
-                ? DriveBox.SelectedItem.ToString()
-                : null;
+                ? (char)DriveBox.SelectedItem
+                : default;
 
             Drive.Password = PassBox.Password;
             SavePasswords = SavePassCheckBox.IsChecked ?? false;

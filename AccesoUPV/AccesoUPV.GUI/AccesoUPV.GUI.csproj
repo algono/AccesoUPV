@@ -69,6 +69,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="UserControls\Preferences\DriveLetterConverter.cs" />
     <Compile Include="Help\HelpProvider.cs" />
     <Compile Include="UserControls\Preferences\DrivePreferences.xaml.cs">
       <DependentUpon>DrivePreferences.xaml</DependentUpon>

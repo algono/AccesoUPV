@@ -34,8 +34,17 @@ namespace AccesoUPV.ConsoleTesting
 
                 Console.Write("Type your user: ");
                 service.User = Console.ReadLine();
-                Console.Write("Type the drive (i.e: 'C:'): ");
-                service.Disco_W.Drive = Console.ReadLine();
+                Console.Write("Press the drive letter: ");
+
+                char letter = default;
+                while (letter == default || !DriveLetterTools.IsValid(letter))
+                {
+                    if (letter != default) Console.Write("Invalid input. Please try again: ");
+                    letter = (char)Console.Read();
+                    Console.WriteLine();
+                }
+                service.Disco_W.Letter = letter;
+
                 Console.WriteLine("Type your domain:");
                 foreach (var value in Enum.GetValues(typeof(UPVDomain)))
                 {

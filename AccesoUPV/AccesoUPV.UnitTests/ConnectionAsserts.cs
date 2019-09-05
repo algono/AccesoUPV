@@ -24,17 +24,17 @@ namespace AccesoUPV.UnitTests
         public static void Assert_Connected(NetworkDrive drive)
         {
             Assert.IsTrue(drive.IsConnected);
-            Assert.IsNotNull(drive.ConnectedDrive);
-            Assert.IsTrue(NetworkDrive.GetMappedDrives().Contains(drive.ConnectedDrive));
-            Assert.IsTrue(Directory.Exists(drive.ConnectedDrive));
+            Assert.IsNotNull(drive.ConnectedLetter);
+            Assert.IsTrue(NetworkDrive.GetMappedDrives().Contains(drive.ConnectedLetter));
+            Assert.IsTrue(Directory.Exists(drive.ConnectedLetter.ToString()));
         }
 
         public static void Assert_Disconnected(NetworkDrive drive)
         {
             Assert.IsFalse(drive.IsConnected);
-            Assert.IsNull(drive.ConnectedDrive);
-            Assert.IsFalse(Directory.Exists(drive.Drive));
-            Assert.IsFalse(NetworkDrive.GetMappedDrives().Contains(drive.Drive));
+            Assert.IsNull(drive.ConnectedLetter);
+            Assert.IsFalse(Directory.Exists(drive.Letter.ToString()));
+            Assert.IsFalse(NetworkDrive.GetMappedDrives().Contains(drive.Letter));
         }
     }
 }
