@@ -1,10 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors
 {
-    public interface IConnectable : INotifyPropertyChanged
+    public interface IConnectable
     {
         bool IsConnected { get; }
 

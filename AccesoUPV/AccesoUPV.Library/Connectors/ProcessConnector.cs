@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -11,7 +10,6 @@ namespace AccesoUPV.Library.Connectors
 
         public event EventHandler Connected, Disconnected;
         public event EventHandler<ProcessEventArgs> ProcessConnected, ProcessDisconnected;
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public static ProcessStartInfo CreateProcessInfo(string fileName)
         {
@@ -26,13 +24,6 @@ namespace AccesoUPV.Library.Connectors
             };
         }
 
-        private void OnConnectionStatusChanged() => OnPropertyChanged(nameof(IsConnected));
-
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         protected abstract Process ConnectProcess();
         protected virtual void OnProcessConnected(ProcessEventArgs e)
         {
@@ -41,7 +32,6 @@ namespace AccesoUPV.Library.Connectors
             if (e.Succeeded)
             {
                 IsConnected = true;
-                OnConnectionStatusChanged();
                 Connected?.Invoke(this, e);
             }
 
@@ -54,7 +44,6 @@ namespace AccesoUPV.Library.Connectors
             if (e.Succeeded)
             {
                 IsConnected = false;
-                OnConnectionStatusChanged();
                 Disconnected?.Invoke(this, e);
             }
 

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors.Drive
 {
@@ -23,10 +20,10 @@ namespace AccesoUPV.Library.Connectors.Drive
             }
         }
 
-        public static char ValidOrDefault(char letter) 
-            => IsValid(letter) ? letter : default; 
+        public static char ValidOrDefault(char letter)
+            => IsValid(letter) ? letter : default;
         public static char ValidOrDefault(char letter, char defaultValue)
-            => IsValid(letter) ? letter : defaultValue; 
+            => IsValid(letter) ? letter : defaultValue;
 
         public static bool IsValid(char letter) => char.IsLetter(letter);
 

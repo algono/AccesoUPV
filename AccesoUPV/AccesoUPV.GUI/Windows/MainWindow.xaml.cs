@@ -2,7 +2,6 @@
 using AccesoUPV.Library.Services;
 using System;
 using System.ComponentModel;
-using System.Windows;
 
 namespace AccesoUPV.GUI.Windows
 {

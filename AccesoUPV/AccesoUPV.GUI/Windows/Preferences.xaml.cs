@@ -1,6 +1,5 @@
 ﻿using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Services;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 

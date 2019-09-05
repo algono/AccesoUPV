@@ -46,7 +46,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
                 {
                     await VPN_UPV.DisconnectAsync();
                     await VPN_UPV.ConnectAsync();
-                } 
+                }
                 #endregion
             }
         }
@@ -162,7 +162,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
             Content = new WebBrowser
             {
                 Source = new Uri("http://" + VPNFactory.PORTAL_DSIC),
-                
+
             }
         };
         [Obsolete]
@@ -170,7 +170,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
         {
             window.Closed += async (s, ce) => await connectable.DisconnectAsync();
             window.ShowDialog();
-        } 
+        }
         #endregion
 
         private void PreferencesButton_Click(object sender, RoutedEventArgs e)

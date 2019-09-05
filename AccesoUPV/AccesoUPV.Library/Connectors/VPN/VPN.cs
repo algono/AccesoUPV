@@ -26,7 +26,7 @@ namespace AccesoUPV.Library.Connectors.VPN
 
         private static readonly ProcessStartInfo
             ConnectionInfo = CreateProcessInfo("rasphone.exe"),
-            DisconnectionInfo = CreateProcessInfo("rasdial.exe"); 
+            DisconnectionInfo = CreateProcessInfo("rasdial.exe");
         #endregion
 
         public VPN(string server, string name = null) : this(new VPNConfig(server), name) { }
@@ -81,7 +81,7 @@ namespace AccesoUPV.Library.Connectors.VPN
         {
             DisconnectionInfo.Arguments = $"\"{ConnectedName}\" /DISCONNECT";
             return Process.Start(DisconnectionInfo);
-        } 
+        }
         #endregion
 
         #region Creation methods
@@ -121,7 +121,7 @@ namespace AccesoUPV.Library.Connectors.VPN
                 shell.Dispose();
                 return succeeded;
             });
-        } 
+        }
         #endregion
 
         public void Open() => Config.Open();
@@ -206,7 +206,7 @@ namespace AccesoUPV.Library.Connectors.VPN
                 psOutput.RemoveAll(item => item == null);
                 return psOutput;
             });
-        } 
+        }
         #endregion
     }
 }

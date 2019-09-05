@@ -35,7 +35,7 @@ namespace AccesoUPV.Library.Connectors.VPN
             XmlDocument configXml = new XmlDocument();
             configXml.Load("Resources/UPV_Config.xml");
             UPVCreationParameters.Add("EapConfigXmlStream", configXml);
-        } 
+        }
         #endregion
 
         public static VPN GetVPNToUPV(string name = null)

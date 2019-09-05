@@ -50,7 +50,7 @@ namespace AccesoUPV.Library.Connectors.Drive
             Continue = continueMethod;
             ContinueAsync = continueMethodAsync;
         }
-    } 
+    }
     #endregion
 
     public class NetworkDrive<T> : NetworkDrive where T : Enum
@@ -270,7 +270,7 @@ namespace AccesoUPV.Library.Connectors.Drive
             YesToAll = true;
             await DisconnectAsync();
             YesToAll = oldYesToAll;
-        } 
+        }
         #endregion
     }
 }
