@@ -177,11 +177,18 @@ namespace AccesoUPV.Library.Connectors.Drive
         protected void CheckArguments()
         {
             if (string.IsNullOrEmpty(Username)) throw new ArgumentNullException(nameof(Username));
+            if (UseCredentials && string.IsNullOrEmpty(Password)) throw new ArgumentNullException(nameof(Password));
+
+            if (!DriveLetterTools.IsValid(Letter))
+            {
+                letter = DriveLetterTools.GetFirstAvailable();
+                letterWasAutoAssigned = true;
+            }
 
             NetInfo.Arguments = $"use {DriveLetter} {Address}";
+
             if (UseCredentials)
             {
-                if (string.IsNullOrEmpty(Password)) throw new ArgumentNullException(nameof(Password));
                 NetInfo.Arguments += $" \"{Password}\" /USER:{Domain?.GetFullUsername(Username) ?? Username}";
             }
 
@@ -197,12 +204,6 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         protected override Process ConnectProcess()
         {
-            if (!DriveLetterTools.IsValid(Letter))
-            {
-                letter = DriveLetterTools.GetFirstAvailable();
-                letterWasAutoAssigned = true;
-            }
-
             CheckArguments();
             return StartProcess(NetInfo);
         }
