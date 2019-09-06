@@ -94,7 +94,6 @@ namespace AccesoUPV.GUI.Windows.MainPages
 
         private void HelpButton_OnClick(object sender, RoutedEventArgs e)
         {
-            // new Help().ShowDialog();
             HelpProvider.ShowHelpTableOfContents();
         }
     }
