@@ -15,18 +15,15 @@ namespace AccesoUPV.GUI.Windows
 
         private readonly string _server;
 
-        public SelectVPN()
+        public SelectVPN(VPN vpn) : this(server: vpn.Config?.Server)
+        {
+
+        }
+
+        public SelectVPN(string server = null)
         {
             InitializeComponent();
-        }
 
-        public SelectVPN(VPN vpn) : this(vpn.Config.Server)
-        {
-
-        }
-
-        public SelectVPN(string server = null) : this()
-        {
             _server = server;
             this.Loaded += async (sender, e) =>
             {
@@ -34,8 +31,10 @@ namespace AccesoUPV.GUI.Windows
                 ShowList();
             };
         }
-        public SelectVPN(IEnumerable<string> vpnList) : this()
+        public SelectVPN(IEnumerable<string> vpnList)
         {
+            InitializeComponent();
+
             VPNList.ItemsSource = vpnList;
             ShowList();
         }
