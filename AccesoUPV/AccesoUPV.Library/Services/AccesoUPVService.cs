@@ -2,6 +2,7 @@
 using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Properties;
+using AccesoUPV.Library.Static;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -65,7 +66,9 @@ namespace AccesoUPV.Library.Services
 
             char DSICDriveLetter = DriveLetterTools.ValidOrDefault(Settings.Default.DSICDriveLetter);
 
-            Disco_DSIC = DriveFactory.GetDriveDSIC(DSICDriveLetter, User, Settings.Default.DSICDrivePassword);
+            string DSICDrivePassword = Settings.Default.DSICDrivePassword;
+            if (!string.IsNullOrEmpty(DSICDrivePassword)) DSICDrivePassword = PasswordHelper.Decrypt(DSICDrivePassword);
+            Disco_DSIC = DriveFactory.GetDriveDSIC(DSICDriveLetter, User, DSICDrivePassword);
             SavePasswords = !string.IsNullOrEmpty(Disco_DSIC.Password);
         }
 
@@ -92,7 +95,7 @@ namespace AccesoUPV.Library.Services
             Settings.Default.WDriveDomain = (int)Disco_W.Domain;
 
             Settings.Default.DSICDriveLetter = Disco_DSIC.Letter;
-            Settings.Default.DSICDrivePassword = SavePasswords ? Disco_DSIC.Password : null;
+            Settings.Default.DSICDrivePassword = SavePasswords ? PasswordHelper.Encrypt(Disco_DSIC.Password) : null;
 
             Settings.Default.Save();
         }
