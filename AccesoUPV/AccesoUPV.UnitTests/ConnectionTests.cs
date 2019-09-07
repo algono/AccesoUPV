@@ -6,19 +6,9 @@ using System;
 
 namespace AccesoUPV.UnitTests
 {
-    [TestClass]
-    public class ConnectionTests
+    public static class ConnectionTests
     {
-        private static VPN VPN_UPV, VPN_DSIC;
-        private static NetworkDrive WDrive, DSICDrive;
-
-        private static string Username => SharedData.Username;
-        private static string DSICDrivePass => SharedData.DSICDrivePass;
-
-        [TestInitialize]
-        public void PromptCredentials() => SharedData.PromptCredentials();
-
-        private static void CanBeConnected(VPN vpn)
+        internal static void CanBeConnected(VPN vpn)
         {
             try
             {
@@ -30,7 +20,7 @@ namespace AccesoUPV.UnitTests
                 ConnectionAsserts.Assert_Disconnected(vpn);
             }
         }
-        private static void CanBeDisconnected(VPN vpn)
+        internal static void CanBeDisconnected(VPN vpn)
         {
             try
             {
@@ -42,7 +32,7 @@ namespace AccesoUPV.UnitTests
                 ConnectionAsserts.Assert_Connected(vpn);
             }
         }
-        private static void CanBeConnected(NetworkDrive drive)
+        internal static void CanBeConnected(NetworkDrive drive)
         {
             try
             {
@@ -54,7 +44,7 @@ namespace AccesoUPV.UnitTests
                 ConnectionAsserts.Assert_Disconnected(drive);
             }
         }
-        private static void CanBeDisconnected(NetworkDrive drive)
+        internal static void CanBeDisconnected(NetworkDrive drive)
         {
             try
             {
@@ -66,74 +56,5 @@ namespace AccesoUPV.UnitTests
                 ConnectionAsserts.Assert_Connected(drive);
             }
         }
-
-        [TestMethod]
-        public void VPN_UPVCanBeConnected()
-        {
-            // Arrange
-            IAccesoUPVService service = new AccesoUPVService();
-            VPN vpn = service.VPN_UPV;
-            vpn.SetNameAuto();
-            // Keep to disconnect in further testing
-            VPN_UPV = vpn;
-            // Act and Assert
-            CanBeConnected(vpn);
-        }
-
-        [TestMethod]
-        public void WDriveCanBeConnected()
-        {
-            // Arrange
-            IAccesoUPVService service = new AccesoUPVService();
-            NetworkDrive drive = service.Disco_W;
-            drive.Username = Username;
-            // Keep to disconnect in further testing
-            WDrive = drive;
-            // Act and Assert
-            CanBeConnected(drive);
-        }
-
-        [TestMethod]
-        public void DSICDriveCanBeConnected()
-        {
-            // Arrange
-            IAccesoUPVService service = new AccesoUPVService();
-            NetworkDrive drive = service.Disco_DSIC;
-            drive.Username = Username;
-            drive.Password = DSICDrivePass;
-            // Keep to disconnect in further testing
-            DSICDrive = drive;
-            // Act and Assert
-            CanBeConnected(drive);
-        }
-
-        [TestMethod]
-        public void WDriveCanBeDisconnected() => CanBeDisconnected(WDrive);
-
-        [TestMethod]
-        public void DSICDriveCanBeDisconnected()
-        {
-            CanBeDisconnected(DSICDrive);
-        }
-
-        [TestMethod]
-        public void VPN_UPVCanBeDisconnected() => CanBeDisconnected(VPN_UPV);
-
-        [TestMethod]
-        public void VPN_DSICCanBeConnected()
-        {
-            // Arrange
-            IAccesoUPVService service = new AccesoUPVService();
-            VPN vpn = service.VPN_DSIC;
-            vpn.SetNameAuto();
-            // Keep to disconnect in further testing
-            VPN_DSIC = vpn;
-            // Act and Assert
-            CanBeConnected(vpn);
-        }
-
-        [TestMethod]
-        public void VPN_DSICCanBeDisconnected() => CanBeDisconnected(VPN_DSIC);
-
     }
 }

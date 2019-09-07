@@ -50,7 +50,7 @@ namespace AccesoUPV.Library.Connectors.Drive
             return letters;
         }
 
-        public static string ToDriveLetter(char letter) => (IsValid(letter) ? char.ToUpper(letter) : '?') + ":";
+        public static string ToDriveLetter(char letter) => IsValid(letter) ? (char.ToUpper(letter) + ":") : null;
         public static char FromDriveLetter(string driveLetter) => driveLetter[0];
 
     }
