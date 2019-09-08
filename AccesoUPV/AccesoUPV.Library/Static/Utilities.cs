@@ -91,8 +91,21 @@ namespace AccesoUPV.Library
         #endregion
 
         #region Connectables Reflection
+        /// <summary>
+        /// <para>Selects only the properties of type <typeparamref name="T"/>, and retrieves its current values</para>
+        /// The properties are selected using <seealso cref="WherePropertiesAreOfType)"/>
+        /// </summary>
         public static IEnumerable<T> GetValuesOfType<T>(this IEnumerable<PropertyInfo> info, object obj) where T : class => info.WherePropertiesAreOfType<T>().GetValues<T>(obj);
+
+        /// <summary>
+        /// Selects only the properties of type <typeparamref name="T"/>
+        /// </summary>
         public static IEnumerable<PropertyInfo> WherePropertiesAreOfType<T>(this IEnumerable<PropertyInfo> info) => info.Where(prop => typeof(T).IsAssignableFrom(prop.PropertyType));
+
+        /// <summary>
+        /// <para>Retrieves the current values of all the properties from <paramref name="info"/> in <paramref name="obj"/> as <typeparamref name="T"/></para>
+        /// <para>Note: It assumes that all values are of type <typeparamref name="T"/>, or any of its subclasses</para>
+        /// </summary>
         public static IEnumerable<T> GetValues<T>(this IEnumerable<PropertyInfo> info, object obj) where T : class => info.Select(prop => prop.GetValue(obj) as T);
         #endregion
 
