@@ -2,38 +2,41 @@
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading.Tasks;
 
-namespace AccesoUPV.UnitTests
+namespace AccesoUPV.UnitTests.NetworkDrives
 {
     [TestClass]
-    public class DSICTests
+    public class UPVTestsAsync
     {
-        private static VPN VPN_DSIC;
-        private static NetworkDrive DSICDrive;
+        private static VPN VPN_UPV;
+        private static NetworkDrive WDrive;
 
         [ClassInitialize]
         public static void InitVPN(TestContext _)
         {
             // Arrange
             IAccesoUPVService service = new AccesoUPVService();
-            VPN vpn = service.VPN_DSIC;
-            if (string.IsNullOrEmpty(vpn.Name)) vpn.SetNameAuto();      
+            VPN vpn = service.VPN_UPV;
+            if (string.IsNullOrEmpty(vpn.Name)) vpn.SetNameAuto();
 
             // Keep to disconnect in further testing
-            VPN_DSIC = vpn;
+            VPN_UPV = vpn;
 
             // Disconnect any other VPNs
             DisconnectOtherVPNs(_);
 
             // Add VPN to list for others to disconnect it if it causes trouble for them
             SharedData.VPNs.Add(vpn);
+
+            SharedData.PromptUsername();
         }
 
         public static void DisconnectOtherVPNs(TestContext _)
         {
             foreach (VPN vpn in SharedData.VPNs)
             {
-                if (vpn.IsConnected && !vpn.ConnectedName.Equals(VPN_DSIC.Name))
+                if (vpn.IsConnected && !vpn.ConnectedName.Equals(VPN_UPV.Name))
                 {
                     vpn.Disconnect();
                 }
@@ -43,37 +46,36 @@ namespace AccesoUPV.UnitTests
         [TestInitialize]
         public void ConnectToVPN()
         {
-            if (!VPN_DSIC.IsConnected && !VPN_DSIC.IsReachable())
+            if (!VPN_UPV.IsConnected && !VPN_UPV.IsReachable())
             {
-                VPN_DSIC.Connect();
+                VPN_UPV.Connect();
             }
         }
 
         [ClassCleanup]
         public static void DisconnectVPN()
         {
-            if (VPN_DSIC.IsConnected)
+            if (VPN_UPV.IsConnected)
             {
-                VPN_DSIC.Disconnect();
+                VPN_UPV.Disconnect();
             }
         }
 
         [TestMethod]
-        public void DSICDriveCanBeConnected()
+        public async Task WDriveCanBeConnectedAsync()
         {
             // Arrange
             IAccesoUPVService service = new AccesoUPVService();
-            NetworkDrive drive = service.Disco_DSIC;
+            NetworkDrive drive = service.Disco_W;
             drive.Username = SharedData.Username;
-            drive.Password = SharedData.DSICDrivePass;
             // Keep to disconnect in further testing
-            DSICDrive = drive;
+            WDrive = drive;
             // Act and Assert
-            ConnectionTests.CanBeConnected(drive);
+            await ConnectionTestsAsync.CanBeConnectedAsync(drive);
         }
 
         [TestMethod]
-        public void DSICDriveCanBeDisconnected()
-            => ConnectionTests.CanBeDisconnected(DSICDrive);
+        public async Task WDriveCanBeDisconnectedAsync()
+            => await ConnectionTestsAsync.CanBeDisconnectedAsync(WDrive);
     }
 }

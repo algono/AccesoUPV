@@ -1,13 +1,14 @@
 ﻿using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Services;
+using Microsoft.VisualBasic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.UnitTests
+namespace AccesoUPV.UnitTests.NetworkDrives
 {
     [TestClass]
-    public class DSICAsyncTests
+    public class DSICTestsAsync
     {
         private static VPN VPN_DSIC;
         private static NetworkDrive DSICDrive;
@@ -28,6 +29,8 @@ namespace AccesoUPV.UnitTests
 
             // Add VPN to list for others to disconnect it if it causes trouble for them
             SharedData.VPNs.Add(vpn);
+
+            SharedData.PromptPasswordDSIC();
         }
 
         public static void DisconnectOtherVPNs(TestContext _)

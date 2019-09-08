@@ -2,13 +2,13 @@
 using AccesoUPV.Library.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace AccesoUPV.UnitTests
+namespace AccesoUPV.UnitTests.VPNs
 {
     /// <summary>
     /// Descripción resumida de VPNTests
     /// </summary>
     [TestClass]
-    public class VPNTests
+    public class A_VPNTests
     {
         private static VPN VPN_UPV, VPN_DSIC;
 

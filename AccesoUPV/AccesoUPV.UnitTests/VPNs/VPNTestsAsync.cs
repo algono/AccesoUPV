@@ -1,18 +1,15 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using AccesoUPV.Library.Services;
 using AccesoUPV.Library.Connectors.VPN;
 
-namespace AccesoUPV.UnitTests
+namespace AccesoUPV.UnitTests.VPNs
 {
     /// <summary>
     /// Descripción resumida de VPNAsyncTests
     /// </summary>
     [TestClass]
-    public class VPNAsyncTests
+    public class A_VPNTestsAsync
     {
         private static VPN VPN_UPV, VPN_DSIC;
 

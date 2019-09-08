@@ -1,5 +1,6 @@
 ﻿using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Services;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -28,8 +29,15 @@ namespace AccesoUPV.GUI.Windows
 
         private void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
-            SaveChanges();
-            this.Close();
+            try
+            {
+                SaveChanges();
+                this.Close();
+            }
+            catch (OperationCanceledException)
+            {
+                // The user canceled the process
+            }
         }
 
         private void Load()
@@ -55,7 +63,18 @@ namespace AccesoUPV.GUI.Windows
 
         private void SaveChanges()
         {
-            Service.User = UserBox.Text;
+            string user = UserBox.Text;
+            if (string.IsNullOrEmpty(user))
+            {
+                MessageBoxResult result = MessageBox.Show("No ha indicado ningún nombre de usuario.\n\n"
+                + "Mientras no lo haga, no podrá acceder a ningún disco de red de la UPV.\n\n"
+                + "¿Desea continuar?", "Ningún nombre de usuario", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+
+                if (result != MessageBoxResult.OK) throw new OperationCanceledException();
+                user = null; // Avoids the user being an empty string (it causes problems)
+            }
+
+            Service.User = user;
 
             VPNToUPVPrefs.Save();
             VPNToDSICPrefs.Save();

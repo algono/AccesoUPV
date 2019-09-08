@@ -82,11 +82,11 @@ namespace AccesoUPV.Library.Connectors.Drive
         public DriveDomain Domain { get; set; }
 
         public string ConnectedDriveLetter
-            => DriveLetterTools.ToDriveLetter(ConnectedLetter);
+            => ConnectedLetter == default ? default : DriveLetterTools.ToDriveLetter(ConnectedLetter);
         public char ConnectedLetter { get; private set; }
 
         public string DriveLetter
-            => DriveLetterTools.ToDriveLetter(Letter);
+            => Letter == default ? default : DriveLetterTools.ToDriveLetter(Letter);
         public char Letter
         {
             get => letter;
@@ -99,7 +99,7 @@ namespace AccesoUPV.Library.Connectors.Drive
                 }
                 else
                 {
-                    throw new ArgumentOutOfRangeException(nameof(Letter), value, DriveLetterTools.InvalidDriveLetterMessage);
+                    throw new ArgumentOutOfRangeException(nameof(Letter), value, DriveLetterTools.InvalidLetterMessage);
                 }
             }
         }
@@ -176,7 +176,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         #region Connection Process
         protected void CheckArguments()
         {
-            if (string.IsNullOrEmpty(Username)) throw new ArgumentNullException(nameof(Username));
+            if (Username == null) throw new ArgumentNullException(nameof(Username));
             if (UseCredentials && string.IsNullOrEmpty(Password)) throw new ArgumentNullException(nameof(Password));
 
             if (!DriveLetterTools.IsValid(Letter))
@@ -184,7 +184,10 @@ namespace AccesoUPV.Library.Connectors.Drive
                 letter = DriveLetterTools.GetFirstAvailable();
                 letterWasAutoAssigned = true;
             }
+        }
 
+        private void ApplyArguments()
+        {
             NetInfo.Arguments = $"use {DriveLetter} {Address}";
 
             if (UseCredentials)
@@ -205,6 +208,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         protected override Process ConnectProcess()
         {
             CheckArguments();
+            ApplyArguments();
             return StartProcess(NetInfo);
         }
 

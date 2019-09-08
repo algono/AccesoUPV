@@ -29,9 +29,18 @@ namespace AccesoUPV.Library.Services
             get => _user;
             set
             {
+                // Dont allow empty strings
+                if (value?.Length == 0) value = null;
+
                 _user = value;
-                Disco_W.Username = value;
-                Disco_DSIC.Username = value;
+                
+                foreach (NetworkDrive drive in NetworkDrives)
+                {
+                    if (drive != null)
+                    {
+                        drive.Username = value;
+                    }
+                }
             }
         }
         public bool SavePasswords { get; set; }
@@ -45,6 +54,7 @@ namespace AccesoUPV.Library.Services
 
         #region Connectables Reflection
         private IEnumerable<IConnectable> Connectables => connectablesInfo.GetValues<IConnectable>(this);
+        private IEnumerable<NetworkDrive> NetworkDrives => connectablesInfo.GetValuesOfType<NetworkDrive>(this);
 
         private static readonly IEnumerable<PropertyInfo> connectablesInfo = typeof(AccesoUPVService).GetProperties().AsEnumerable().WherePropertiesAreOfType<IConnectable>();
         #endregion
@@ -55,7 +65,7 @@ namespace AccesoUPV.Library.Services
         {
             Settings.Default.SettingsLoaded += Default_SettingsLoaded;
 
-            _user = Settings.Default.User;
+            User = Settings.Default.User;
 
             VPN_UPV = VPNFactory.GetVPNToUPV(Settings.Default.VPN_UPVName);
             VPN_DSIC = VPNFactory.GetVPNToDSIC(Settings.Default.VPN_DSICName);
@@ -120,7 +130,7 @@ namespace AccesoUPV.Library.Services
             List<Func<Task>> driveTasks = new List<Func<Task>>();
             List<Func<Task>> VPNTasks = new List<Func<Task>>();
 
-            int steps = 1; // El "Saliendo" final se considera un paso
+            int steps = 0;
 
             foreach (PropertyInfo info in connectablesInfo)
             {

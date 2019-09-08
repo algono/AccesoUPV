@@ -2,12 +2,11 @@
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading.Tasks;
 
-namespace AccesoUPV.UnitTests
+namespace AccesoUPV.UnitTests.NetworkDrives
 {
     [TestClass]
-    public class UPVAsyncTests
+    public class UPVTests
     {
         private static VPN VPN_UPV;
         private static NetworkDrive WDrive;
@@ -28,6 +27,8 @@ namespace AccesoUPV.UnitTests
 
             // Add VPN to list for others to disconnect it if it causes trouble for them
             SharedData.VPNs.Add(vpn);
+
+            SharedData.PromptUsername();
         }
 
         public static void DisconnectOtherVPNs(TestContext _)
@@ -60,7 +61,7 @@ namespace AccesoUPV.UnitTests
         }
 
         [TestMethod]
-        public async Task WDriveCanBeConnectedAsync()
+        public void WDriveCanBeConnected()
         {
             // Arrange
             IAccesoUPVService service = new AccesoUPVService();
@@ -69,11 +70,11 @@ namespace AccesoUPV.UnitTests
             // Keep to disconnect in further testing
             WDrive = drive;
             // Act and Assert
-            await ConnectionTestsAsync.CanBeConnectedAsync(drive);
+            ConnectionTests.CanBeConnected(drive);
         }
 
         [TestMethod]
-        public async Task WDriveCanBeDisconnectedAsync()
-            => await ConnectionTestsAsync.CanBeDisconnectedAsync(WDrive);
+        public void WDriveCanBeDisconnected()
+            => ConnectionTests.CanBeDisconnected(WDrive);
     }
 }

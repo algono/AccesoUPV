@@ -25,7 +25,6 @@ namespace AccesoUPV.Library.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string VPN_UPVName {
             get {
                 return ((string)(this["VPN_UPVName"]));
@@ -37,7 +36,6 @@ namespace AccesoUPV.Library.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string VPN_DSICName {
             get {
                 return ((string)(this["VPN_DSICName"]));
@@ -85,7 +83,6 @@ namespace AccesoUPV.Library.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string User {
             get {
                 return ((string)(this["User"]));
@@ -97,7 +94,6 @@ namespace AccesoUPV.Library.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string DSICDrivePassword {
             get {
                 return ((string)(this["DSICDrivePassword"]));

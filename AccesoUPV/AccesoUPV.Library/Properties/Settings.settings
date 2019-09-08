@@ -2,10 +2,10 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="AccesoUPV.Library.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="VPN_UPVName" Type="System.String" Scope="User">
+    <Setting Name="VPN_UPVName" GenerateDefaultValueInCode="false" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="VPN_DSICName" Type="System.String" Scope="User">
+    <Setting Name="VPN_DSICName" GenerateDefaultValueInCode="false" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="WDriveLetter" Type="System.Char" Scope="User">
@@ -17,10 +17,10 @@
     <Setting Name="DSICDriveLetter" Type="System.Char" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="User" Type="System.String" Scope="User">
+    <Setting Name="User" GenerateDefaultValueInCode="false" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="DSICDrivePassword" Type="System.String" Scope="User">
+    <Setting Name="DSICDrivePassword" GenerateDefaultValueInCode="false" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

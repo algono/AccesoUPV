@@ -55,17 +55,18 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ConnectionAsserts.cs" />
-    <Compile Include="ConnectionTestsAsync.cs" />
-    <Compile Include="ConnectionTests.cs" />
-    <Compile Include="DSICAsyncTests.cs" />
-    <Compile Include="DSICTests.cs" />
+    <Compile Include="Static\ConnectionAsserts.cs" />
+    <Compile Include="Static\ConnectionTestsAsync.cs" />
+    <Compile Include="Static\ConnectionTests.cs" />
+    <Compile Include="NetworkDrives\DSICTestsAsync.cs" />
+    <Compile Include="NetworkDrives\DSICTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SharedData.cs" />
-    <Compile Include="UPVAsyncTests.cs" />
-    <Compile Include="UPVTests.cs" />
-    <Compile Include="VPNAsyncTests.cs" />
-    <Compile Include="VPNTests.cs" />
+    <Compile Include="Static\SharedData.cs" />
+    <Compile Include="NetworkDrives\DriveLetter\DriveLetterTests.cs" />
+    <Compile Include="NetworkDrives\UPVTestsAsync.cs" />
+    <Compile Include="NetworkDrives\UPVTests.cs" />
+    <Compile Include="VPNs\VPNTestsAsync.cs" />
+    <Compile Include="VPNs\VPNTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AccesoUPV.Library\AccesoUPV.Library.csproj">
