@@ -115,7 +115,7 @@ namespace AccesoUPV.Library.Connectors.Drive
             protected set => ConnectedLetter = value ? Letter : default;
         }
 
-        private static readonly ProcessStartInfo NetInfo = CreateProcessInfo("net.exe");
+        private readonly ProcessStartInfo NetInfo = CreateProcessInfo("net.exe");
         private bool letterWasAutoAssigned;
         private char letter;
 
@@ -241,6 +241,10 @@ namespace AccesoUPV.Library.Connectors.Drive
                     throw new ArgumentException(e.Error, nameof(Password));
                 if (e.OutputOrErrorContains("1326"))
                     throw new ArgumentException(e.Error, nameof(Username));
+
+
+                if (e.OutputOrErrorContains("85"))
+                    throw new NotAvailableDriveException(Letter);
             }
         }
 

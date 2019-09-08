@@ -29,6 +29,7 @@ namespace AccesoUPV.UnitTests.NetworkDrives
             // Add VPN to list for others to disconnect it if it causes trouble for them
             SharedData.VPNs.Add(vpn);
 
+            SharedData.PromptUsername();
             SharedData.PromptPasswordDSIC();
         }
 
