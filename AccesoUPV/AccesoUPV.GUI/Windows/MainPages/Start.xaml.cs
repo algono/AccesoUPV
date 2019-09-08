@@ -3,6 +3,7 @@ using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Services;
 using Microsoft.VisualBasic;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +16,8 @@ namespace AccesoUPV.GUI.Windows.MainPages
     public partial class Start : Page
     {
         public event EventHandler Started;
+        public const string ConnectionErrorMessage = "Ha habido un error al conectarse a la VPN. Inténtelo de nuevo.\n\n Si el problema persiste, trate de conectarse de forma manual.";
+
         private readonly IAccesoUPVService _service;
 
         public Start()
@@ -34,16 +37,15 @@ namespace AccesoUPV.GUI.Windows.MainPages
                 VPN vpn = _service.VPN_UPV;
                 if (!vpn.IsReachable())
                 {
-                    bool exists = !string.IsNullOrEmpty(vpn.Name) || await CreateVPN(vpn, "la UPV desde fuera del campus");
-                    if (exists)
+                    if (string.IsNullOrEmpty(vpn.Name))
                     {
-                        _service.SaveChanges();
-                        await vpn.ConnectAsync();
+                        SelectVPN window = new SelectVPN(vpn);
+                        window.ShowDialog();
+                        if (window.Canceled) throw new OperationCanceledException();
                     }
-                    else
-                    {
-                        throw new OperationCanceledException();
-                    }
+
+                    _service.SaveChanges();
+                    await vpn.ConnectAsync();
                 }
 
                 OnStarted(EventArgs.Empty);
@@ -52,33 +54,14 @@ namespace AccesoUPV.GUI.Windows.MainPages
             {
                 // The user canceled the connection
             }
-        }
-
-        private static async Task<bool> CreateVPN(VPN vpn, string vpnMsgText = "la red")
-        {
-            MessageBoxResult result = MessageBox.Show(
-                                $"Debe establecer una red VPN para poder acceder a {vpnMsgText}.\n\n"
-                                + "¿Desea que se cree la VPN automáticamente?\n\n"
-                                + "Si ya tiene una creada o prefiere crearla manualmente, elija 'No'.", "Establecer VPN", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning
-                                );
-            if (result == MessageBoxResult.Yes)
+            catch (IOException)
             {
-                vpn.Name = Interaction.InputBox("Introduzca el nombre de la nueva conexión VPN:");
-                await vpn.CreateAsync();
+                MessageBox.Show(
+                    ConnectionErrorMessage,
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
-            else if (result == MessageBoxResult.No)
-            {
-                SelectVPN window = new SelectVPN(vpn);
-                window.ShowDialog();
-                if (window.Canceled) return false;
-                vpn.Name = window.SelectedName;
-            }
-            else
-            {
-                return false;
-            }
-
-            return true;
         }
 
         private void PreferencesButton_Click(object sender, RoutedEventArgs e)

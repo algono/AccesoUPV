@@ -85,43 +85,8 @@ namespace AccesoUPV.Library.Connectors.VPN
         #endregion
 
         #region Creation methods
-        protected virtual PowerShell CreateShell()
-        {
-            if (string.IsNullOrEmpty(Name)) throw new ArgumentNullException(nameof(Name));
-            if (string.IsNullOrEmpty(Config.Server)) throw new ArgumentNullException(nameof(Config.Server));
-
-            PowerShell shell = PowerShell.Create();
-            shell.AddCommand("Add-VpnConnection");
-            shell.AddParameter("Name", Name);
-            shell.AddParameter("ServerAddress", Config.Server);
-
-            //Es necesario para que las credenciales se guarden cuando el usuario lo indique en rasphone
-            shell.AddParameter("RememberCredential");
-
-            shell.AddParameters(Config.CreationParameters);
-
-            return shell;
-        }
-
-        public bool Create()
-        {
-            using (PowerShell shell = CreateShell())
-            {
-                shell.Invoke();
-                return !shell.HadErrors;
-            }
-        }
-        public Task<bool> CreateAsync()
-        {
-            PowerShell shell = CreateShell();
-            return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) =>
-            {
-                shell.EndInvoke(res);
-                bool succeeded = !shell.HadErrors;
-                shell.Dispose();
-                return succeeded;
-            });
-        }
+        public bool Create() => Config.Create(Name);
+        public Task<bool> CreateAsync() => Config.CreateAsync(Name);
         #endregion
 
         public void Open() => Config.Open();

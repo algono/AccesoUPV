@@ -1,4 +1,6 @@
 ﻿using AccesoUPV.Library.Connectors.VPN;
+using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,40 +12,65 @@ namespace AccesoUPV.GUI.Windows
     /// </summary>
     public partial class SelectVPN
     {
-        public string SelectedName { get; private set; }
+        public VPN SelectedVPN { get; }
+        public string SelectedName => SelectedVPN.Name;
+
+        public string Server => SelectedVPN.Config.Server;
+
         public bool Canceled { get; private set; }
 
-        private readonly string _server;
+        private bool _allowCreation;
+        public bool AllowCreation
+        {
+            get => _allowCreation;
+            set
+            {
+                if (value)
+                {
+                    VPNList.Items.Insert(0, CreateNewVPNItemText);
+                }
+                else
+                {
+                    VPNList.Items.Remove(CreateNewVPNItemText);
+                }
 
-        public SelectVPN(VPN vpn) : this(server: vpn.Config?.Server)
+                _allowCreation = value;
+            }
+        }
+
+        private const string CreateNewVPNItemText = @"<Crear nueva>";
+
+        public SelectVPN(VPNConfig config, bool allowCreation = true) : this(new VPN(config), allowCreation)
+        {
+
+        }
+        
+        public SelectVPN(string server, bool allowCreation = false) : this(new VPN(server), allowCreation)
         {
 
         }
 
-        public SelectVPN(string server = null)
+        public SelectVPN(VPN vpn, bool allowCreation = true)
         {
             InitializeComponent();
+            SelectedVPN = vpn;
+            _allowCreation = allowCreation;
 
-            _server = server;
             this.Loaded += async (sender, e) =>
             {
                 await LoadNameList();
                 ShowList();
             };
         }
-        public SelectVPN(IEnumerable<string> vpnList)
-        {
-            InitializeComponent();
-
-            VPNList.ItemsSource = vpnList;
-            ShowList();
-        }
 
         private async Task LoadNameList()
         {
-            VPNList.ItemsSource = _server == null
+            IList<string> list = Server == null
                 ? await VPN.GetNameListAsync()
-                : await VPNConfig.FindNamesAsync(_server);
+                : await VPNConfig.FindNamesAsync(Server);
+
+            if (AllowCreation) list.Insert(0, CreateNewVPNItemText);
+            VPNList.ItemsSource = list;
         }
 
         private void ShowList()
@@ -58,10 +85,45 @@ namespace AccesoUPV.GUI.Windows
             VPNList.Visibility = Visibility.Collapsed;
         }
 
-        private void SelectButton_Click(object sender, RoutedEventArgs e)
+        private async void SelectButton_Click(object sender, RoutedEventArgs e)
         {
-            SelectedName = VPNList.SelectedItem.ToString();
-            this.Close();
+            try
+            {
+                if (AllowCreation && VPNList.SelectedIndex == 0)
+                {
+                    await CreateNewVPN();
+                }
+                else
+                {
+                    SelectedVPN.Name = VPNList.SelectedItem.ToString();
+                }
+
+                this.Close();
+            }
+            catch (OperationCanceledException)
+            {
+                // The user canceled the operation
+            }
+        }
+
+        private async Task CreateNewVPN()
+        {
+            string newName = Interaction.InputBox("Introduzca el nombre de la nueva conexión VPN:", "Nueva conexión VPN");
+            if (string.IsNullOrEmpty(newName)) throw new OperationCanceledException();
+            else
+            {
+                SelectedVPN.Name = newName;
+
+                // Set cursor as hourglass
+                System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
+
+                await SelectedVPN.CreateAsync();
+
+                // Set cursor as default arrow
+                System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
+
+                MessageBox.Show("La conexión VPN ha sido creada con éxito");
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
