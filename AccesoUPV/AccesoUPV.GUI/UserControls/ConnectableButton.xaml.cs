@@ -86,10 +86,30 @@ namespace AccesoUPV.GUI.UserControls
 
         private async void ConnectionSwitch_Click(object sender, RoutedEventArgs e)
         {
-            if (Connectable.IsConnected) await Disconnect(sender, e);
-            else await Connect(sender, e);
+            ConnectionProgressRing.IsActive = true;
+            ConnectionSwitch.IsEnabled = false;
+
+            try
+            {
+                if (Connectable.IsConnected)
+                {
+                    await Disconnect(sender, e);
+                }
+                else
+                {
+                    await Connect(sender, e);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error desconocido", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             ConnectionSwitch.IsChecked = Connectable.IsConnected;
+            OpenButton.IsEnabled = Connectable.IsConnected;
+
+            ConnectionProgressRing.IsActive = false;
+            ConnectionSwitch.IsEnabled = true;
         }
 
         private void TryToOpen_Click(object sender, RoutedEventArgs e) => OpenHandler(Connectable);
