@@ -1,7 +1,9 @@
 ﻿using AccesoUPV.Library.Connectors;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 
 namespace AccesoUPV.GUI.UserControls
 {
@@ -29,6 +31,16 @@ namespace AccesoUPV.GUI.UserControls
             set => SetValue(IconKindProperty, value);
         }
 
+        public bool IsConnected
+        {
+            get => (bool)GetValue(IsConnectedProperty);
+            set => SetValue(IsConnectedProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for IsConnected.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsConnectedProperty =
+            DependencyProperty.Register("IsConnected", typeof(bool), typeof(ConnectableButton), new UIPropertyMetadata());
+
         // Using a DependencyProperty as the backing store for IconKind.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IconKindProperty =
             DependencyProperty.Register("IconKind", typeof(string), typeof(ConnectableButton), new PropertyMetadata("Connect"));
@@ -39,7 +51,44 @@ namespace AccesoUPV.GUI.UserControls
 
         // Using a DependencyProperty as the backing store for Connectable.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ConnectableProperty =
-            DependencyProperty.Register("Connectable", typeof(IConnectable), typeof(ConnectableButton), new PropertyMetadata());
+            DependencyProperty.Register("Connectable", typeof(IConnectable), typeof(ConnectableButton), new PropertyMetadata(OnConnectableChanged));
+
+        #region Connection Status Updating
+        private static readonly Dictionary<DependencyObject, EventHandler> _connectionStatusHandlerDictionary
+            = new Dictionary<DependencyObject, EventHandler>();
+
+        private static void OnConnectableChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.OldValue != null)
+            {
+                EventHandler OnConnectionStatusChanged = _connectionStatusHandlerDictionary[d];
+                IConnectable oldValue = (IConnectable)e.OldValue;
+
+                oldValue.Connected -= OnConnectionStatusChanged;
+                oldValue.Disconnected -= OnConnectionStatusChanged;
+            }
+
+            if (e.NewValue != null)
+            {
+                EventHandler OnConnectionStatusChanged = CreateHandlerOnConnectionStatusChanged(d);
+                IConnectable newValue = (IConnectable)e.NewValue;
+
+                newValue.Connected += OnConnectionStatusChanged;
+                newValue.Disconnected += OnConnectionStatusChanged;
+
+                _connectionStatusHandlerDictionary.Add(d, OnConnectionStatusChanged);
+            }
+        }
+
+        private static EventHandler CreateHandlerOnConnectionStatusChanged(DependencyObject d)
+            => delegate (object sender, EventArgs e)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    d.SetValue(IsConnectedProperty, ((IConnectable)sender).IsConnected);
+                });
+            };
+        #endregion
 
         #endregion
 
@@ -86,10 +135,27 @@ namespace AccesoUPV.GUI.UserControls
 
         private async void ConnectionSwitch_Click(object sender, RoutedEventArgs e)
         {
-            if (Connectable.IsConnected) await Disconnect(sender, e);
-            else await Connect(sender, e);
+            ConnectionSwitch.IsEnabled = false;
 
-            ConnectionSwitch.IsChecked = Connectable.IsConnected;
+            ConnectionSwitch.GetBindingExpression(ToggleButton.IsCheckedProperty).UpdateTarget();
+
+            try
+            {
+                if (Connectable.IsConnected)
+                {
+                    await Disconnect(sender, e);
+                }
+                else
+                {
+                    await Connect(sender, e);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error desconocido", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            ConnectionSwitch.IsEnabled = true;
         }
 
         private void TryToOpen_Click(object sender, RoutedEventArgs e) => OpenHandler(Connectable);
