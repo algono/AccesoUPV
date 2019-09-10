@@ -68,7 +68,8 @@ namespace AccesoUPV.GUI.Windows.MainPages
                     ex.Message + "\n" +
                     "(Continúe si prefiere que se elija la primera unidad disponible solo durante esta conexión).\n ";
 
-                MessageBoxResult result = MessageBox.Show(WARNING_W, $"Unidad {ex.Letter} contiene disco", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                MessageBoxResult result = MessageBox.Show(WARNING_W, $"Unidad {ex.Letter} contiene disco",
+                    MessageBoxButton.OKCancel, MessageBoxImage.Warning);
 
                 if (result == MessageBoxResult.OK)
                 {
@@ -79,13 +80,30 @@ namespace AccesoUPV.GUI.Windows.MainPages
             catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(networkDrive.Username)))
             {
                 MessageBox.Show("No ha indicado ningún nombre de usuario. Indique uno en los ajustes.", "Falta usuario",
-                MessageBoxButton.OK, MessageBoxImage.Warning);
-                new Preferences(Service).ShowDialog();
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                OpenPreferences();
             }
             catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(networkDrive.Password)))
             {
-                MessageBox.Show("No ha indicado ninguna contraseña. Indíquela en los ajustes.", "Falta contraseña", MessageBoxButton.OK, MessageBoxImage.Warning);
-                new Preferences(Service).ShowDialog();
+                MessageBox.Show("No ha indicado ninguna contraseña. Indíquela en los ajustes.", "Falta contraseña",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                OpenPreferences();
+            }
+            catch (ArgumentOutOfRangeException ex) when (ex.ParamName.Equals(nameof(networkDrive.Address)))
+            {
+                /**
+                 * We dont ask the user for the address, but the address depends on the username
+                 * (which is, in fact, asked to te user). So we assume the error is because of the username.
+                */
+                MessageBox.Show("Nombre de usuario incorrecto.", "Usuario incorrecto",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                OpenPreferences();
+            }
+            catch (ArgumentException ex) when (ex.ParamName.Equals(nameof(networkDrive.Password)))
+            {
+                MessageBox.Show("Contraseña incorrecta.", "Contraseña incorrecta",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                OpenPreferences();
             }
         }
 
@@ -145,7 +163,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
                 MessageBox.Show("No ha indicado ningún nombre para la VPN del DSIC. Indique uno en los ajustes.",
                     "Falta nombre",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
-                new Preferences(Service).ShowDialog();
+                OpenPreferences();
             }
             catch (OperationCanceledException)
             {
@@ -174,6 +192,11 @@ namespace AccesoUPV.GUI.Windows.MainPages
         #endregion
 
         private void PreferencesButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenPreferences();
+        }
+
+        private void OpenPreferences()
         {
             new Preferences(Service).ShowDialog();
         }
