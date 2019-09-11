@@ -21,12 +21,18 @@
 
             <CheckBox Grid.Column="0" VerticalAlignment="Center" x:Name="ConnectionSwitch" Click="ConnectionSwitch_Click" IsChecked="{Binding ElementName=MyConnectableButton, Path=IsConnected, Mode=OneWay}" />
 
-            <Button Grid.Column="2" x:Name="OpenButton" VerticalAlignment="Center" Click="TryToOpen_Click" IsEnabled="{Binding ElementName=MyConnectableButton, Path=IsConnected, Mode=OneWay}" Margin="0 0 10 0">
+            <Button Grid.Column="2" x:Name="OpenButton" VerticalAlignment="Center" Click="TryToOpen_Click" IsEnabled="{Binding ElementName=MyConnectableButton, Path=IsConnected, Mode=OneWay}">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
                     <iconPacks:PackIconModern VerticalAlignment="Center" x:Name="ConnectableIcon" Kind="{Binding ElementName=MyConnectableButton, Path=IconKind}" Margin="0 0 5 0" />
                     <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=MyConnectableButton, Path=Text}" FontSize="{Binding ElementName=MyConnectableButton, Path=FontSize}" />
                 </StackPanel>
             </Button>
+
+            <controls:MetroProgressBar Grid.Column="2" x:Name="StatusProgressBar"
+                                       IsIndeterminate="{Binding ElementName=MyConnectableButton, Path=IsProgressIndeterminate}"
+                                       Opacity="{Binding ElementName=MyConnectableButton, Path=ProgressBarOpacity}"
+                                       Minimum="{Binding ElementName=MyConnectableButton, Path=ProgressMinimum}"
+                                       Maximum="{Binding ElementName=MyConnectableButton, Path=ProgressMaximum}" Visibility="Collapsed" />
         </Grid>
     </Border>
 

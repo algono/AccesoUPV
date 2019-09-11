@@ -37,6 +37,51 @@ namespace AccesoUPV.GUI.UserControls
             set => SetValue(IsConnectedProperty, value);
         }
 
+
+        #region Progress
+        public bool IsProgressIndeterminate
+        {
+            get => (bool)GetValue(IsProgressIndeterminateProperty);
+            set => SetValue(IsProgressIndeterminateProperty, value);
+        }
+
+        // Range: 0.0 to 1.0
+        public double ProgressBarOpacity
+        {
+            get => (double)GetValue(ProgressBarOpacityProperty);
+            set => SetValue(ProgressBarOpacityProperty, value);
+        }
+
+        public double ProgressMinimum
+        {
+            get => (double)GetValue(ProgressMinimumProperty);
+            set => SetValue(ProgressMinimumProperty, value);
+        }
+
+        public double ProgressMaximum
+        {
+            get => (double)GetValue(ProgressMaximumProperty);
+            set => SetValue(ProgressMaximumProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for ProgressMaximum.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ProgressMaximumProperty =
+            DependencyProperty.Register("ProgressMaximum", typeof(double), typeof(ConnectableButton), new PropertyMetadata(1.0));
+
+        // Using a DependencyProperty as the backing store for ProgressMinimum.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ProgressMinimumProperty =
+            DependencyProperty.Register("ProgressMinimum", typeof(double), typeof(ConnectableButton), new PropertyMetadata(0.0));
+
+        // Using a DependencyProperty as the backing store for ProgressBarOpacity.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ProgressBarOpacityProperty =
+            DependencyProperty.Register("ProgressBarOpacity", typeof(double), typeof(ConnectableButton), new PropertyMetadata(0.5));
+
+        // Using a DependencyProperty as the backing store for IsProgressIndeterminate.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsProgressIndeterminateProperty =
+            DependencyProperty.Register("IsProgressIndeterminate", typeof(bool), typeof(ConnectableButton), new PropertyMetadata(true)); 
+        #endregion
+
+
         // Using a DependencyProperty as the backing store for IsConnected.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsConnectedProperty =
             DependencyProperty.Register("IsConnected", typeof(bool), typeof(ConnectableButton), new UIPropertyMetadata());
@@ -136,6 +181,7 @@ namespace AccesoUPV.GUI.UserControls
         private async void ConnectionSwitch_Click(object sender, RoutedEventArgs e)
         {
             ConnectionSwitch.IsEnabled = false;
+            StatusProgressBar.Visibility = Visibility.Visible;
 
             ConnectionSwitch.GetBindingExpression(ToggleButton.IsCheckedProperty).UpdateTarget();
 
@@ -155,6 +201,7 @@ namespace AccesoUPV.GUI.UserControls
                 MessageBox.Show(ex.Message, "Error desconocido", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
+            StatusProgressBar.Visibility = Visibility.Collapsed;
             ConnectionSwitch.IsEnabled = true;
         }
 
