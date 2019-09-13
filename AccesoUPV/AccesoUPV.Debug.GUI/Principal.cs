@@ -1,4 +1,4 @@
-﻿using AccesoUPV.Library.Connectors;
+﻿using AccesoUPV.Library.Interfaces;
 using AccesoUPV.Library.Services;
 using AccesoUPV.Library.Static;
 using System;
@@ -94,7 +94,7 @@ namespace AccesoUPV.Debug.GUI
         private void OpenButton_Click(object sender, EventArgs e)
         {
             var item = ((ListItem)listaConectar.SelectedItem).Value;
-            ((Openable)item)?.Open();
+            ((IOpenable)item)?.Open();
         }
 
     }

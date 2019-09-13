@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AccesoUPV.Library.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -68,17 +69,31 @@ namespace AccesoUPV.Library.Connectors.Drive
             }
         }
 
-        public NetworkDrive(Func<string, DriveDomain, string> getAddress, IDictionary<T, DriveDomain> domains, char drive = default, string user = null, string password = null) : base(getAddress, drive, domains[default], user, password)
+        public NetworkDrive(Func<string, DriveDomain, string> getAddress,
+            IDictionary<T, DriveDomain> domains,
+            char drive = default,
+            string user = null,
+            string password = null) : base(getAddress, drive, domains[default], user, password)
+        {
+            Domains = domains;
+        }
+
+        public NetworkDrive(string address,
+            IDictionary<T, DriveDomain> domains,
+            char drive = default,
+            string user = null,
+            string password = null) : base(address, drive, domains[default], user, password)
         {
             Domains = domains;
         }
 
     }
 
-    public class NetworkDrive : ProcessConnector, Openable
+    public class NetworkDrive : ProcessConnector, IOpenable, INameable
     {
         private readonly Func<string, DriveDomain, string> _getAddress;
-        public string Address => _getAddress(Username, Domain);
+        private readonly string _address;
+        public string Address => _getAddress?.Invoke(Username, Domain) ?? _address;
         public DriveDomain Domain { get; set; }
 
         public string ConnectedDriveLetter
@@ -87,6 +102,10 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public string DriveLetter
             => Letter == default ? default : DriveLetterTools.ToDriveLetter(Letter);
+
+        private char letter;
+        private bool letterWasAutoAssigned;
+
         public char Letter
         {
             get => letter;
@@ -115,14 +134,20 @@ namespace AccesoUPV.Library.Connectors.Drive
             protected set => ConnectedLetter = value ? Letter : default;
         }
 
+        public string Name { get; set; }
+
         private readonly ProcessStartInfo NetInfo = CreateProcessInfo("net.exe");
-        private bool letterWasAutoAssigned;
-        private char letter;
 
         public NetworkDrive(Func<string, DriveDomain, string> getAddress, char letter = default,
-            DriveDomain domain = null, string user = null, string password = null)
+            DriveDomain domain = null, string user = null, string password = null) : this(address: null, letter, domain, user, password)
         {
             _getAddress = getAddress;
+        }
+
+        public NetworkDrive(string address, char letter = default,
+            DriveDomain domain = null, string user = null, string password = null)
+        {
+            _address = address;
             Domain = domain;
 
             if (letter != default)
@@ -134,6 +159,8 @@ namespace AccesoUPV.Library.Connectors.Drive
             Password = password;
             UseCredentials = password != null;
         }
+
+        public override string ToString() => Name ?? Address;
 
         public void Open()
         {

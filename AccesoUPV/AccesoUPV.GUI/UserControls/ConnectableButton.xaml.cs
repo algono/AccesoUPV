@@ -1,4 +1,4 @@
-﻿using AccesoUPV.Library.Connectors;
+﻿using AccesoUPV.Library.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -209,7 +209,7 @@ namespace AccesoUPV.GUI.UserControls
 
         private static void TryToOpen(IConnectable connectable)
         {
-            if (connectable.IsConnected && connectable is Openable openable) openable.Open();
+            if (connectable.IsConnected && connectable is IOpenable openable) openable.Open();
         }
     }
 }

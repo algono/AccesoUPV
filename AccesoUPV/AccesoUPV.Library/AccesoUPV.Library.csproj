@@ -50,8 +50,9 @@
     <Compile Include="Connectors\Drive\DriveDomain.cs" />
     <Compile Include="Connectors\Drive\DriveFactory.cs" />
     <Compile Include="Connectors\Drive\DriveLetterTools.cs" />
-    <Compile Include="Connectors\IConnectable.cs" />
-    <Compile Include="Connectors\Openable.cs" />
+    <Compile Include="Interfaces\IConnectable.cs" />
+    <Compile Include="Interfaces\INameable.cs" />
+    <Compile Include="Interfaces\IOpenable.cs" />
     <Compile Include="Connectors\ProcessEventArgs.cs" />
     <Compile Include="Connectors\VPN\VPNConfig.cs" />
     <Compile Include="Connectors\VPN\VPNFactory.cs" />

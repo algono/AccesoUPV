@@ -38,7 +38,8 @@ namespace AccesoUPV.Library.Connectors.Drive
         {
             NetworkDrive<UPVDomain> driveW = new NetworkDrive<UPVDomain>(GetAddressW, UPVDomains, drive, user)
             {
-                Domain = domain
+                Domain = domain,
+                Name = "Disco W"
             };
 
             driveW.ProcessConnected += DriveW_ProcessConnected;
@@ -61,7 +62,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         public static readonly DriveDomain DSICDomain = new DriveDomain("DSIC");
 
         public static NetworkDrive GetDriveDSIC(char drive = default, string user = null, string password = null)
-            => new NetworkDrive(GetAddressDSIC, drive, DSICDomain, user, password);
+            => new NetworkDrive(GetAddressDSIC, drive, DSICDomain, user, password) { Name = "Disco DSIC" };
 
         private static string GetAddressDSIC(string username, DriveDomain domain) => $@"\\fileserver.dsic.upv.es\{username}";
         #endregion

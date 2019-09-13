@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace AccesoUPV.Library.Connectors
+namespace AccesoUPV.Library.Interfaces
 {
     public interface IConnectable
     {

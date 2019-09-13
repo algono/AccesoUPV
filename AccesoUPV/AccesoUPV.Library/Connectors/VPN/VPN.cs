@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AccesoUPV.Library.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors.VPN
 {
-    public class VPN : ProcessConnector, Openable
+    public class VPN : ProcessConnector, IOpenable
     {
         public const int ConnectedPingTimeout = 5000, DisconnectedPingTimeout = 500;
 

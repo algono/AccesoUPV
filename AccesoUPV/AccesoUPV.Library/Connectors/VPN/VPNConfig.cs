@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AccesoUPV.Library.Interfaces;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Connectors.VPN
 {
-    public class VPNConfig : Openable
+    public class VPNConfig : IOpenable
     {
         public string Server { get; set; }
         public string TestServer { get; set; }

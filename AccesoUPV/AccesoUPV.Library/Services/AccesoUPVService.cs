@@ -1,6 +1,6 @@
-﻿using AccesoUPV.Library.Connectors;
-using AccesoUPV.Library.Connectors.Drive;
+﻿using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Connectors.VPN;
+using AccesoUPV.Library.Interfaces;
 using AccesoUPV.Library.Properties;
 using AccesoUPV.Library.Static;
 using System;
@@ -138,7 +138,7 @@ namespace AccesoUPV.Library.Services
                 if (connectable.IsConnected)
                 {
                     steps++;
-                    string nameToDisplay = info.Name.Replace('_', ' ');
+                    string nameToDisplay = connectable is INameable nameable ? nameable.Name : info.Name.Replace('_', ' ');
                     Task shutdownTask() => ShutdownConnectable(connectable, nameToDisplay, progress);
 
                     switch (connectable)
