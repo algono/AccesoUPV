@@ -205,5 +205,31 @@ namespace AccesoUPV.GUI.Windows.MainPages
         {
             HelpProvider.ShowHelpTableOfContents();
         }
+
+        private void DiscaButton_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectToSSH(SSHConnection.DISCA_SSH);
+        }
+
+        private void KahanButton_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectToSSH(SSHConnection.KAHAN_SSH);
+        }
+
+        private void ConnectToSSH(string server)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(Service.User)) throw new ArgumentNullException();
+                SSHConnection.ConnectTo(server, Service.User);
+            }
+            catch (ArgumentNullException)
+            {
+                MessageBox.Show("No ha indicado ningún nombre de usuario. Indique uno en los ajustes.", "Falta usuario",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                OpenPreferences();
+            }
+        }
+
     }
 }

@@ -11,11 +11,11 @@ namespace AccesoUPV.Library.Static
             DISCA_SSH = "home-labs.disca.upv.es", KAHAN_SSH = "kahan.dsic.upv.es";
 
         public static void ConnectToDisca() => ConnectTo(DISCA_SSH);
-        public static void ConnectToDisca(string user) => ConnectTo(user, DISCA_SSH);
+        public static void ConnectToDisca(string user) => ConnectTo(DISCA_SSH, user);
         public static void ConnectToKahan() => ConnectTo(KAHAN_SSH);
-        public static void ConnectToKahan(string user) => ConnectTo(user, KAHAN_SSH);
+        public static void ConnectToKahan(string user) => ConnectTo(KAHAN_SSH, user);
 
         public static void ConnectTo(string server) => Process.Start(SSH_PATH, server);
-        public static void ConnectTo(string user, string server) => Process.Start(SSH_PATH, $"{user}@{server}");
+        public static void ConnectTo(string server, string user) => Process.Start(SSH_PATH, $"{user}@{server}");
     }
 }
