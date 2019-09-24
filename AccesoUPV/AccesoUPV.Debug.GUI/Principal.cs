@@ -71,13 +71,13 @@ namespace AccesoUPV.Debug.GUI
 
         private async void ConnectButton_Click(object sender, EventArgs e)
         {
-            var item = ((ListItem)listaConectar.SelectedItem).Value;
+            var item = ((ListItem)listaConectar.SelectedItem)?.Value;
             if (item != null) await ((IConnectable)item).ConnectAsync();
         }
 
         private async void DisconnectButton_Click(object sender, EventArgs e)
         {
-            var item = ((ListItem)listaConectar.SelectedItem).Value;
+            var item = ((ListItem)listaConectar.SelectedItem)?.Value;
             if (item != null) await ((IConnectable)item).DisconnectAsync();
         }
 
@@ -97,5 +97,14 @@ namespace AccesoUPV.Debug.GUI
             ((IOpenable)item)?.Open();
         }
 
+        private void DiscaButton_Click(object sender, EventArgs e)
+        {
+            SSHConnection.ConnectToDisca(_service.User);
+        }
+
+        private void KahanButton_Click(object sender, EventArgs e)
+        {
+            SSHConnection.ConnectToKahan(_service.User);
+        }
     }
 }
