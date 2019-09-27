@@ -110,7 +110,11 @@ namespace AccesoUPV.Library
         #endregion
 
         #region VPN
+        private const string PSNameProperty = "Name";
+
         public static string GetStringPropertyValue(this PSObject obj, string propertyName) => (string)obj.Properties[propertyName].Value;
+
+        public static string GetName(this PSObject obj) => obj.GetStringPropertyValue(PSNameProperty);
         #endregion
 
     }

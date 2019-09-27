@@ -113,66 +113,26 @@ namespace AccesoUPV.Library.Connectors.VPN
 
         public bool SetNameAuto()
         {
-            List<PSObject> vpnList = Find();
+            List<PSObject> vpnList = Config.Find();
             if (vpnList.Count <= 0) return false;
-            Name = vpnList[0].GetStringPropertyValue("Name");
+            Name = vpnList[0].GetName();
             return true;
 
         }
 
-        public bool Exists() => Find().Exists(vpn => vpn.GetStringPropertyValue("Name") == Name);
-
-        public List<PSObject> Find() => VPNConfig.Find(Config.Server);
-
-        public bool Any() => VPNConfig.Any(Config.Server);
-
-        public List<string> FindNames() => VPNConfig.FindNames(Config.Server);
-
-        public static List<string> GetNameList() => GetList().Select(vpn => vpn.GetStringPropertyValue("Name")).ToList();
-
-        public static List<PSObject> GetList()
-        {
-            using (PowerShell shell = PowerShell.Create())
-            {
-                shell.AddScript("Get-VpnConnection");
-                List<PSObject> psOutput = shell.Invoke().ToList();
-                psOutput.RemoveAll(item => item == null);
-                return psOutput;
-            }
-        }
+        public bool Exists() => Config.Find().Exists(vpn => vpn.GetName() == Name);
 
         public async Task<bool> SetNameAutoAsync()
         {
-            List<PSObject> vpnList = await FindAsync();
+            List<PSObject> vpnList = await Config.FindAsync();
             if (vpnList.Count <= 0) return false;
-            Name = vpnList[0].GetStringPropertyValue("Name");
+            Name = vpnList[0].GetName();
             return true;
 
         }
 
-        public async Task<bool> ExistsAsync() => (await FindAsync()).Exists(vpn => vpn.GetStringPropertyValue("Name") == Name);
+        public async Task<bool> ExistsAsync() => (await Config.FindAsync()).Exists(vpn => vpn.GetName() == Name);
 
-        public async Task<List<PSObject>> FindAsync() => await VPNConfig.FindAsync(Config.Server);
-
-        public async Task<bool> AnyAsync() => await VPNConfig.AnyAsync(Config.Server);
-
-        public async Task<List<string>> FindNamesAsync() => await VPNConfig.FindNamesAsync(Config.Server);
-
-        public static async Task<List<string>> GetNameListAsync() => (await GetListAsync()).Select(vpn => vpn.GetStringPropertyValue("Name")).ToList();
-
-        public static Task<List<PSObject>> GetListAsync()
-        {
-            PowerShell shell = PowerShell.Create();
-            shell.AddScript("Get-VpnConnection");
-
-            return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) =>
-            {
-                List<PSObject> psOutput = shell.EndInvoke(res).ToList();
-                shell.Dispose();
-                psOutput.RemoveAll(item => item == null);
-                return psOutput;
-            });
-        }
         #endregion
     }
 }

@@ -79,10 +79,38 @@ namespace AccesoUPV.Library.Connectors.VPN
         #endregion
 
         #region PS Selection methods
+        #region Non-static
+        public List<PSObject> Find() => Find(Server);
+
+        public bool Any() => Any(Server);
+
+        public List<string> FindNames() => FindNames(Server);
+
+        public static List<string> GetNameList() => GetList().Select(vpn => vpn.GetName()).ToList();
+
+        public static List<PSObject> GetList()
+        {
+            using (PowerShell shell = PowerShell.Create())
+            {
+                shell.AddScript("Get-VpnConnection");
+                List<PSObject> psOutput = shell.Invoke().ToList();
+                psOutput.RemoveAll(item => item == null);
+                return psOutput;
+            }
+        }
+
+        public async Task<List<PSObject>> FindAsync() => await FindAsync(Server);
+
+        public async Task<bool> AnyAsync() => await AnyAsync(Server);
+
+        public async Task<List<string>> FindNamesAsync() => await FindNamesAsync(Server);
+        #endregion
+
+        #region Static
         public static bool Any(string server) => Find(server).Count > 0;
 
         public static List<string> FindNames(string server)
-            => Enumerable.Select(Find(server), vpn => vpn.GetStringPropertyValue("Name")).ToList();
+            => Enumerable.Select(Find(server), vpn => vpn.GetName()).ToList();
 
         public static List<PSObject> Find(string server)
         {
@@ -98,7 +126,7 @@ namespace AccesoUPV.Library.Connectors.VPN
         public static async Task<bool> AnyAsync(string server) => (await FindAsync(server)).Count > 0;
 
         public static async Task<List<string>> FindNamesAsync(string server)
-            => Enumerable.Select((await FindAsync(server)), vpn => vpn.GetStringPropertyValue("Name")).ToList();
+            => Enumerable.Select((await FindAsync(server)), vpn => vpn.GetName()).ToList();
 
         public static Task<List<PSObject>> FindAsync(string server)
         {
@@ -115,7 +143,24 @@ namespace AccesoUPV.Library.Connectors.VPN
         }
 
         private static string GetFindScript(string server)
-            => "Get-VpnConnection | Where-Object {$_.ServerAddress -eq '" + server + "'}"; 
+            => "Get-VpnConnection | Where-Object {$_.ServerAddress -eq '" + server + "'}";
+
+        public static async Task<List<string>> GetNameListAsync() => (await GetListAsync()).Select(vpn => vpn.GetName()).ToList();
+
+        public static Task<List<PSObject>> GetListAsync()
+        {
+            PowerShell shell = PowerShell.Create();
+            shell.AddScript("Get-VpnConnection");
+
+            return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) =>
+            {
+                List<PSObject> psOutput = shell.EndInvoke(res).ToList();
+                shell.Dispose();
+                psOutput.RemoveAll(item => item == null);
+                return psOutput;
+            });
+        } 
+        #endregion
         #endregion
     }
 }
