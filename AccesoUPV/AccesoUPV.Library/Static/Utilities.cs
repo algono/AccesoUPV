@@ -73,15 +73,19 @@ namespace AccesoUPV.Library
             }
         }
 
-        private static Task<bool> WaitAsync(this Process process)
+        private static Task<bool> WaitAsync(this Process process, bool verbose = false)
         {
             process.EnableRaisingEvents = true;
 
             var tcs = new TaskCompletionSource<bool>();
 
             process.Exited += (s, ea) => tcs.SetResult(process.ExitCode == 0);
-            process.OutputDataReceived += (s, ea) => Console.WriteLine(ea.Data);
-            process.ErrorDataReceived += (s, ea) => Console.WriteLine("ERR: " + ea.Data);
+
+            if (verbose)
+            {
+                process.OutputDataReceived += (s, ea) => Console.WriteLine(ea.Data);
+                process.ErrorDataReceived += (s, ea) => Console.WriteLine("ERR: " + ea.Data);
+            }
 
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
@@ -115,6 +119,67 @@ namespace AccesoUPV.Library
         public static string GetStringPropertyValue(this PSObject obj, string propertyName) => (string)obj.Properties[propertyName].Value;
 
         public static string GetName(this PSObject obj) => obj.GetStringPropertyValue(PSNameProperty);
+        #endregion
+
+        #region WiFi Connections
+        private const string NETSH = "netsh";
+        private const string SHOW_INTERFACES = "wlan show interfaces";
+        private static ProcessStartInfo ShowInterfacesStartInfo => new ProcessStartInfo()
+        {
+            FileName = NETSH,
+            Arguments = SHOW_INTERFACES,
+            UseShellExecute = false,
+            RedirectStandardOutput = true
+        };
+        private const string DISCONNECT_WIFI = "wlan disconnect";
+
+        public static void ResetWiFiConnection(string connectionName)
+        {
+            Process.Start(NETSH, DISCONNECT_WIFI).WaitForExit();
+            Process.Start(NETSH, GetConnectWiFi(connectionName)).WaitForExit();
+        }
+
+        public static async Task ResetWiFiConnectionAsync(string connectionName)
+        {
+            await Process.Start(NETSH, DISCONNECT_WIFI).WaitAsync();
+            await Process.Start(NETSH, GetConnectWiFi(connectionName)).WaitAsync();
+        }
+
+        private static string GetConnectWiFi(string connectionName) => $"wlan connect {connectionName}";
+
+        public static string IsAnyWiFiConnectionUp(IEnumerable<string> connectionNames)
+        {
+            string res = null;
+
+            void HandleWiFiInterfaces(ProcessEventArgs proc)
+            {
+                if (proc.Succeeded)
+                {
+                    res = connectionNames.FirstOrDefault(connectionName => proc.Output.Contains(connectionName));
+                }
+            }
+
+            Process.Start(ShowInterfacesStartInfo).WaitAndCheck(HandleWiFiInterfaces);
+
+            return res;
+        }
+
+        public static async Task<string> IsAnyWiFiConnectionUpAsync(IEnumerable<string> connectionNames)
+        {
+            string res = null;
+
+            void HandleWiFiInterfaces(ProcessEventArgs proc)
+            {
+                if (proc.Succeeded)
+                {
+                    res = connectionNames.FirstOrDefault(connectionName => proc.Output.Contains(connectionName));
+                }
+            }
+
+            await Process.Start(ShowInterfacesStartInfo).WaitAndCheckAsync(HandleWiFiInterfaces);
+
+            return res;
+        }
         #endregion
 
     }

@@ -32,22 +32,19 @@ namespace AccesoUPV.GUI.Windows.MainPages
 
         private async Task ConnectWDrive(object sender, ConnectionEventArgs e)
         {
-            try
+            bool done = false;
+            while (!done)
             {
-                await ConnectDrive(sender, e);
-            }
-            catch (CredentialsBugException ex)
-            {
-                MessageBox.Show(ex.Message, "Error de credenciales", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                #region Reconexión UPV
-                VPN VPN_UPV = Service.VPN_UPV;
-                if (VPN_UPV.IsConnected)
+                try
                 {
-                    await VPN_UPV.DisconnectAsync();
-                    await VPN_UPV.ConnectAsync();
+                    await ConnectDrive(sender, e);
+                    done = true;
                 }
-                #endregion
+                catch (CredentialsBugException)
+                {
+                    // MessageBox.Show(ex.Message, "Error credenciales", MessageBoxButton.OK, MessageBoxImage.Error);
+                    await Service.ResetUPVConnectionAsync();
+                } 
             }
         }
 

@@ -10,14 +10,14 @@ namespace AccesoUPV.UnitTests
         public static void Assert_Connected(VPN vpn)
         {
             Assert.IsTrue(vpn.IsConnected);
-            vpn.CheckConnection();
+            vpn.UpdateConnectionStatus();
             Assert.IsTrue(vpn.IsConnected);
         }
 
         public static void Assert_Disconnected(VPN vpn)
         {
             Assert.IsFalse(vpn.IsConnected);
-            vpn.CheckConnection();
+            vpn.UpdateConnectionStatus();
             Assert.IsFalse(vpn.IsConnected);
         }
 

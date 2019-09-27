@@ -21,6 +21,8 @@ namespace AccesoUPV.Library.Services
         event EventHandler<ShutdownEventArgs> ShuttingDown;
 
         void ClearSettings();
+        void ResetUPVConnection();
+        Task ResetUPVConnectionAsync();
         void SaveChanges();
         void Shutdown();
         Task ShutdownAsync(IProgress<string> progress = null);

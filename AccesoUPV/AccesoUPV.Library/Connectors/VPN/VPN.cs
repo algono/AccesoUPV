@@ -23,6 +23,20 @@ namespace AccesoUPV.Library.Connectors.VPN
             protected set => ConnectedName = value ? Name : null;
         }
 
+        public bool IsActuallyConnected
+        {
+            get
+            {
+                bool res = false;
+                Process checkingProcess = Process.Start(CreateProcessInfo("rasdial.exe"));
+                checkingProcess.WaitAndCheck((args) =>
+                {
+                    res = args.Succeeded && args.Output.Contains(Name);
+                });
+                return res;
+            }
+        }
+
         public VPNConfig Config { get; }
 
         private static readonly ProcessStartInfo
@@ -56,7 +70,7 @@ namespace AccesoUPV.Library.Connectors.VPN
             {
                 try
                 {
-                    if (!IsActuallyConnected()) throw new OperationCanceledException();
+                    if (!IsActuallyConnected) throw new OperationCanceledException();
 
                     base.OnProcessConnected(e);
 
@@ -95,21 +109,7 @@ namespace AccesoUPV.Library.Connectors.VPN
         #region Utility methods
         public bool IsReachable() => Config.IsReachable(IsConnected ? ConnectedPingTimeout : DisconnectedPingTimeout);
 
-        public void CheckConnection()
-        {
-            IsConnected = IsActuallyConnected();
-        }
-
-        private bool IsActuallyConnected()
-        {
-            bool res = false;
-            Process checkingProcess = Process.Start(CreateProcessInfo("rasdial.exe"));
-            checkingProcess.WaitAndCheck((args) =>
-            {
-                res = args.Succeeded && args.Output.Contains(Name);
-            });
-            return res;
-        }
+        public void UpdateConnectionStatus() => IsConnected = IsActuallyConnected;
 
         public bool SetNameAuto()
         {

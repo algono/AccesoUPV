@@ -54,5 +54,17 @@ namespace AccesoUPV.Library.Connectors
         public async Task ConnectAsync() => await ConnectProcess().WaitAndCheckAsync(OnProcessConnected);
         public void Disconnect() => DisconnectProcess().WaitAndCheck(OnProcessDisconnected);
         public async Task DisconnectAsync() => await DisconnectProcess().WaitAndCheckAsync(OnProcessDisconnected);
+
+        public void Reconnect()
+        {
+            Disconnect();
+            Connect();
+        }
+
+        public async Task ReconnectAsync()
+        {
+            await DisconnectAsync();
+            await ConnectAsync();
+        }
     }
 }

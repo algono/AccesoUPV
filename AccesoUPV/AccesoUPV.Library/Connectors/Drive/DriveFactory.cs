@@ -17,9 +17,8 @@ namespace AccesoUPV.Library.Connectors.Drive
     */
     public class CredentialsBugException : IOException
     {
-        public const string ERROR_BUG = "Ha habido un error inesperado al conectarse.\n\n"
-            + "Si se encuentra conectado a la UPV desde una red WiFi (como UPVNET), reconecte la red manualmente.\n\n"
-            + "Si se encuentra conectado desde la VPN, se comenzará ahora el proceso de reconexión.";
+        public const string ERROR_BUG = "Ha habido un error de credenciales.\n\n"
+            + "Se comenzará ahora el proceso de reconexión.";
         public CredentialsBugException() : base(ERROR_BUG) { }
     }
     #endregion
