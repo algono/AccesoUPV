@@ -122,6 +122,19 @@ namespace AccesoUPV.Library.Connectors.VPN
 
         public bool Exists() => Config.Find().Exists(vpn => vpn.GetName() == Name);
 
+        public static List<string> GetNameList() => GetList().Select(vpn => vpn.GetName()).ToList();
+
+        public static List<PSObject> GetList()
+        {
+            using (PowerShell shell = PowerShell.Create())
+            {
+                shell.AddScript("Get-VpnConnection");
+                List<PSObject> psOutput = shell.Invoke().ToList();
+                psOutput.RemoveAll(item => item == null);
+                return psOutput;
+            }
+        }
+
         public async Task<bool> SetNameAutoAsync()
         {
             List<PSObject> vpnList = await Config.FindAsync();
@@ -133,6 +146,21 @@ namespace AccesoUPV.Library.Connectors.VPN
 
         public async Task<bool> ExistsAsync() => (await Config.FindAsync()).Exists(vpn => vpn.GetName() == Name);
 
+        public static async Task<List<string>> GetNameListAsync() => (await GetListAsync()).Select(vpn => vpn.GetName()).ToList();
+
+        public static Task<List<PSObject>> GetListAsync()
+        {
+            PowerShell shell = PowerShell.Create();
+            shell.AddScript("Get-VpnConnection");
+
+            return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) =>
+            {
+                List<PSObject> psOutput = shell.EndInvoke(res).ToList();
+                shell.Dispose();
+                psOutput.RemoveAll(item => item == null);
+                return psOutput;
+            });
+        }
         #endregion
     }
 }
