@@ -18,7 +18,7 @@ namespace AccesoUPV.Library.Connectors.Drive
     public class CredentialsBugException : IOException
     {
         public const string ERROR_BUG = "Ha habido un error de credenciales.\n\n"
-            + "Se comenzará ahora el proceso de reconexión.";
+            + "Debe reestablecer su conexión a la UPV manualmente (VPN o WiFi).";
         public CredentialsBugException() : base(ERROR_BUG) { }
     }
     #endregion

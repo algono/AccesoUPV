@@ -32,20 +32,63 @@ namespace AccesoUPV.GUI.Windows.MainPages
 
         private async Task ConnectWDrive(object sender, ConnectionEventArgs e)
         {
-            bool done = false;
-            while (!done)
+            try
             {
-                try
-                {
-                    await ConnectDrive(sender, e);
-                    done = true;
-                }
-                catch (CredentialsBugException)
-                {
-                    // MessageBox.Show(ex.Message, "Error credenciales", MessageBoxButton.OK, MessageBoxImage.Error);
-                    await Service.ResetUPVConnectionAsync();
-                } 
+                await ConnectDrive(sender, e);
             }
+            catch (CredentialsBugException ex)
+            {
+                bool retry = await HandleCrendentialsError(ex);
+                if (retry) await ConnectWDrive(sender, e);
+            }
+        }
+
+        /// <summary>
+        /// Tries to handle the CredentialsBugException, and returns if the connection process should be retried.
+        /// </summary>
+        /// <returns>Retry: If the connection process should be retried.</returns>
+        private async Task<bool> HandleCrendentialsError(CredentialsBugException ex)
+        {
+            try
+            {
+                bool didAnything = await Service.ResetUPVConnectionAsync();
+
+                if (!didAnything)
+                {
+                    MessageBox.Show(ex.Message, "Error credenciales", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                return didAnything;
+            }
+            catch (OperationCanceledException)
+            {
+                const string CanceledReconnectionMessage =
+                    "Cuidado, si cancela la operación de reconexión, el programa podría dejar de funcionar correctamente.\n\n" +
+                    "¿Seguro que desea continuar?";
+
+                bool cancelationHandled = false;
+                while (!cancelationHandled)
+                {
+                    MessageBoxResult result = MessageBox.Show(CanceledReconnectionMessage, "Aviso", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            await Service.VPN_UPV.ConnectAsync();
+                            cancelationHandled = true;
+                        }
+                        // The cancelation message will be shown until the VPN is connected or the user says "Yes"
+                        catch (OperationCanceledException) { } 
+                    } 
+                }
+            }
+
+            return false;
         }
 
         private async Task ConnectDrive(object sender, ConnectionEventArgs e)

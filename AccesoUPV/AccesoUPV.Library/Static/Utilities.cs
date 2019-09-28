@@ -129,7 +129,8 @@ namespace AccesoUPV.Library
             FileName = NETSH,
             Arguments = SHOW_INTERFACES,
             UseShellExecute = false,
-            RedirectStandardOutput = true
+            RedirectStandardOutput = true,
+            RedirectStandardError = true
         };
         private const string DISCONNECT_WIFI = "wlan disconnect";
 

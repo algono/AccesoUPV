@@ -177,72 +177,58 @@ namespace AccesoUPV.Library.Services
 
         #endregion
 
-        public void ResetUPVConnection()
+        public bool ResetUPVConnection()
         {
-            if (VPN_UPV.IsActuallyConnected)
+            if (VPN_UPV.IsConnected)
             {
                 VPN_UPV.Reconnect();
             }
             else
             {
-                VPN connectedVPN = VPN_UPV.Config.FindNames()
-                                    .Select(name => new VPN(VPN_UPV.Config, name))
-                                    .Where(vpn => vpn.IsActuallyConnected)
-                                    .FirstOrDefault();
-
-                if (connectedVPN != null)
-                {
-                    connectedVPN.Reconnect();
-                }
-                else
-                {
-                    ResetUPVWifiConnection();
-                }
+                return ResetUPVWifiConnection();
             }
+
+            return true;
         }
 
-        public async Task ResetUPVConnectionAsync()
+        public async Task<bool> ResetUPVConnectionAsync()
         {
-            if (VPN_UPV.IsActuallyConnected)
+            if (VPN_UPV.IsConnected)
             {
                 await VPN_UPV.ReconnectAsync();
             }
             else
             {
-                VPN connectedVPN = VPN_UPV.Config.FindNames()
-                                    .Select(name => new VPN(VPN_UPV.Config, name))
-                                    .Where(vpn => vpn.IsActuallyConnected)
-                                    .FirstOrDefault();
-
-                if (connectedVPN != null)
-                {
-                    await connectedVPN.ReconnectAsync();
-                }
-                else
-                {
-                    await ResetUPVWifiConnectionAsync();
-                }
+                return await ResetUPVWifiConnectionAsync();
             }
+
+            return true;
         }
 
-        protected void ResetUPVWifiConnection()
+        protected bool ResetUPVWifiConnection()
         {
             string connectedWiFi = Utilities.IsAnyWiFiConnectionUp(UPVWiFiNetworks);
+            bool isAnyWiFiConnectionUp = !string.IsNullOrEmpty(connectedWiFi);
 
-            if (!string.IsNullOrEmpty(connectedWiFi))
+            if (isAnyWiFiConnectionUp)
             {
                 Utilities.ResetWiFiConnection(connectedWiFi);
             }
+
+            return isAnyWiFiConnectionUp;
         }
 
-        protected async Task ResetUPVWifiConnectionAsync()
+        protected async Task<bool> ResetUPVWifiConnectionAsync()
         {
             string connectedWiFi = await Utilities.IsAnyWiFiConnectionUpAsync(UPVWiFiNetworks);
+            bool isAnyWiFiConnectionUp = !string.IsNullOrEmpty(connectedWiFi);
 
-            if (!string.IsNullOrEmpty(connectedWiFi))
+            if (isAnyWiFiConnectionUp)
             {
                 await Utilities.ResetWiFiConnectionAsync(connectedWiFi);
             }
+
+            return isAnyWiFiConnectionUp;
         }
 
     }
