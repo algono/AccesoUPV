@@ -12,11 +12,12 @@ namespace AccesoUPV.Library.Connectors
         public event EventHandler Connected, Disconnected;
         public event EventHandler<ProcessEventArgs> ProcessConnected, ProcessDisconnected;
 
-        public static ProcessStartInfo CreateProcessInfo(string fileName)
+        public static ProcessStartInfo CreateProcessInfo(string fileName, string arguments = null)
         {
             return new ProcessStartInfo
             {
                 FileName = fileName,
+                Arguments = arguments,
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 RedirectStandardInput = true, // Por si le tienes que pasar algo al proceso

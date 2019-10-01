@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Services
@@ -177,6 +178,7 @@ namespace AccesoUPV.Library.Services
 
         #endregion
 
+        #region Reset Connection
         public bool ResetUPVConnection()
         {
             if (VPN_UPV.IsConnected)
@@ -205,6 +207,11 @@ namespace AccesoUPV.Library.Services
             return true;
         }
 
+        private const int ConnectedWiFiTimeout = 5000;
+        private const string ResetTimeoutMessage =
+            "La UPV todavía no está disponible. Espere unos segundos, y vuelva a intentarlo.\n\n"
+            + "Si sigue sin ser capaz de conectarse, reconecte la red WiFi manualmente.";
+
         protected bool ResetUPVWifiConnection()
         {
             string connectedWiFi = Utilities.IsAnyWiFiConnectionUp(UPVWiFiNetworks);
@@ -213,8 +220,10 @@ namespace AccesoUPV.Library.Services
             if (isAnyWiFiConnectionUp)
             {
                 Utilities.ResetWiFiConnection(connectedWiFi);
+                bool reachable = VPN_UPV.Config.WaitUntilReachable(ConnectedWiFiTimeout);
+                if (!reachable) throw new TimeoutException(ResetTimeoutMessage);
             }
-
+            
             return isAnyWiFiConnectionUp;
         }
 
@@ -226,10 +235,13 @@ namespace AccesoUPV.Library.Services
             if (isAnyWiFiConnectionUp)
             {
                 await Utilities.ResetWiFiConnectionAsync(connectedWiFi);
+                bool reachable = await VPN_UPV.Config.WaitUntilReachableAsync(ConnectedWiFiTimeout);
+                if (!reachable) throw new TimeoutException(ResetTimeoutMessage);
             }
 
             return isAnyWiFiConnectionUp;
-        }
+        } 
+        #endregion
 
     }
 

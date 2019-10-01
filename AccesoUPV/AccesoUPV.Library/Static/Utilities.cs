@@ -16,6 +16,15 @@ namespace AccesoUPV.Library
         #region Process
         public static void WaitAndCheck(this Process process, Action<ProcessEventArgs> handler = null)
         {
+            ProcessEventArgs result = WaitAndCheck(process);
+
+            handler?.Invoke(result);
+
+            ThrowExceptionIfNotSucceeded(result);
+        }
+
+        public static ProcessEventArgs WaitAndCheck(this Process process)
+        {
             string output = "", error = "";
             if (!process.StartInfo.UseShellExecute)
             {
@@ -29,12 +38,24 @@ namespace AccesoUPV.Library
 
             process.Close();
 
-            handler?.Invoke(new ProcessEventArgs(succeeded, output, error));
-
-            ThrowExceptionIfNotSucceeded(succeeded, output, error);
+            return new ProcessEventArgs(succeeded, output, error);
         }
 
-        public static async Task WaitAndCheckAsync(this Process process, Action<ProcessEventArgs> handler = null)
+        public static async Task WaitAndCheckAsync(this Process process, Action<ProcessEventArgs> handler)
+        {
+            ProcessEventArgs result = await WaitAndCheckAsync(process);
+
+            handler?.Invoke(result); // TODO: Convertir llamada a async
+
+            ThrowExceptionIfNotSucceeded(result);
+        }
+
+        private static void ThrowExceptionIfNotSucceeded(ProcessEventArgs args)
+        {
+            if (!args.Succeeded) throw new IOException($"Output:\n{args.Output}\n\nError:\n{args.Error}");
+        }
+
+        public static async Task<ProcessEventArgs> WaitAndCheckAsync(this Process process)
         {
             string output = "", error = "";
 
@@ -45,14 +66,7 @@ namespace AccesoUPV.Library
 
             process.Close();
 
-            handler?.Invoke(new ProcessEventArgs(succeeded, output, error)); // TODO: Convertir llamada a async
-
-            ThrowExceptionIfNotSucceeded(succeeded, output, error);
-        }
-
-        private static void ThrowExceptionIfNotSucceeded(bool succeeded, string output, string error)
-        {
-            if (!succeeded) throw new IOException($"Output:\n{output}\n\nError:\n{error}");
+            return new ProcessEventArgs(succeeded, output, error);
         }
 
         public static async Task<bool> RunProcessAsync(string fileName, string args)
@@ -124,63 +138,43 @@ namespace AccesoUPV.Library
         #region WiFi Connections
         private const string NETSH = "netsh";
         private const string SHOW_INTERFACES = "wlan show interfaces";
-        private static ProcessStartInfo ShowInterfacesStartInfo => new ProcessStartInfo()
-        {
-            FileName = NETSH,
-            Arguments = SHOW_INTERFACES,
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true
-        };
         private const string DISCONNECT_WIFI = "wlan disconnect";
+
+        private static ProcessStartInfo ConnectStartInfo(string connectionName) => ProcessConnector.CreateProcessInfo(NETSH, $"wlan connect {connectionName}");
+        private static ProcessStartInfo DisconnectStartInfo => ProcessConnector.CreateProcessInfo(NETSH, DISCONNECT_WIFI);
+        private static ProcessStartInfo ShowInterfacesStartInfo => ProcessConnector.CreateProcessInfo(NETSH, SHOW_INTERFACES);
+        
 
         public static void ResetWiFiConnection(string connectionName)
         {
-            Process.Start(NETSH, DISCONNECT_WIFI).WaitForExit();
-            Process.Start(NETSH, GetConnectWiFi(connectionName)).WaitForExit();
+            Process.Start(DisconnectStartInfo).WaitForExit();
+            Process.Start(ConnectStartInfo(connectionName)).WaitForExit();
         }
 
         public static async Task ResetWiFiConnectionAsync(string connectionName)
         {
-            await Process.Start(NETSH, DISCONNECT_WIFI).WaitAsync();
-            await Process.Start(NETSH, GetConnectWiFi(connectionName)).WaitAsync();
+            await Process.Start(DisconnectStartInfo).WaitAndCheckAsync();
+            await Process.Start(ConnectStartInfo(connectionName)).WaitAndCheckAsync();
         }
-
-        private static string GetConnectWiFi(string connectionName) => $"wlan connect {connectionName}";
 
         public static string IsAnyWiFiConnectionUp(IEnumerable<string> connectionNames)
         {
-            string res = null;
+            ProcessEventArgs result = Process.Start(ShowInterfacesStartInfo).WaitAndCheck();
 
-            void HandleWiFiInterfaces(ProcessEventArgs proc)
-            {
-                if (proc.Succeeded)
-                {
-                    res = connectionNames.FirstOrDefault(connectionName => proc.Output.Contains(connectionName));
-                }
-            }
-
-            Process.Start(ShowInterfacesStartInfo).WaitAndCheck(HandleWiFiInterfaces);
-
-            return res;
+            return HandleWiFiInterfaces(connectionNames, result);
         }
 
         public static async Task<string> IsAnyWiFiConnectionUpAsync(IEnumerable<string> connectionNames)
         {
-            string res = null;
+            ProcessEventArgs result = await Process.Start(ShowInterfacesStartInfo).WaitAndCheckAsync();
 
-            void HandleWiFiInterfaces(ProcessEventArgs proc)
-            {
-                if (proc.Succeeded)
-                {
-                    res = connectionNames.FirstOrDefault(connectionName => proc.Output.Contains(connectionName));
-                }
-            }
-
-            await Process.Start(ShowInterfacesStartInfo).WaitAndCheckAsync(HandleWiFiInterfaces);
-
-            return res;
+            return HandleWiFiInterfaces(connectionNames, result);
         }
+
+        private static string HandleWiFiInterfaces(IEnumerable<string> connectionNames, ProcessEventArgs proc)
+            => proc.Succeeded 
+                ? connectionNames.FirstOrDefault(connectionName => proc.Output.Contains(connectionName))
+                : null;
         #endregion
 
     }

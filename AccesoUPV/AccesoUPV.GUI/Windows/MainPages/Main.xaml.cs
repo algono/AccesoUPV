@@ -87,6 +87,10 @@ namespace AccesoUPV.GUI.Windows.MainPages
                     } 
                 }
             }
+            catch (TimeoutException tex)
+            {
+                MessageBox.Show(tex.Message, "El tiempo de espera ha expirado", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             return false;
         }
