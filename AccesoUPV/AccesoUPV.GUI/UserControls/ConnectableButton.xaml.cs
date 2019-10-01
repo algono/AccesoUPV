@@ -147,6 +147,7 @@ namespace AccesoUPV.GUI.UserControls
         public ConnectableButton()
         {
             InitializeComponent();
+            this.Loaded += (s,e) => UpdateCheckBoxStatus();
         }
 
         private async Task Connect(object sender, RoutedEventArgs e)
@@ -178,12 +179,10 @@ namespace AccesoUPV.GUI.UserControls
             }
         }
 
-        private async void ConnectionSwitch_Click(object sender, RoutedEventArgs e)
+        private async void ConnectionCheckBox_Click(object sender, RoutedEventArgs e)
         {
-            ConnectionSwitch.IsEnabled = false;
+            ConnectionCheckBox.IsEnabled = false;
             StatusProgressBar.Visibility = Visibility.Visible;
-
-            ConnectionSwitch.GetBindingExpression(ToggleButton.IsCheckedProperty).UpdateTarget();
 
             try
             {
@@ -202,7 +201,15 @@ namespace AccesoUPV.GUI.UserControls
             }
 
             StatusProgressBar.Visibility = Visibility.Collapsed;
-            ConnectionSwitch.IsEnabled = true;
+            ConnectionCheckBox.IsEnabled = true;
+        }
+
+        private void UpdateCheckBoxStatus()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                SetValue(IsConnectedProperty, Connectable.IsConnected);
+            });
         }
 
         private void TryToOpen_Click(object sender, RoutedEventArgs e) => OpenHandler(Connectable);

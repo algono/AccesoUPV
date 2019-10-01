@@ -19,7 +19,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <CheckBox Grid.Column="0" VerticalAlignment="Center" x:Name="ConnectionSwitch" Click="ConnectionSwitch_Click" IsChecked="{Binding ElementName=MyConnectableButton, Path=IsConnected, Mode=OneWay}" />
+            <CheckBox Grid.Column="0" VerticalAlignment="Center" x:Name="ConnectionCheckBox" Click="ConnectionCheckBox_Click" IsChecked="{Binding ElementName=MyConnectableButton, Path=IsConnected, Mode=OneWay}" />
 
             <Button Grid.Column="2" x:Name="OpenButton" VerticalAlignment="Center" Click="TryToOpen_Click" IsEnabled="{Binding ElementName=MyConnectableButton, Path=IsConnected, Mode=OneWay}">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
