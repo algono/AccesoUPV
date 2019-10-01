@@ -31,9 +31,9 @@ namespace AccesoUPV.GUI.UserControls
             set => SetValue(IconKindProperty, value);
         }
 
-        public bool IsConnected
+        public bool? IsConnected
         {
-            get => (bool)GetValue(IsConnectedProperty);
+            get => (bool?)GetValue(IsConnectedProperty);
             set => SetValue(IsConnectedProperty, value);
         }
 
@@ -84,7 +84,7 @@ namespace AccesoUPV.GUI.UserControls
 
         // Using a DependencyProperty as the backing store for IsConnected.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsConnectedProperty =
-            DependencyProperty.Register("IsConnected", typeof(bool), typeof(ConnectableButton), new UIPropertyMetadata());
+            DependencyProperty.Register("IsConnected", typeof(bool?), typeof(ConnectableButton), new UIPropertyMetadata());
 
         // Using a DependencyProperty as the backing store for IconKind.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IconKindProperty =
@@ -130,7 +130,8 @@ namespace AccesoUPV.GUI.UserControls
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    d.SetValue(IsConnectedProperty, ((IConnectable)sender).IsConnected);
+                    IConnectable connectable = ((IConnectable)sender);
+                    d.SetValue(IsConnectedProperty, connectable?.IsConnected);
                 });
             };
         #endregion
@@ -147,7 +148,7 @@ namespace AccesoUPV.GUI.UserControls
         public ConnectableButton()
         {
             InitializeComponent();
-            this.Loaded += (s,e) => UpdateCheckBoxStatus();
+            this.Loaded += (s, e) => UpdateIsConnectedPropertyState();
         }
 
         private async Task Connect(object sender, RoutedEventArgs e)
@@ -184,6 +185,8 @@ namespace AccesoUPV.GUI.UserControls
             ConnectionCheckBox.IsEnabled = false;
             StatusProgressBar.Visibility = Visibility.Visible;
 
+            UpdateCheckBoxState(); 
+
             try
             {
                 if (Connectable.IsConnected)
@@ -204,11 +207,20 @@ namespace AccesoUPV.GUI.UserControls
             ConnectionCheckBox.IsEnabled = true;
         }
 
-        private void UpdateCheckBoxStatus()
+        /**
+        * The CheckBox changes the checked state the moment you click it, so it needs to be updated to
+        * match the actual value of IsConnected
+        */
+        private void UpdateCheckBoxState()
+        {
+            ConnectionCheckBox.GetBindingExpression(ToggleButton.IsCheckedProperty).UpdateTarget();
+        }
+
+        private void UpdateIsConnectedPropertyState()
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                SetValue(IsConnectedProperty, Connectable.IsConnected);
+                SetValue(IsConnectedProperty, Connectable?.IsConnected);
             });
         }
 

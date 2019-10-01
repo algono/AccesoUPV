@@ -10,7 +10,7 @@ using System.Windows.Controls;
 namespace AccesoUPV.GUI.Windows.MainPages
 {
     /// <summary>
-    /// Lógica de interacción para Main.xaml
+    /// Lógica de interacción para UPVPage.xaml
     /// </summary>
     public partial class UPVPage : Page
     {
