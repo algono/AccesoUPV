@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 
@@ -53,6 +54,8 @@ namespace AccesoUPV.GUI.Help
         //    System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
         //} 
         #endregion
+
+        public static Action ShowHelp => ShowHelpTableOfContents;
 
         /// <summary>
         /// Help topic dependency property. 

@@ -4,10 +4,60 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:local="clr-namespace:AccesoUPV.GUI.Windows"
+        xmlns:pages="clr-namespace:AccesoUPV.GUI.Windows.MainPages"
+        xmlns:help="clr-namespace:AccesoUPV.GUI.Help"
         mc:Ignorable="d"
         Title="Acceso UPV" Height="450" Width="800" WindowStartupLocation="CenterScreen">
-    <Grid>
-        <Frame x:Name="Main" NavigationUIVisibility="Hidden" />
-    </Grid>
+    <DockPanel>
+        <DockPanel.Resources>
+            <DataTemplate x:Key="MenuItemTemplate">
+                <Grid Height="48">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <ContentControl Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding Icon}" />
+                    <TextBlock Grid.Column="0" FontSize="18" Margin="0 1 1.5 0" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Whitney" Foreground="BlanchedAlmond" Text="{Binding Glyph}"/>
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding Label}"/>
+                </Grid>
+            </DataTemplate>
+        </DockPanel.Resources>
+
+        <controls:HamburgerMenu x:Name="HamburgerMenuControl" SelectedIndex="0" OptionsItemTemplate="{StaticResource MenuItemTemplate}" ItemTemplate="{StaticResource MenuItemTemplate}" ItemClick="HamburgerMenu_ItemClick" OptionsItemClick="HamburgerMenu_ItemClick">
+            <controls:HamburgerMenu.ItemsSource>
+                <controls:HamburgerMenuItemCollection>
+                    <controls:HamburgerMenuIconItem Label="Inicio" Tag="{x:Type pages:Start}">
+                        <controls:HamburgerMenuIconItem.Icon>
+                            <iconPacks:PackIconModern Width="24" Height="24" Kind="Home" Foreground="LightGray" />
+                        </controls:HamburgerMenuIconItem.Icon>
+                    </controls:HamburgerMenuIconItem>
+                    <controls:HamburgerMenuGlyphItem Glyph="U" Label="UPV" Tag="{x:Type pages:Main}" />
+                    <controls:HamburgerMenuGlyphItem Glyph="D" Label="DSIC" />
+                </controls:HamburgerMenuItemCollection>
+            </controls:HamburgerMenu.ItemsSource>
+
+            <controls:HamburgerMenu.OptionsItemsSource>
+                <controls:HamburgerMenuItemCollection>
+                    <controls:HamburgerMenuIconItem Label="Ajustes" Tag="{x:Type local:Preferences}">
+                        <controls:HamburgerMenuIconItem.Icon>
+                            <iconPacks:PackIconModern Width="16" Height="16" Kind="Settings" Foreground="LightGray" />
+                        </controls:HamburgerMenuIconItem.Icon>
+                    </controls:HamburgerMenuIconItem>
+
+                    <controls:HamburgerMenuIconItem Label="Ayuda" Tag="{x:Static help:HelpProvider.ShowHelp}">
+                        <controls:HamburgerMenuIconItem.Icon>
+                            <iconPacks:PackIconModern Width="16" Height="16" Kind="Question" Foreground="LightGray" />
+                        </controls:HamburgerMenuIconItem.Icon>
+                        
+                    </controls:HamburgerMenuIconItem>
+                </controls:HamburgerMenuItemCollection>
+            </controls:HamburgerMenu.OptionsItemsSource>
+
+            <Frame x:Name="ContentFrame" Grid.Column="1" NavigationUIVisibility="Hidden" />
+        </controls:HamburgerMenu>
+    </DockPanel>
 </controls:MetroWindow>
