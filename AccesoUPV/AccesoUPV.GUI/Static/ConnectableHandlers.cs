@@ -1,45 +1,26 @@
-﻿using AccesoUPV.GUI.Help;
-using AccesoUPV.GUI.UserControls;
+﻿using AccesoUPV.GUI.UserControls;
+using AccesoUPV.GUI.Windows;
 using AccesoUPV.Library.Connectors.Drive;
-using AccesoUPV.Library.Connectors.VPN;
-using AccesoUPV.Library.Interfaces;
 using AccesoUPV.Library.Services;
 using AccesoUPV.Library.Static;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 
-namespace AccesoUPV.GUI.Windows.MainPages
+namespace AccesoUPV.GUI.Static
 {
-    /// <summary>
-    /// Lógica de interacción para Main.xaml
-    /// </summary>
-    public partial class Main : Page
+    public static class ConnectableHandlers
     {
-        public IAccesoUPVService Service { get; }
-
-        public Main()
-        {
-            InitializeComponent();
-        }
-
-        public Main(IAccesoUPVService service)
-        {
-            Service = service;
-            InitializeComponent();
-        }
-
-        private async Task ConnectWDrive(object sender, ConnectionEventArgs e)
+        public static async Task ConnectWDrive(IAccesoUPVService service, ConnectionEventArgs e)
         {
             try
             {
-                await ConnectDrive(sender, e);
+                await ConnectDrive(service, e);
             }
             catch (CredentialsBugException ex)
             {
-                bool retry = await HandleCrendentialsError(ex);
-                if (retry) await ConnectWDrive(sender, e);
+                bool retry = await HandleCrendentialsError(service, ex);
+                if (retry) await ConnectWDrive(service, e);
             }
         }
 
@@ -47,11 +28,11 @@ namespace AccesoUPV.GUI.Windows.MainPages
         /// Tries to handle the CredentialsBugException, and returns if the connection process should be retried.
         /// </summary>
         /// <returns>Retry: If the connection process should be retried.</returns>
-        private async Task<bool> HandleCrendentialsError(CredentialsBugException ex)
+        private static async Task<bool> HandleCrendentialsError(IAccesoUPVService service, CredentialsBugException ex)
         {
             try
             {
-                bool didAnything = await Service.ResetUPVConnectionAsync();
+                bool didAnything = await service.ResetUPVConnectionAsync();
 
                 if (!didAnything)
                 {
@@ -79,12 +60,12 @@ namespace AccesoUPV.GUI.Windows.MainPages
                     {
                         try
                         {
-                            await Service.VPN_UPV.ConnectAsync();
+                            await service.VPN_UPV.ConnectAsync();
                             cancelationHandled = true;
                         }
                         // The cancelation message will be shown until the VPN is connected or the user says "Yes"
-                        catch (OperationCanceledException) { } 
-                    } 
+                        catch (OperationCanceledException) { }
+                    }
                 }
             }
             catch (TimeoutException tex)
@@ -95,7 +76,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
             return false;
         }
 
-        private async Task ConnectDrive(object sender, ConnectionEventArgs e)
+        public static async Task ConnectDrive(IAccesoUPVService service, ConnectionEventArgs e)
         {
             NetworkDrive networkDrive = e.Connectable as NetworkDrive;
             try
@@ -125,13 +106,13 @@ namespace AccesoUPV.GUI.Windows.MainPages
             {
                 MessageBox.Show("No ha indicado ningún nombre de usuario. Indique uno en los ajustes.", "Falta usuario",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
-                OpenPreferences();
+                OpenPreferences(service);
             }
             catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(networkDrive.Password)))
             {
                 MessageBox.Show("No ha indicado ninguna contraseña. Indíquela en los ajustes.", "Falta contraseña",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
-                OpenPreferences();
+                OpenPreferences(service);
             }
             catch (ArgumentOutOfRangeException ex) when (ex.ParamName.Equals(nameof(networkDrive.Address)))
             {
@@ -141,17 +122,17 @@ namespace AccesoUPV.GUI.Windows.MainPages
                 */
                 MessageBox.Show("Nombre de usuario incorrecto.", "Usuario incorrecto",
                     MessageBoxButton.OK, MessageBoxImage.Error);
-                OpenPreferences();
+                OpenPreferences(service);
             }
             catch (ArgumentException ex) when (ex.ParamName.Equals(nameof(networkDrive.Password)))
             {
                 MessageBox.Show("Contraseña incorrecta.", "Contraseña incorrecta",
                     MessageBoxButton.OK, MessageBoxImage.Error);
-                OpenPreferences();
+                OpenPreferences(service);
             }
         }
 
-        private async Task DisconnectDrive(object sender, ConnectionEventArgs e)
+        public static async Task DisconnectDrive(ConnectionEventArgs e)
         {
             try
             {
@@ -174,16 +155,12 @@ namespace AccesoUPV.GUI.Windows.MainPages
             }
         }
 
-        private void EvirLinuxButton_Click(object sender, RoutedEventArgs e) => RemoteDesktop.ConnectToLinuxDesktop();
-
-        private void EvirWindowsButton_Click(object sender, RoutedEventArgs e) => RemoteDesktop.ConnectToWindowsDesktop();
-
-        private async Task ConnectPortalDSIC(object sender, ConnectionEventArgs e)
+        public static async Task ConnectPortalDSIC(IAccesoUPVService service, ConnectionEventArgs e)
         {
             try
             {
                 #region Conflicto con Disco W
-                if (Service.Disco_W.IsConnected)
+                if (service.Disco_W.IsConnected)
                 {
                     MessageBoxResult result = MessageBox.Show("No se puede acceder a la VPN del DSIC teniendo el Disco W conectado.\n"
                                     + "Si continúa, este será desconectado automáticamente.\n\n"
@@ -191,7 +168,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
 
                     if (result == MessageBoxResult.OK)
                     {
-                        await Service.Disco_W.DisconnectAsync();
+                        await service.Disco_W.DisconnectAsync();
                     }
                     else
                     {
@@ -207,7 +184,7 @@ namespace AccesoUPV.GUI.Windows.MainPages
                 MessageBox.Show("No ha indicado ningún nombre para la VPN del DSIC. Indique uno en los ajustes.",
                     "Falta nombre",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
-                OpenPreferences();
+                OpenPreferences(service);
             }
             catch (OperationCanceledException)
             {
@@ -216,64 +193,24 @@ namespace AccesoUPV.GUI.Windows.MainPages
 
         }
 
-        #region Website Window (Obsolete)
-        [Obsolete]
-        public static Window CreatePortalDSICDialog() => new Window()
+        public static void OpenPreferences(IAccesoUPVService service)
         {
-            Title = "Portal DSIC",
-            Content = new WebBrowser
-            {
-                Source = new Uri("http://" + VPNFactory.PORTAL_DSIC),
-
-            }
-        };
-        [Obsolete]
-        public static void OpenConnectableWindow(IConnectable connectable, Window window)
-        {
-            window.Closed += async (s, ce) => await connectable.DisconnectAsync();
-            window.ShowDialog();
-        }
-        #endregion
-
-        private void PreferencesButton_Click(object sender, RoutedEventArgs e)
-        {
-            OpenPreferences();
+            new Preferences(service).ShowDialog();
         }
 
-        private void OpenPreferences()
-        {
-            new Preferences(Service).ShowDialog();
-        }
-
-        private void HelpButton_Click(object sender, RoutedEventArgs e)
-        {
-            HelpProvider.ShowHelpTableOfContents();
-        }
-
-        private void DiscaButton_Click(object sender, RoutedEventArgs e)
-        {
-            ConnectToSSH(SSHConnection.DISCA_SSH);
-        }
-
-        private void KahanButton_Click(object sender, RoutedEventArgs e)
-        {
-            ConnectToSSH(SSHConnection.KAHAN_SSH);
-        }
-
-        private void ConnectToSSH(string server)
+        public static void ConnectToSSH(IAccesoUPVService service, string server)
         {
             try
             {
-                if (string.IsNullOrEmpty(Service.User)) throw new ArgumentNullException();
-                SSHConnection.ConnectTo(server, Service.User);
+                if (string.IsNullOrEmpty(service.User)) throw new ArgumentNullException();
+                SSHConnection.ConnectTo(server, service.User);
             }
             catch (ArgumentNullException)
             {
                 MessageBox.Show("No ha indicado ningún nombre de usuario. Indique uno en los ajustes.", "Falta usuario",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
-                OpenPreferences();
+                OpenPreferences(service);
             }
         }
-
     }
 }

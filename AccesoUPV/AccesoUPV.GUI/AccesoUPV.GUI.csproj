@@ -69,6 +69,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Static\ConnectableHandlers.cs" />
     <Compile Include="UserControls\Preferences\DriveLetterConverter.cs" />
     <Compile Include="Help\HelpProvider.cs" />
     <Compile Include="UserControls\Preferences\DrivePreferences.xaml.cs">
@@ -78,8 +79,11 @@
     <Compile Include="UserControls\Preferences\VPNPreferences.xaml.cs">
       <DependentUpon>VPNPreferences.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\MainPages\Main.xaml.cs">
-      <DependentUpon>Main.xaml</DependentUpon>
+    <Compile Include="Windows\MainPages\DSICPage.xaml.cs">
+      <DependentUpon>DSICPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\MainPages\UPVPage.cs">
+      <DependentUpon>UPVPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\MainPages\Start.xaml.cs">
       <DependentUpon>Start.xaml</DependentUpon>
@@ -102,6 +106,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\MainPages\DSICPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -114,7 +122,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Windows\MainPages\Main.xaml">
+    <Page Include="Windows\MainPages\UPVPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

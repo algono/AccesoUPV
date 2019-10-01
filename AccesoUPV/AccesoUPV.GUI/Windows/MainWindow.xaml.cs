@@ -30,7 +30,7 @@ namespace AccesoUPV.GUI.Windows
 
         private void StartPage_Started(object sender, EventArgs e)
         {
-            ContentFrame.Navigate(new Main(_service));
+            ContentFrame.Navigate(new UPVPage(_service));
             this.Closing += Shutdown;
         }
 

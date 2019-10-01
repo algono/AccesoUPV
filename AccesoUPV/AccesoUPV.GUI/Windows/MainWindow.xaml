@@ -35,8 +35,8 @@
                             <iconPacks:PackIconModern Width="24" Height="24" Kind="Home" Foreground="LightGray" />
                         </controls:HamburgerMenuIconItem.Icon>
                     </controls:HamburgerMenuIconItem>
-                    <controls:HamburgerMenuGlyphItem Glyph="U" Label="UPV" Tag="{x:Type pages:Main}" />
-                    <controls:HamburgerMenuGlyphItem Glyph="D" Label="DSIC" />
+                    <controls:HamburgerMenuGlyphItem Glyph="U" Label="UPV" Tag="{x:Type pages:UPVPage}" />
+                    <controls:HamburgerMenuGlyphItem Glyph="D" Label="DSIC" Tag="{x:Type pages:DSICPage}" />
                 </controls:HamburgerMenuItemCollection>
             </controls:HamburgerMenu.ItemsSource>
 
