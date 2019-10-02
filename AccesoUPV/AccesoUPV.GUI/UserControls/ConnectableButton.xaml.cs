@@ -31,9 +31,9 @@ namespace AccesoUPV.GUI.UserControls
             set => SetValue(IconKindProperty, value);
         }
 
-        public bool? IsConnected
+        public bool IsConnected
         {
-            get => (bool?)GetValue(IsConnectedProperty);
+            get => (bool)GetValue(IsConnectedProperty);
             set => SetValue(IsConnectedProperty, value);
         }
 
@@ -84,7 +84,7 @@ namespace AccesoUPV.GUI.UserControls
 
         // Using a DependencyProperty as the backing store for IsConnected.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsConnectedProperty =
-            DependencyProperty.Register("IsConnected", typeof(bool?), typeof(ConnectableButton), new UIPropertyMetadata());
+            DependencyProperty.Register("IsConnected", typeof(bool), typeof(ConnectableButton), new UIPropertyMetadata());
 
         // Using a DependencyProperty as the backing store for IconKind.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IconKindProperty =
@@ -131,7 +131,7 @@ namespace AccesoUPV.GUI.UserControls
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     IConnectable connectable = ((IConnectable)sender);
-                    d.SetValue(IsConnectedProperty, connectable?.IsConnected);
+                    d.SetValue(IsConnectedProperty, connectable?.IsConnected ?? false);
                 });
             };
         #endregion
@@ -220,7 +220,7 @@ namespace AccesoUPV.GUI.UserControls
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                SetValue(IsConnectedProperty, Connectable?.IsConnected);
+                SetValue(IsConnectedProperty, Connectable?.IsConnected ?? false);
             });
         }
 
