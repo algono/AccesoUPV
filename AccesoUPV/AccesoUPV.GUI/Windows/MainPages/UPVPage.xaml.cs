@@ -1,5 +1,4 @@
-﻿using AccesoUPV.GUI.Help;
-using AccesoUPV.GUI.Static;
+﻿using AccesoUPV.GUI.Static;
 using AccesoUPV.GUI.UserControls;
 using AccesoUPV.Library.Services;
 using AccesoUPV.Library.Static;
