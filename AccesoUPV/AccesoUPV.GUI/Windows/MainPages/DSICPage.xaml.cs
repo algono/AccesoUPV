@@ -13,6 +13,10 @@ namespace AccesoUPV.GUI.Windows.MainPages
     /// </summary>
     public partial class DSICPage : Page
     {
+        // Using a DependencyProperty as the backing store for IsPortalModeDisabled.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsPortalModeDisabledProperty =
+            DependencyProperty.Register("IsPortalModeDisabled", typeof(bool), typeof(DSICPage), new PropertyMetadata(true));
+
         public IAccesoUPVService Service { get; }
         public DSICPage()
         {
@@ -23,7 +27,13 @@ namespace AccesoUPV.GUI.Windows.MainPages
         {
             Service = service;
             InitializeComponent();
+
+            ConnectableHandlers.Bind(this, Service.VPN_DSIC,
+                ConnectableHandlers.CreateOnConnectionStatusChanged(this, IsPortalModeDisabledProperty, true));
         }
+
+        public static bool IsPortalModeDisabledIn(IAccesoUPVService service)
+            => !(service?.VPN_DSIC?.IsConnected ?? false);
 
         private async Task ConnectDrive(object sender, ConnectionEventArgs e)
             => await ConnectableHandlers.ConnectDrive(Service, e);

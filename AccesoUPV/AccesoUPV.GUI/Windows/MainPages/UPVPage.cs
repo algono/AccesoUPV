@@ -14,6 +14,8 @@ namespace AccesoUPV.GUI.Windows.MainPages
     /// </summary>
     public partial class UPVPage : Page
     {
+        public bool IsPortalModeDisabled => DSICPage.IsPortalModeDisabledIn(Service);
+
         public IAccesoUPVService Service { get; }
 
         public UPVPage()

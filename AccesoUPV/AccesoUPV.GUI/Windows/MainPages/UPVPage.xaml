@@ -26,7 +26,8 @@
 
         <userControls:ConnectableButton Grid.Column="1" Grid.Row="1" Connectable="{Binding ElementName=MyUPVPage, Path=Service.Disco_W}"
                                         Text="Disco W" IconKind="NetworkServerConnecting" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                        ConnectHandler="ConnectWDrive" DisconnectHandler="DisconnectDrive" />
+                                        ConnectHandler="ConnectWDrive" DisconnectHandler="DisconnectDrive"
+                                        IsEnabled="{Binding ElementName=MyUPVPage, Path=IsPortalModeDisabled}"/>
 
         <StackPanel Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBlock FontSize="18" Text="Conexiones SSH"/>

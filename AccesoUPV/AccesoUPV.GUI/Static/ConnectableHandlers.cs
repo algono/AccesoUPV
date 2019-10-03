@@ -1,9 +1,11 @@
 ﻿using AccesoUPV.GUI.UserControls;
 using AccesoUPV.GUI.Windows;
 using AccesoUPV.Library.Connectors.Drive;
+using AccesoUPV.Library.Interfaces;
 using AccesoUPV.Library.Services;
 using AccesoUPV.Library.Static;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -212,5 +214,74 @@ namespace AccesoUPV.GUI.Static
                 OpenPreferences(service);
             }
         }
-    }
+
+
+        #region IsConnected Bindings
+        private static readonly Dictionary<DependencyObject, List<Tuple<IConnectable, EventHandler>>> _connectionStatusHandlerDictionary
+          = new Dictionary<DependencyObject, List<Tuple<IConnectable, EventHandler>>>();
+
+        public static void Bind(DependencyObject d, IConnectable connectable, EventHandler OnConnectionStatusChanged)
+        {
+            Bind(connectable, OnConnectionStatusChanged);
+
+            _connectionStatusHandlerDictionary.TryGetValue(d, out List<Tuple<IConnectable, EventHandler>> bindings);
+
+            if (bindings == null)
+            {
+                bindings = new List<Tuple<IConnectable, EventHandler>>();
+                _connectionStatusHandlerDictionary.Add(d, bindings);
+            }
+
+            bindings.Add(new Tuple<IConnectable, EventHandler>(connectable, OnConnectionStatusChanged));
+        }
+
+        private static void Bind(IConnectable connectable, EventHandler OnConnectionStatusChanged)
+        {
+            connectable.Connected += OnConnectionStatusChanged;
+            connectable.Disconnected += OnConnectionStatusChanged;
+        }
+
+        public static void Unbind(DependencyObject d, IConnectable connectable)
+        {
+            _connectionStatusHandlerDictionary.TryGetValue(d, out List<Tuple<IConnectable, EventHandler>> bindings);
+
+            if (bindings != null)
+            {
+                List<int> bindingIndexesToRemove = new List<int>();
+
+                for (int i = 0; i < bindings.Count; i++)
+                {
+                    Tuple<IConnectable, EventHandler> binding = bindings[i];
+                    if (binding.Item1 == connectable)
+                    {
+                        EventHandler OnConnectionStatusChanged = binding.Item2;
+                        Unbind(connectable, OnConnectionStatusChanged);
+
+                        bindingIndexesToRemove.Add(i);
+                    }
+                }
+
+                bindingIndexesToRemove.ForEach(index => bindings.RemoveAt(index));
+            }
+        }
+
+        private static void Unbind(IConnectable connectable, EventHandler OnConnectionStatusChanged)
+        {
+            connectable.Connected -= OnConnectionStatusChanged;
+            connectable.Disconnected -= OnConnectionStatusChanged;
+        }
+
+        public static EventHandler CreateOnConnectionStatusChanged(DependencyObject d, DependencyProperty dp, bool inverted = false)
+            => delegate (object sender, EventArgs e)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    IConnectable connectable = ((IConnectable)sender);
+                    bool isConnected = connectable?.IsConnected ?? false;
+                    if (inverted) isConnected = !isConnected;
+                    d.SetValue(dp, isConnected);
+                });
+            };
+    } 
+    #endregion
 }

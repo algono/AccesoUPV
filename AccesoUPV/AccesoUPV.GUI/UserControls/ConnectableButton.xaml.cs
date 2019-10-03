@@ -1,4 +1,5 @@
-﻿using AccesoUPV.Library.Interfaces;
+﻿using AccesoUPV.GUI.Static;
+using AccesoUPV.Library.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -98,43 +99,20 @@ namespace AccesoUPV.GUI.UserControls
         public static readonly DependencyProperty ConnectableProperty =
             DependencyProperty.Register("Connectable", typeof(IConnectable), typeof(ConnectableButton), new PropertyMetadata(OnConnectableChanged));
 
-        #region Connection Status Updating
-        private static readonly Dictionary<DependencyObject, EventHandler> _connectionStatusHandlerDictionary
-            = new Dictionary<DependencyObject, EventHandler>();
 
         private static void OnConnectableChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (e.OldValue != null)
             {
-                EventHandler OnConnectionStatusChanged = _connectionStatusHandlerDictionary[d];
-                IConnectable oldValue = (IConnectable)e.OldValue;
-
-                oldValue.Connected -= OnConnectionStatusChanged;
-                oldValue.Disconnected -= OnConnectionStatusChanged;
+                ConnectableHandlers.Unbind(d, (IConnectable)e.OldValue);
             }
 
             if (e.NewValue != null)
             {
-                EventHandler OnConnectionStatusChanged = CreateHandlerOnConnectionStatusChanged(d);
-                IConnectable newValue = (IConnectable)e.NewValue;
-
-                newValue.Connected += OnConnectionStatusChanged;
-                newValue.Disconnected += OnConnectionStatusChanged;
-
-                _connectionStatusHandlerDictionary.Add(d, OnConnectionStatusChanged);
+                ConnectableHandlers.Bind(d, (IConnectable)e.NewValue,
+                    ConnectableHandlers.CreateOnConnectionStatusChanged(d, IsConnectedProperty));
             }
         }
-
-        private static EventHandler CreateHandlerOnConnectionStatusChanged(DependencyObject d)
-            => delegate (object sender, EventArgs e)
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    IConnectable connectable = ((IConnectable)sender);
-                    d.SetValue(IsConnectedProperty, connectable?.IsConnected ?? false);
-                });
-            };
-        #endregion
 
         #endregion
 
