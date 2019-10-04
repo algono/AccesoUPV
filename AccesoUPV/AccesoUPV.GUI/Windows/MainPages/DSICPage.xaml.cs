@@ -13,6 +13,11 @@ namespace AccesoUPV.GUI.Windows.MainPages
     /// </summary>
     public partial class DSICPage : Page
     {
+        public bool IsPortalModeDisabled
+        {
+            get => (bool)GetValue(IsPortalModeDisabledProperty);
+            private set => SetValue(IsPortalModeDisabledProperty, value);
+        }
         // Using a DependencyProperty as the backing store for IsPortalModeDisabled.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsPortalModeDisabledProperty =
             DependencyProperty.Register("IsPortalModeDisabled", typeof(bool), typeof(DSICPage), new PropertyMetadata(true));
