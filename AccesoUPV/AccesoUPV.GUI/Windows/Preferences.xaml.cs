@@ -48,6 +48,7 @@ namespace AccesoUPV.GUI.Windows
             VPNToDSICPrefs.Load();
 
             DiscoWPrefs.Load();
+            AsigDSICPrefs.Load();
             DiscoDSICPrefs.Load();
 
             foreach (RadioButton domain in DomainsUPV.Children)
@@ -80,7 +81,10 @@ namespace AccesoUPV.GUI.Windows
             VPNToDSICPrefs.Save();
 
             DiscoWPrefs.Save();
+            AsigDSICPrefs.Save();
             DiscoDSICPrefs.Save();
+
+            Service.Asig_DSIC.Password = Service.Disco_DSIC.Password;
 
             foreach (RadioButton domain in DomainsUPV.Children)
             {

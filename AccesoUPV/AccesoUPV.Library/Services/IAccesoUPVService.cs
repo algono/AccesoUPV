@@ -17,6 +17,7 @@ namespace AccesoUPV.Library.Services
         VPN VPN_DSIC { get; }
         VPN VPN_UPV { get; }
         NetworkDrive<UPVDomain> Disco_W { get; }
+        NetworkDrive Asig_DSIC { get; }
 
         event EventHandler<ShutdownEventArgs> ShuttingDown;
 

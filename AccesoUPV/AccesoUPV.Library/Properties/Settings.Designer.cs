@@ -102,5 +102,17 @@ namespace AccesoUPV.Library.Properties {
                 this["DSICDrivePassword"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public char AsigDSICDriveLetter {
+            get {
+                return ((char)(this["AsigDSICDriveLetter"]));
+            }
+            set {
+                this["AsigDSICDriveLetter"] = value;
+            }
+        }
     }
 }

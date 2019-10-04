@@ -8,7 +8,7 @@
         xmlns:drive="clr-namespace:AccesoUPV.Library.Connectors.Drive;assembly=AccesoUPV.Library"
         xmlns:userControls="clr-namespace:AccesoUPV.GUI.UserControls.Preferences"
         mc:Ignorable="d"
-        Title="Preferencias" FontSize="14" Height="490" Width="433" WindowStartupLocation="CenterScreen">
+        Title="Preferencias" FontSize="14" Height="600" Width="480" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
@@ -54,7 +54,7 @@
                     <userControls:VPNPreferences x:Name="VPNToUPVPrefs" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Title="Conexión VPN" VPN="{Binding ElementName=MyPreferences, Path=Service.VPN_UPV}" />
                     <userControls:DrivePreferences x:Name="DiscoWPrefs" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Title="Disco W" Drive="{Binding ElementName=MyPreferences, Path=Service.Disco_W}" PasswordOptionsVisibility="Collapsed" />
 
-                    <TextBlock Text="Dominio:" Grid.Column="0" Grid.Row="5" />
+                    <TextBlock Text="Dominio:" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center" />
                     <Grid x:Name="DomainsUPV" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" Margin="15 0 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
@@ -80,10 +80,13 @@
                         <RowDefinition Height="20" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="20" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="20" />
                     </Grid.RowDefinitions>
 
                     <userControls:VPNPreferences x:Name="VPNToDSICPrefs" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Title="Conexión VPN" VPN="{Binding ElementName=MyPreferences, Path=Service.VPN_DSIC}" />
-                    <userControls:DrivePreferences x:Name="DiscoDSICPrefs" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Title="Disco DSIC" Drive="{Binding ElementName=MyPreferences, Path=Service.Disco_DSIC}" SavePasswords="{Binding ElementName=MyPreferences, Path=Service.SavePasswords, Mode=TwoWay}" />
+                    <userControls:DrivePreferences x:Name="AsigDSICPrefs" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Title="Asig (M:)" Drive="{Binding ElementName=MyPreferences, Path=Service.Asig_DSIC}" PasswordOptionsVisibility="Collapsed" />
+                    <userControls:DrivePreferences x:Name="DiscoDSICPrefs" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Title="Homes (W:)" Drive="{Binding ElementName=MyPreferences, Path=Service.Disco_DSIC}" SavePasswords="{Binding ElementName=MyPreferences, Path=Service.SavePasswords, Mode=TwoWay}" />
                 </Grid>
             </TabItem>
         </TabControl>

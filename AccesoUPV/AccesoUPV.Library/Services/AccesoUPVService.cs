@@ -20,6 +20,7 @@ namespace AccesoUPV.Library.Services
         public VPN VPN_DSIC { get; }
         public NetworkDrive<UPVDomain> Disco_W { get; }
         public NetworkDrive Disco_DSIC { get; }
+        public NetworkDrive Asig_DSIC { get; }
         #endregion
 
         #region Preferences
@@ -77,10 +78,15 @@ namespace AccesoUPV.Library.Services
 
             Disco_W = DriveFactory.GetDriveW(wDriveLetter, User, (UPVDomain)Settings.Default.WDriveDomain);
 
-            char DSICDriveLetter = DriveLetterTools.ValidOrDefault(Settings.Default.DSICDriveLetter);
-
             string DSICDrivePassword = Settings.Default.DSICDrivePassword;
             if (!string.IsNullOrEmpty(DSICDrivePassword)) DSICDrivePassword = PasswordHelper.Decrypt(DSICDrivePassword);
+
+            char AsigDSICDriveLetter = DriveLetterTools.ValidOrDefault(Settings.Default.AsigDSICDriveLetter);
+
+            Asig_DSIC = DriveFactory.GetAsigDriveDSIC(AsigDSICDriveLetter, User, DSICDrivePassword);
+
+            char DSICDriveLetter = DriveLetterTools.ValidOrDefault(Settings.Default.DSICDriveLetter);
+
             Disco_DSIC = DriveFactory.GetDriveDSIC(DSICDriveLetter, User, DSICDrivePassword);
             SavePasswords = !string.IsNullOrEmpty(Disco_DSIC.Password);
         }

@@ -58,12 +58,18 @@ namespace AccesoUPV.Library.Connectors.Drive
         #endregion
 
         #region Disco DSIC
+        public const string DSICDrivesAdress = @"fileserver.dsic.upv.es";
+        public static readonly string DSICAsigAddress = $@"\\{DSICDrivesAdress}\asig";
+
         public static readonly DriveDomain DSICDomain = new DriveDomain("DSIC");
+
+        public static NetworkDrive GetAsigDriveDSIC(char drive = default, string user = null, string password = null)
+            => new NetworkDrive(DSICAsigAddress, drive, DSICDomain, user, password) { Name = "Asig DSIC" };
 
         public static NetworkDrive GetDriveDSIC(char drive = default, string user = null, string password = null)
             => new NetworkDrive(GetAddressDSIC, drive, DSICDomain, user, password) { Name = "Disco DSIC" };
 
-        private static string GetAddressDSIC(string username, DriveDomain domain) => $@"\\fileserver.dsic.upv.es\{username}";
+        private static string GetAddressDSIC(string username, DriveDomain domain) => $@"\\{DSICDrivesAdress}\{username}";
         #endregion
     }
 }
