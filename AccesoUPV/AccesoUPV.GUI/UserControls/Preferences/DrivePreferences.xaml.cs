@@ -59,34 +59,18 @@ namespace AccesoUPV.GUI.UserControls.Preferences
         public DrivePreferences()
         {
             InitializeComponent();
+            LoadDriveBox();
         }
 
         #region Public Methods
         public void Load()
         {
-            LoadDriveBox();
-
             char driveLetter = Drive.Letter;
             if (DriveLetterTools.IsValid(driveLetter))
             {
                 DriveCheckBox.IsChecked = true;
                 DriveBox.SelectedItem = driveLetter;
             }
-
-            ShowOnlyAvailableDrives.Click += (s, e) =>
-            {
-                if (ShowOnlyAvailableDrives.IsChecked ?? false)
-                {
-                    DriveBox.ItemsSource
-                    = NetworkDrive.SelectAvailable(
-                        DriveBox.ItemsSource
-                        as IEnumerable<char>);
-                }
-                else
-                {
-                    LoadDriveBox();
-                }
-            };
 
             PassBox.Password = Drive.Password;
             SavePassCheckBox.IsChecked = SavePasswords;
@@ -118,6 +102,21 @@ namespace AccesoUPV.GUI.UserControls.Preferences
             PassBox.Clear();
         }
         #endregion
+
+        private void ShowOnlyAvailableDrives_Click(object sender, RoutedEventArgs e)
+        {
+            if (ShowOnlyAvailableDrives.IsChecked ?? false)
+            {
+                DriveBox.ItemsSource
+                = NetworkDrive.SelectAvailable(
+                    DriveBox.ItemsSource
+                    as IEnumerable<char>);
+            }
+            else
+            {
+                LoadDriveBox();
+}
+        }
 
     }
 }
