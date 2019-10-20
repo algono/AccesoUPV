@@ -1,6 +1,7 @@
 ﻿using AccesoUPV.GUI.Static;
 using AccesoUPV.GUI.Windows.MainPages;
 using AccesoUPV.Library.Connectors.VPN;
+using AccesoUPV.Library.Interfaces;
 using AccesoUPV.Library.Services;
 using AccesoUPV.Library.Static;
 using MahApps.Metro.Controls;
@@ -53,30 +54,92 @@ namespace AccesoUPV.GUI.Windows
             notifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
 
             notifyIcon.ContextMenuStrip.Items.Add("Abrir", null, (s, e) => ShowWindowFromNotifyIcon());
+
             notifyIcon.ContextMenuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
-            var connectToolStrip = new System.Windows.Forms.ToolStripMenuItem("Conectar");
+            #region Connections
+            var connectionsToolStrip = new System.Windows.Forms.ToolStripMenuItem("Conexiones");
 
-            connectToolStrip.DropDownItems.Add("Disco W", null, async (s, e) => await ConnectableHandlers.ConnectWDrive(_service, UserControls.ConnectionEventArgs.CreateFrom(_service.Disco_W, true)));
-            connectToolStrip.DropDownItems.Add("DISCA", null, (s, e) => ConnectableHandlers.ConnectToSSH(_service, SSHConnection.DISCA_SSH));
+            connectionsToolStrip.DropDownItems.Add(BuildConnectionToolStripButton("Disco W", _service.Disco_W, ConnectableHandlers.ConnectWDrive, ConnectableHandlers.DisconnectDrive));
 
             var dsicToolStrip = new System.Windows.Forms.ToolStripMenuItem("DSIC");
 
-            dsicToolStrip.DropDownItems.Add("Asig (M:)", null, async (s, e) => await ConnectableHandlers.ConnectDrive(_service, UserControls.ConnectionEventArgs.CreateFrom(_service.Asig_DSIC, true)));
-            dsicToolStrip.DropDownItems.Add("Homes (W:)", null, async (s, e) => await ConnectableHandlers.ConnectDrive(_service, UserControls.ConnectionEventArgs.CreateFrom(_service.Disco_DSIC, true)));
-            dsicToolStrip.DropDownItems.Add("Portal", null, async (s, e) => await ConnectableHandlers.ConnectPortalDSIC(_service, UserControls.ConnectionEventArgs.CreateFrom(_service.VPN_DSIC, true)));
+            #region dummy
+            // Solves weird issue (ToolStrip Buttons getting cut off)
+            // Post: https://stackoverflow.com/questions/1550077/toolstripbutton-text-gets-cut-off-in-contextmenustrip
 
-            var evirToolStrip = new System.Windows.Forms.ToolStripMenuItem("Escritorios Remotos");
+            var dummyToolStrip = new System.Windows.Forms.ToolStripMenuItem("dummy") { Visible = false };
+
+            dsicToolStrip.DropDownItems.Add(dummyToolStrip); 
+            #endregion
+
+            dsicToolStrip.DropDownItems.Add(BuildConnectionToolStripButton("Asig (M:)", _service.Asig_DSIC, ConnectableHandlers.ConnectDrive, ConnectableHandlers.DisconnectDrive));
+            dsicToolStrip.DropDownItems.Add(BuildConnectionToolStripButton("Homes (W:)", _service.Disco_DSIC, ConnectableHandlers.ConnectDrive, ConnectableHandlers.DisconnectDrive));
+            dsicToolStrip.DropDownItems.Add(BuildConnectionToolStripButton("Portal", _service.VPN_DSIC, ConnectableHandlers.ConnectPortalDSIC));
+
+            connectionsToolStrip.DropDownItems.Add(dsicToolStrip);
+
+            notifyIcon.ContextMenuStrip.Items.Add(connectionsToolStrip);
+            #endregion
+
+            #region Access to...
+            var accessToToolStrip = new System.Windows.Forms.ToolStripMenuItem("Acceder a...");
+
+            var evirToolStrip = new System.Windows.Forms.ToolStripMenuItem("Escritorios Remotos (DSIC)");
             evirToolStrip.DropDownItems.Add("Linux", null, (s, e) => RemoteDesktop.ConnectToLinuxDesktop());
             evirToolStrip.DropDownItems.Add("Windows", null, (s, e) => RemoteDesktop.ConnectToWindowsDesktop());
 
-            dsicToolStrip.DropDownItems.Add(evirToolStrip);
+            accessToToolStrip.DropDownItems.Add(evirToolStrip);
 
-            dsicToolStrip.DropDownItems.Add("Kahan", null, (s, e) => ConnectableHandlers.ConnectToSSH(_service, SSHConnection.KAHAN_SSH));
+            var sshToolStrip = new System.Windows.Forms.ToolStripMenuItem("Conexiones SSH");
+            sshToolStrip.DropDownItems.Add("DISCA", null, (s, e) => ConnectableHandlers.ConnectToSSH(_service, SSHConnection.DISCA_SSH));
+            sshToolStrip.DropDownItems.Add("Kahan", null, (s, e) => ConnectableHandlers.ConnectToSSH(_service, SSHConnection.KAHAN_SSH));
 
-            connectToolStrip.DropDownItems.Add(dsicToolStrip);
+            accessToToolStrip.DropDownItems.Add(sshToolStrip);
 
-            notifyIcon.ContextMenuStrip.Items.Add(connectToolStrip);
+            notifyIcon.ContextMenuStrip.Items.Add(accessToToolStrip);
+            #endregion
+
+            notifyIcon.ContextMenuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+
+            notifyIcon.ContextMenuStrip.Items.Add("Salir", null, (s, e) => this.Close());
+        }
+
+        private System.Windows.Forms.ToolStripButton BuildConnectionToolStripButton(string text, IConnectable connectable, Func<IAccesoUPVService, UserControls.ConnectionEventArgs, Task> connectHandler, Func<UserControls.ConnectionEventArgs, Task> disconnectHandler = null)
+        {
+            async void ConnectionHandler(object sender, EventArgs e)
+            {
+                bool isChecked = (sender as System.Windows.Forms.ToolStripButton).Checked;
+
+                if (isChecked)
+                {
+                    if (disconnectHandler != null)
+                    {
+                        await disconnectHandler.Invoke(UserControls.ConnectionEventArgs.CreateFrom(connectable, false));
+                    }
+                    else
+                    {
+                        await connectable.DisconnectAsync();
+                    }
+                }
+                else
+                {
+                    if (connectHandler != null)
+                    {
+                        await connectHandler.Invoke(_service, UserControls.ConnectionEventArgs.CreateFrom(connectable, true));
+                    }
+                    else
+                    {
+                        await connectable.ConnectAsync();
+                    }
+
+                    if (connectable is IOpenable openable) openable.Open();
+                }
+
+                (sender as System.Windows.Forms.ToolStripButton).Checked = !isChecked;
+            }
+            
+            return new System.Windows.Forms.ToolStripButton(text, null, ConnectionHandler);
         }
 
         private async void HamburgerMenu_ItemClick(object sender, ItemClickEventArgs e)
