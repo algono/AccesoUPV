@@ -9,7 +9,7 @@
         xmlns:pages="clr-namespace:AccesoUPV.GUI.Windows.MainPages"
         xmlns:help="clr-namespace:AccesoUPV.GUI.Help"
         mc:Ignorable="d"
-        Title="Acceso UPV" Height="480" Width="640" WindowStartupLocation="CenterScreen">
+        Title="Acceso UPV" Height="480" Width="640" WindowStartupLocation="CenterScreen" Closing="Shutdown" StateChanged="MetroWindow_StateChanged" IsVisibleChanged="MetroWindow_IsVisibleChanged">
     <DockPanel>
         <DockPanel.Resources>
             <DataTemplate x:Key="MenuItemTemplate">
