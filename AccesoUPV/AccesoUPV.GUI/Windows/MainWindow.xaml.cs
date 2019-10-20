@@ -24,6 +24,8 @@ namespace AccesoUPV.GUI.Windows
             = "Ha habido un error al conectarse a la VPN. Inténtelo de nuevo.\n\n"
             + "Si el problema persiste, trate de conectarse de forma manual.";
 
+        public event EventHandler Started;
+        
         private System.Windows.Forms.NotifyIcon notifyIcon;
         private bool started = false;
         private readonly IAccesoUPVService _service;
@@ -44,7 +46,9 @@ namespace AccesoUPV.GUI.Windows
                 Icon = new System.Drawing.Icon("app-icon.ico")
             };
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
+
             BuildNotifyIconContextMenu();
+            Started += (s, e) => BuildNotifyIconContextMenu();
 
             Start startPage = new Start(service);
             ContentFrame.Navigate(startPage);
@@ -55,22 +59,31 @@ namespace AccesoUPV.GUI.Windows
 
         private void BuildNotifyIconContextMenu()
         {
+            notifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
+
+            notifyIcon.ContextMenuStrip.Items.Add("Abrir", null, (s, e) => ShowWindowFromNotifyIcon());
+
+            if (started) BuildNotifyIconConnectionContextMenu();
+            else notifyIcon.ContextMenuStrip.Items.Add("Conectarse", null, async (s, e) => await Start());            
+
+            notifyIcon.ContextMenuStrip.Items.Add("Salir", null, (s, e) => this.Close());
+        }
+
+        private void BuildNotifyIconConnectionContextMenu()
+        {
+            notifyIcon.ContextMenuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+
+            #region Connections
+
             #region Update Connection Status Handler removal
             foreach (EventHandler handler in updateHandlers)
             {
                 UpdateConnectionStatus -= handler;
             }
 
-            updateHandlers.Clear(); 
+            updateHandlers.Clear();
             #endregion
 
-            notifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
-
-            notifyIcon.ContextMenuStrip.Items.Add("Abrir", null, (s, e) => ShowWindowFromNotifyIcon());
-
-            notifyIcon.ContextMenuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-
-            #region Connections
             var connectionsToolStrip = new System.Windows.Forms.ToolStripMenuItem("Conexiones");
 
             connectionsToolStrip.DropDownItems.Add(BuildConnectionToolStripButton("Disco W", _service.Disco_W, ConnectableHandlers.ConnectWDrive, ConnectableHandlers.DisconnectDrive));
@@ -83,7 +96,7 @@ namespace AccesoUPV.GUI.Windows
 
             var dummyToolStrip = new System.Windows.Forms.ToolStripMenuItem("dummy") { Visible = false };
 
-            dsicToolStrip.DropDownItems.Add(dummyToolStrip); 
+            dsicToolStrip.DropDownItems.Add(dummyToolStrip);
             #endregion
 
             dsicToolStrip.DropDownItems.Add(BuildConnectionToolStripButton("Asig (M:)", _service.Asig_DSIC, ConnectableHandlers.ConnectDrive, ConnectableHandlers.DisconnectDrive));
@@ -114,8 +127,6 @@ namespace AccesoUPV.GUI.Windows
             #endregion
 
             notifyIcon.ContextMenuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-
-            notifyIcon.ContextMenuStrip.Items.Add("Salir", null, (s, e) => this.Close());
         }
 
         private System.Windows.Forms.ToolStripButton BuildConnectionToolStripButton(string text, IConnectable connectable, Func<IAccesoUPVService, UserControls.ConnectionEventArgs, Task> connectHandler, Func<UserControls.ConnectionEventArgs, Task> disconnectHandler = null)
@@ -170,7 +181,6 @@ namespace AccesoUPV.GUI.Windows
                 if (!started && tag is Type type && !typeof(Start).IsAssignableFrom(type))
                 {
                     await Start();
-                    started = true;
                 }
 
                 HamburgerMenu_ItemHandler(tag);
@@ -231,6 +241,14 @@ namespace AccesoUPV.GUI.Windows
                 _service.SaveChanges();
                 await vpn.ConnectAsync();
             }
+
+            started = true;
+            OnStarted();
+        }
+
+        protected virtual void OnStarted()
+        {
+            Started?.Invoke(this, EventArgs.Empty);
         }
 
         private void Shutdown(object sender, CancelEventArgs e)
