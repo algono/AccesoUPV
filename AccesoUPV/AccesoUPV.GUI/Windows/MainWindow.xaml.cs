@@ -38,6 +38,8 @@ namespace AccesoUPV.GUI.Windows
         {
             _service = service;
 
+            started = _service.VPN_UPV.IsReachable();
+
             notifyIcon = new System.Windows.Forms.NotifyIcon()
             {
                 BalloonTipText = "La aplicación ha sido minimizada. Use el icono de la barra de tareas para volver a mostrarla.",
@@ -228,9 +230,9 @@ namespace AccesoUPV.GUI.Windows
 
         public async Task Start()
         {
-            VPN vpn = _service.VPN_UPV;
-            if (!vpn.IsReachable())
+            if (!started)
             {
+                VPN vpn = _service.VPN_UPV;
                 if (string.IsNullOrEmpty(vpn.Name))
                 {
                     SelectVPN window = new SelectVPN(vpn);
@@ -240,10 +242,10 @@ namespace AccesoUPV.GUI.Windows
 
                 _service.SaveChanges();
                 await vpn.ConnectAsync();
-            }
 
-            started = true;
-            OnStarted();
+                started = true;
+                OnStarted(); 
+            }
         }
 
         protected virtual void OnStarted()
