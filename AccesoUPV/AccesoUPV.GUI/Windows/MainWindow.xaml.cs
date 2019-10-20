@@ -6,6 +6,7 @@ using AccesoUPV.Library.Services;
 using AccesoUPV.Library.Static;
 using MahApps.Metro.Controls;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
@@ -49,8 +50,20 @@ namespace AccesoUPV.GUI.Windows
             ContentFrame.Navigate(startPage);
         }
 
+        private event EventHandler UpdateConnectionStatus;
+        private readonly List<EventHandler> updateHandlers = new List<EventHandler>();
+
         private void BuildNotifyIconContextMenu()
         {
+            #region Update Connection Status Handler removal
+            foreach (EventHandler handler in updateHandlers)
+            {
+                UpdateConnectionStatus -= handler;
+            }
+
+            updateHandlers.Clear(); 
+            #endregion
+
             notifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
 
             notifyIcon.ContextMenuStrip.Items.Add("Abrir", null, (s, e) => ShowWindowFromNotifyIcon());
@@ -138,8 +151,15 @@ namespace AccesoUPV.GUI.Windows
 
                 (sender as System.Windows.Forms.ToolStripButton).Checked = !isChecked;
             }
-            
-            return new System.Windows.Forms.ToolStripButton(text, null, ConnectionHandler);
+
+            System.Windows.Forms.ToolStripButton toolStripButton = new System.Windows.Forms.ToolStripButton(text, null, ConnectionHandler);
+
+            void updateConnectionStatusHandler(object s, EventArgs e) => toolStripButton.Checked = connectable.IsConnected;
+
+            updateHandlers.Add(updateConnectionStatusHandler);
+            UpdateConnectionStatus += updateConnectionStatusHandler;
+
+            return toolStripButton;
         }
 
         private async void HamburgerMenu_ItemClick(object sender, ItemClickEventArgs e)
@@ -252,7 +272,12 @@ namespace AccesoUPV.GUI.Windows
         {
             if (notifyIcon != null)
             {
-                notifyIcon.Visible = !IsVisible;
+                bool isItGoingToBeVisible = !IsVisible;
+                if (isItGoingToBeVisible)
+                {
+                    UpdateConnectionStatus?.Invoke(this, EventArgs.Empty);
+                }
+                notifyIcon.Visible = isItGoingToBeVisible;
             }
         }
 
