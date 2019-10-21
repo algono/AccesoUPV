@@ -125,7 +125,7 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public string Username { get; set; }
         public string Password { get; set; }
-        public bool UseCredentials { get; set; }
+        public bool NeedsPassword { get; set; }
         public bool YesToAll { get; set; }
 
         public override bool IsConnected
@@ -157,7 +157,7 @@ namespace AccesoUPV.Library.Connectors.Drive
 
             Username = user;
             Password = password;
-            UseCredentials = password != null;
+            NeedsPassword = password != null;
         }
 
         public override string ToString() => Name ?? Address;
@@ -204,7 +204,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         protected void CheckArguments()
         {
             if (Username == null) throw new ArgumentNullException(nameof(Username));
-            if (UseCredentials && string.IsNullOrEmpty(Password)) throw new ArgumentNullException(nameof(Password));
+            if (NeedsPassword && string.IsNullOrEmpty(Password)) throw new ArgumentNullException(nameof(Password));
 
             if (!DriveLetterTools.IsValid(Letter))
             {
@@ -217,10 +217,12 @@ namespace AccesoUPV.Library.Connectors.Drive
         {
             NetInfo.Arguments = $"use {DriveLetter} {Address}";
 
-            if (UseCredentials)
+            if (NeedsPassword)
             {
-                NetInfo.Arguments += $" \"{Password}\" /USER:{Domain?.GetFullUsername(Username) ?? Username}";
+                NetInfo.Arguments += $" \"{Password}\"";
             }
+
+            NetInfo.Arguments += $" /USER:{Domain?.GetFullUsername(Username) ?? Username}";
 
             if (YesToAll) NetInfo.Arguments += " /y";
         }
