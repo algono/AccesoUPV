@@ -125,6 +125,7 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public string Username { get; set; }
         public string Password { get; set; }
+        public bool NeedsUsername { get; set; }
         public bool NeedsPassword { get; set; }
         public bool YesToAll { get; set; }
 
@@ -145,7 +146,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         }
 
         public NetworkDrive(string address, char letter = default,
-            DriveDomain domain = null, string user = null, string password = null)
+            DriveDomain domain = null, string username = null, string password = null)
         {
             _address = address;
             Domain = domain;
@@ -155,8 +156,9 @@ namespace AccesoUPV.Library.Connectors.Drive
                 Letter = letter;
             }
 
-            Username = user;
+            Username = username;
             Password = password;
+            NeedsUsername = username != null;
             NeedsPassword = password != null;
         }
 
@@ -203,7 +205,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         #region Connection Process
         protected void CheckArguments()
         {
-            if (Username == null) throw new ArgumentNullException(nameof(Username));
+            if (NeedsUsername && Username == null) throw new ArgumentNullException(nameof(Username));
             if (NeedsPassword && string.IsNullOrEmpty(Password)) throw new ArgumentNullException(nameof(Password));
 
             if (!DriveLetterTools.IsValid(Letter))
@@ -222,7 +224,10 @@ namespace AccesoUPV.Library.Connectors.Drive
                 NetInfo.Arguments += $" \"{Password}\"";
             }
 
-            NetInfo.Arguments += $" /USER:{Domain?.GetFullUsername(Username) ?? Username}";
+            if (NeedsUsername)
+            {
+                NetInfo.Arguments += $" /USER:{Domain?.GetFullUsername(Username) ?? Username}"; 
+            }
 
             if (YesToAll) NetInfo.Arguments += " /y";
         }

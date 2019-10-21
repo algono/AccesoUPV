@@ -64,10 +64,10 @@ namespace AccesoUPV.Library.Connectors.Drive
         public static readonly DriveDomain DSICDomain = new DriveDomain("DSIC");
 
         public static NetworkDrive GetAsigDriveDSIC(char drive = default, string user = null, string password = null)
-            => new NetworkDrive(DSICAsigAddress, drive, DSICDomain, user, password) { Name = "Asig DSIC", NeedsPassword = true };
+            => new NetworkDrive(DSICAsigAddress, drive, DSICDomain, user, password) { Name = "Asig DSIC", NeedsUsername = true, NeedsPassword = true };
 
         public static NetworkDrive GetDriveDSIC(char drive = default, string user = null, string password = null)
-            => new NetworkDrive(GetAddressDSIC, drive, DSICDomain, user, password) { Name = "Disco DSIC", NeedsPassword = true };
+            => new NetworkDrive(GetAddressDSIC, drive, DSICDomain, user, password) { Name = "Disco DSIC", NeedsUsername = true, NeedsPassword = true };
 
         private static string GetAddressDSIC(string username, DriveDomain domain) => $@"\\{DSICDrivesAdress}\{username}";
         #endregion
