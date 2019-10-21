@@ -150,34 +150,43 @@ namespace AccesoUPV.GUI.Windows
         {
             async void ConnectionHandler(object sender, EventArgs e)
             {
-                bool isChecked = (sender as System.Windows.Forms.ToolStripButton).Checked;
-
-                if (isChecked)
+                System.Windows.Forms.ToolStripButton button = (sender as System.Windows.Forms.ToolStripButton);
+                button.Enabled = false;
+                try
                 {
-                    if (disconnectHandler != null)
+                    bool isChecked = button.Checked;
+
+                    if (isChecked)
                     {
-                        await disconnectHandler.Invoke(UserControls.ConnectionEventArgs.CreateFrom(connectable, false));
+                        if (disconnectHandler != null)
+                        {
+                            await disconnectHandler.Invoke(UserControls.ConnectionEventArgs.CreateFrom(connectable, false));
+                        }
+                        else
+                        {
+                            await connectable.DisconnectAsync();
+                        }
                     }
                     else
                     {
-                        await connectable.DisconnectAsync();
+                        if (connectHandler != null)
+                        {
+                            await connectHandler.Invoke(_service, UserControls.ConnectionEventArgs.CreateFrom(connectable, true));
+                        }
+                        else
+                        {
+                            await connectable.ConnectAsync();
+                        }
+
+                        if (connectable is IOpenable openable) openable.Open();
                     }
+
+                    button.Checked = !isChecked;
                 }
-                else
+                finally
                 {
-                    if (connectHandler != null)
-                    {
-                        await connectHandler.Invoke(_service, UserControls.ConnectionEventArgs.CreateFrom(connectable, true));
-                    }
-                    else
-                    {
-                        await connectable.ConnectAsync();
-                    }
-
-                    if (connectable is IOpenable openable) openable.Open();
+                    button.Enabled = true;
                 }
-
-                (sender as System.Windows.Forms.ToolStripButton).Checked = !isChecked;
             }
 
             System.Windows.Forms.ToolStripButton toolStripButton = new System.Windows.Forms.ToolStripButton(text, null, ConnectionHandler);
