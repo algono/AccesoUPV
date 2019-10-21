@@ -46,7 +46,7 @@ namespace AccesoUPV.GUI.Windows
                 BalloonTipText = "La aplicación ha sido minimizada. Use el icono de la barra de tareas para volver a mostrarla.",
                 BalloonTipTitle = Title,
                 Text = Title,
-                Icon = new System.Drawing.Icon("app-icon.ico")
+                Icon = new System.Drawing.Icon("Resources/app-icon.ico")
             };
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
 

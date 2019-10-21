@@ -22,7 +22,7 @@
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
 
-        <Image Grid.Column="1" Grid.Row="1" Source="http://museo.inf.upv.es/wp-content/uploads/2015/07/UPV-trans.png" />
-        <Image Grid.Column="1" Grid.Row="3" Source="http://dmip.webs.upv.es/datawrangling/assets/img/logo_DSIIC-v.png" />
+        <Image Grid.Column="1" Grid.Row="1" Source="/AccesoUPV.GUI;component/Resources/UPV-logo.png" />
+        <Image Grid.Column="1" Grid.Row="3" Source="/AccesoUPV.GUI;component/Resources/DSIC-logo.png" />
     </Grid>
 </Page>
