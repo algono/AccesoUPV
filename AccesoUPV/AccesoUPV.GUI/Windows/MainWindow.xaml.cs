@@ -1,4 +1,5 @@
-﻿using AccesoUPV.GUI.Static;
+﻿using AccesoUPV.GUI.Help;
+using AccesoUPV.GUI.Static;
 using AccesoUPV.GUI.Windows.MainPages;
 using AccesoUPV.Library.Connectors.VPN;
 using AccesoUPV.Library.Interfaces;
@@ -65,16 +66,32 @@ namespace AccesoUPV.GUI.Windows
 
             notifyIcon.ContextMenuStrip.Items.Add("Abrir", null, (s, e) => ShowWindowFromNotifyIcon());
 
+            notifyIcon.ContextMenuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+
             if (started) BuildNotifyIconConnectionContextMenu();
-            else notifyIcon.ContextMenuStrip.Items.Add("Conectarse", null, async (s, e) => await Start());            
+            else notifyIcon.ContextMenuStrip.Items.Add("Conectarse", null, async (s, e) =>
+            {
+                try
+                {
+                    await Start();
+                }
+                catch (OperationCanceledException)
+                {
+                    // El usuario canceló la operación
+                }
+            });
+
+            notifyIcon.ContextMenuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+
+            notifyIcon.ContextMenuStrip.Items.Add("Ajustes", null, (s, e) => ConnectableHandlers.OpenPreferences(_service));
+
+            notifyIcon.ContextMenuStrip.Items.Add("Ayuda", null, (s, e) => HelpProvider.ShowHelpTableOfContents());
 
             notifyIcon.ContextMenuStrip.Items.Add("Salir", null, (s, e) => this.Close());
         }
 
         private void BuildNotifyIconConnectionContextMenu()
         {
-            notifyIcon.ContextMenuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-
             #region Connections
 
             #region Update Connection Status Handler removal
@@ -127,8 +144,6 @@ namespace AccesoUPV.GUI.Windows
 
             notifyIcon.ContextMenuStrip.Items.Add(accessToToolStrip);
             #endregion
-
-            notifyIcon.ContextMenuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
         }
 
         private System.Windows.Forms.ToolStripButton BuildConnectionToolStripButton(string text, IConnectable connectable, Func<IAccesoUPVService, UserControls.ConnectionEventArgs, Task> connectHandler, Func<UserControls.ConnectionEventArgs, Task> disconnectHandler = null)
