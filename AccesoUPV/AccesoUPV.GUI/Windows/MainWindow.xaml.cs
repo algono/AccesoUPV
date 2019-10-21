@@ -266,9 +266,9 @@ namespace AccesoUPV.GUI.Windows
                     SelectVPN window = new SelectVPN(vpn);
                     window.ShowDialog();
                     if (window.Canceled) throw new OperationCanceledException();
+                    _service.SaveChanges();
                 }
-
-                _service.SaveChanges();
+                
                 await vpn.ConnectAsync();
 
                 started = true;
