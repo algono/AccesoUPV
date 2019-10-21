@@ -142,19 +142,26 @@ namespace AccesoUPV.GUI.UserControls
 
         private async Task Handle(object sender, RoutedEventArgs e, Func<Task> function, Func<object, ConnectionEventArgs, Task> handler)
         {
-            if (handler == null)
+            try
             {
-                await function();
-            }
-            else
-            {
-                ConnectionEventArgs ce = new ConnectionEventArgs
+                if (handler == null)
                 {
-                    Connectable = Connectable,
-                    ConnectionFunc = function,
-                    RoutedEventArgs = e
-                };
-                await handler(sender, ce);
+                    await function();
+                }
+                else
+                {
+                    ConnectionEventArgs ce = new ConnectionEventArgs
+                    {
+                        Connectable = Connectable,
+                        ConnectionFunc = function,
+                        RoutedEventArgs = e
+                    };
+                    await handler(sender, ce);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // El usuario canceló algo, así que no importa
             }
         }
 

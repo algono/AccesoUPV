@@ -43,7 +43,7 @@ namespace AccesoUPV.GUI.Static
 
                 return didAnything;
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException cancelledException)
             {
                 const string CanceledReconnectionMessage =
                     "Cuidado, si cancela la operación de reconexión, el programa podría dejar de funcionar correctamente.\n\n" +
@@ -56,7 +56,7 @@ namespace AccesoUPV.GUI.Static
 
                     if (result == MessageBoxResult.Yes)
                     {
-                        return false;
+                        throw cancelledException;
                     }
                     else
                     {
@@ -187,10 +187,6 @@ namespace AccesoUPV.GUI.Static
                     "Falta nombre",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 OpenPreferences(service);
-            }
-            catch (OperationCanceledException)
-            {
-                // El usuario canceló algo, así que no importa
             }
 
         }

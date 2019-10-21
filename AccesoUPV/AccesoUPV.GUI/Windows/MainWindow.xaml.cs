@@ -183,6 +183,10 @@ namespace AccesoUPV.GUI.Windows
 
                     button.Checked = !isChecked;
                 }
+                catch (OperationCanceledException)
+                {
+                    // El usuario canceló algo, así que no importa
+                }
                 finally
                 {
                     button.Enabled = true;
