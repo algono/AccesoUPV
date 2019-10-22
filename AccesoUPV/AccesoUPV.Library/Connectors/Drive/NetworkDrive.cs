@@ -205,7 +205,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         #region Connection Process
         protected void CheckArguments()
         {
-            if (NeedsUsername && Username == null) throw new ArgumentNullException(nameof(Username));
+            if (NeedsUsername && string.IsNullOrEmpty(Username)) throw new ArgumentNullException(nameof(Username));
             if (NeedsPassword && string.IsNullOrEmpty(Password)) throw new ArgumentNullException(nameof(Password));
 
             if (!DriveLetterTools.IsValid(Letter))
@@ -219,14 +219,15 @@ namespace AccesoUPV.Library.Connectors.Drive
         {
             NetInfo.Arguments = $"use {DriveLetter} {Address}";
 
+            // The net use command doesnt allow to specify an user without a password
             if (NeedsPassword)
             {
                 NetInfo.Arguments += $" \"{Password}\"";
-            }
 
-            if (NeedsUsername)
-            {
-                NetInfo.Arguments += $" /USER:{Domain?.GetFullUsername(Username) ?? Username}"; 
+                if (NeedsUsername)
+                {
+                    NetInfo.Arguments += $" /USER:{Domain?.GetFullUsername(Username) ?? Username}";
+                }
             }
 
             if (YesToAll) NetInfo.Arguments += " /y";
