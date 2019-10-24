@@ -298,7 +298,7 @@ namespace AccesoUPV.GUI.Windows
         private bool showedBalloonTip = false;
         private void MetroWindow_StateChanged(object sender, EventArgs e)
         {
-            if (WindowState == WindowState.Minimized)
+            if (_service.NotifyIcon && WindowState == WindowState.Minimized)
             {
                 Hide();
                 if (notifyIcon != null)
@@ -318,7 +318,7 @@ namespace AccesoUPV.GUI.Windows
 
         private void MetroWindow_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (notifyIcon != null)
+            if (notifyIcon != null && _service.NotifyIcon)
             {
                 bool isItGoingToBeVisible = !IsVisible;
                 if (isItGoingToBeVisible)

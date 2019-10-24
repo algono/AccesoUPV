@@ -60,6 +60,7 @@ namespace AccesoUPV.GUI.Windows
                 }
             }
 
+            NotifyIconCheckBox.IsChecked = Service.NotifyIcon;
         }
 
         private void SaveChanges()
@@ -94,6 +95,8 @@ namespace AccesoUPV.GUI.Windows
                     break;
                 }
             }
+
+            Service.NotifyIcon = NotifyIconCheckBox.IsChecked ?? false;
 
             Service.SaveChanges();
         }

@@ -35,7 +35,7 @@ namespace AccesoUPV.Library.Services
                 if (value?.Length == 0) value = null;
 
                 _user = value;
-                
+
                 foreach (NetworkDrive drive in NetworkDrives)
                 {
                     if (drive != null)
@@ -46,6 +46,8 @@ namespace AccesoUPV.Library.Services
             }
         }
         public bool SavePasswords { get; set; }
+
+        public bool NotifyIcon { get; set; }
 
         #endregion
 
@@ -61,7 +63,7 @@ namespace AccesoUPV.Library.Services
         private static readonly IEnumerable<PropertyInfo> connectablesInfo = typeof(AccesoUPVService).GetProperties().AsEnumerable().WherePropertiesAreOfType<IConnectable>();
         #endregion
 
-        private static readonly IReadOnlyList<string> UPVWiFiNetworks =  new List<string> { "UPVNET", "eduroam", "UPV-IoT" };
+        private static readonly IReadOnlyList<string> UPVWiFiNetworks = new List<string> { "UPVNET", "eduroam", "UPV-IoT" };
 
         public event EventHandler<ShutdownEventArgs> ShuttingDown;
 
@@ -89,6 +91,8 @@ namespace AccesoUPV.Library.Services
 
             Disco_DSIC = DriveFactory.GetDriveDSIC(DSICDriveLetter, User, DSICDrivePassword);
             SavePasswords = !string.IsNullOrEmpty(Disco_DSIC.Password);
+
+            NotifyIcon = Settings.Default.NotifyIcon;
         }
 
         #region Settings methods
@@ -115,6 +119,8 @@ namespace AccesoUPV.Library.Services
 
             Settings.Default.DSICDriveLetter = Disco_DSIC.Letter;
             Settings.Default.DSICDrivePassword = SavePasswords ? PasswordHelper.Encrypt(Disco_DSIC.Password) : null;
+
+            Settings.Default.NotifyIcon = NotifyIcon;
 
             Settings.Default.Save();
         }
@@ -229,7 +235,7 @@ namespace AccesoUPV.Library.Services
                 bool reachable = VPN_UPV.Config.WaitUntilReachable(ConnectedWiFiTimeout);
                 if (!reachable) throw new TimeoutException(ResetTimeoutMessage);
             }
-            
+
             return isAnyWiFiConnectionUp;
         }
 
@@ -246,7 +252,7 @@ namespace AccesoUPV.Library.Services
             }
 
             return isAnyWiFiConnectionUp;
-        } 
+        }
         #endregion
 
     }
