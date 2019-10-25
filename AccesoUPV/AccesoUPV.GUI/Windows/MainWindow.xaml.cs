@@ -318,7 +318,7 @@ namespace AccesoUPV.GUI.Windows
 
         private void MetroWindow_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (notifyIcon != null && _service.NotifyIcon)
+            if (notifyIcon != null && (notifyIcon.Visible || _service.NotifyIcon))
             {
                 bool isItGoingToBeVisible = !IsVisible;
                 if (isItGoingToBeVisible)
