@@ -29,8 +29,8 @@ namespace AccesoUPV.Library.Connectors.Drive
         #region Disco W
         public static readonly IDictionary<UPVDomain, DriveDomain> UPVDomains = new Dictionary<UPVDomain, DriveDomain>()
         {
-            { UPVDomain.Alumno, new DriveDomain("alumno.upv.es", DomainStyle.AtSignStyle, "alumnos") },
-            { UPVDomain.UPVNET, new DriveDomain("upvnet.upv.es", DomainStyle.AtSignStyle, "discos") }
+            { UPVDomain.Alumno, new DriveDomain("ALUMNO", DomainStyle.BackSlashStyle, "alumnos") },
+            { UPVDomain.UPVNET, new DriveDomain("UPVNET", DomainStyle.BackSlashStyle, "discos") }
         };
 
         public static NetworkDrive<UPVDomain> GetDriveW(char drive = default, string user = null, UPVDomain domain = UPVDomain.Alumno)
