@@ -32,6 +32,7 @@ namespace AccesoUPV.Library.Connectors.VPN
 
         static VPNFactory()
         {
+            // https://docs.microsoft.com/es-es/windows/client-management/mdm/eap-configuration
             XmlDocument configXml = new XmlDocument();
             configXml.Load("Resources/UPV_Config.xml");
             UPVCreationParameters.Add("EapConfigXmlStream", configXml);
