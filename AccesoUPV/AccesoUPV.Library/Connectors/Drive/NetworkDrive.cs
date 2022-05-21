@@ -105,6 +105,7 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         private char letter;
         private bool letterWasAutoAssigned;
+        private bool needsUsername;
 
         public char Letter
         {
@@ -125,7 +126,8 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public string Username { get; set; }
         public string Password { get; set; }
-        public bool NeedsUsername { get; set; }
+        public bool ExplicitUserArgument { get; set; }
+        public bool NeedsUsername { get => needsUsername || ExplicitUserArgument; set => needsUsername = value; }
         public bool NeedsPassword { get; set; }
         public bool YesToAll { get; set; }
 
@@ -159,6 +161,7 @@ namespace AccesoUPV.Library.Connectors.Drive
             Username = username;
             Password = password;
             NeedsUsername = username != null;
+            ExplicitUserArgument = false;
             NeedsPassword = password != null;
         }
 
@@ -224,7 +227,7 @@ namespace AccesoUPV.Library.Connectors.Drive
             {
                 NetInfo.Arguments += $" \"{Password}\"";
 
-                if (NeedsUsername)
+                if (ExplicitUserArgument)
                 {
                     NetInfo.Arguments += $" /USER:{Domain?.GetFullUsername(Username) ?? Username}";
                 }
