@@ -8,11 +8,12 @@
         xmlns:drive="clr-namespace:AccesoUPV.Library.Connectors.Drive;assembly=AccesoUPV.Library"
         xmlns:userControls="clr-namespace:AccesoUPV.GUI.UserControls.Preferences"
         mc:Ignorable="d"
-        Title="Preferencias" FontSize="14" Height="610" Width="480" WindowStartupLocation="CenterScreen">
+        Title="Preferencias" FontSize="14" Height="700" Width="480" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="20" />
@@ -20,6 +21,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="20" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="20" />
             <RowDefinition Height="auto" />
@@ -31,14 +34,26 @@
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Usuario (UPV)" FontSize="16" Grid.Column="1" Grid.Row="1" FontWeight="Bold" Foreground="Gray" Margin="0 0 0 20" />
+        <TextBlock Text="Usuario (UPV)" FontSize="16" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" FontWeight="Bold" Foreground="Gray" Margin="0 0 0 20" />
         <TextBlock Text="Nombre:" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />
-        <TextBox x:Name="UserBox" Grid.Column="2" Grid.Row="2" />
+        <TextBox x:Name="UserBox" Grid.Column="3" Grid.Row="2" />
 
-        <TextBlock Text="Ajustes generales" FontSize="16" Grid.Column="1" Grid.Row="4" FontWeight="Bold" Foreground="Gray" Margin="0 0 0 20" />
-        <CheckBox x:Name="NotifyIconCheckBox" Grid.Column="1" Grid.Row="5" Content="Minimizar a la bandeja del sistema" />
+        <TextBlock Text="Dominio:" Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Left" />
+        <Grid x:Name="DomainsUPV" Grid.Column="3" Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <TabControl Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3">
+            <RadioButton Grid.Column="0" x:Name="DomainAlumnoRadio" GroupName="Dominio" Content="Alumno" Tag="{x:Static drive:UPVDomain.Alumno}" />
+            <RadioButton Grid.Column="2" x:Name="DomainUPVNETRadio" GroupName="Dominio" Content="UPVNET" Tag="{x:Static drive:UPVDomain.UPVNET}" />
+        </Grid>
+
+        <TextBlock Text="Ajustes generales" FontSize="16" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3" FontWeight="Bold" Foreground="Gray" Margin="0 0 0 20" />
+        <CheckBox x:Name="NotifyIconCheckBox" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3" Content="Minimizar a la bandeja del sistema" />
+
+        <TabControl Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="3">
             <TabItem Header="UPV">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -59,18 +74,6 @@
 
                     <userControls:VPNPreferences x:Name="VPNToUPVPrefs" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Title="Conexión VPN" VPN="{Binding ElementName=MyPreferences, Path=Service.VPN_UPV}" />
                     <userControls:DrivePreferences x:Name="DiscoWPrefs" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Title="Disco W" Drive="{Binding ElementName=MyPreferences, Path=Service.Disco_W}" PasswordOptionsVisibility="Collapsed" />
-
-                    <TextBlock Text="Dominio:" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    <Grid x:Name="DomainsUPV" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" Margin="15 0 0 0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        
-                        <RadioButton Grid.Column="0" x:Name="DomainAlumnoRadio" GroupName="Dominio" Content="Alumno" Tag="{x:Static drive:UPVDomain.Alumno}" />
-                        <RadioButton Grid.Column="2" x:Name="DomainUPVNETRadio" GroupName="Dominio" Content="UPVNET" Tag="{x:Static drive:UPVDomain.UPVNET}" />
-                    </Grid>
                 </Grid>
             </TabItem>
             <TabItem Header="DSIC">
@@ -97,7 +100,7 @@
             </TabItem>
         </TabControl>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="3">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="11" Grid.ColumnSpan="3">
             <Button x:Name="ResetButton" Content="Restablecer" Click="ResetButton_Click" />
             <Button x:Name="AcceptButton" Content="Aceptar" IsDefault="True" Margin="20 0 20 0" Click="AcceptButton_Click" />
             <Button x:Name="CancelButton" Content="Cancelar" IsCancel="True" />
