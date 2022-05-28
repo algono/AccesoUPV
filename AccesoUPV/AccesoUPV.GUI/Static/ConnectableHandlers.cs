@@ -4,6 +4,7 @@ using AccesoUPV.Library.Connectors.Drive;
 using AccesoUPV.Library.Interfaces;
 using AccesoUPV.Library.Services;
 using AccesoUPV.Library.Static;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,7 +18,37 @@ namespace AccesoUPV.GUI.Static
         {
             try
             {
-                await ConnectDrive(service, e);
+                NetworkDrive drive = e.Connectable as NetworkDrive;
+                if (drive.NeedsPassword)
+                {
+                    do
+                    {
+                        if (string.IsNullOrEmpty(drive.Password))
+                        {
+                            drive.Password = Interaction.InputBox("Introduzca la contraseña de la UPV:", "Conectar Disco W");
+                        }
+                        try
+                        {
+                            await ConnectDrive(service, e, false);
+                        }
+                        catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(drive.Password)))
+                        {
+                            MessageBox.Show("No ha indicado ninguna contraseña.", "Falta contraseña",
+                                MessageBoxButton.OK, MessageBoxImage.Warning);
+                            drive.Password = null;
+                        }
+                        catch (ArgumentException ex) when (ex.ParamName.Equals(nameof(drive.Password)))
+                        {
+                            MessageBox.Show("Contraseña incorrecta.", "Contraseña incorrecta",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+                            drive.Password = null;
+                        }
+                    } while (drive.Password == null);
+                }
+                else
+                {
+                    await ConnectDrive(service, e);
+                }
             }
             catch (CredentialsBugException ex)
             {
@@ -78,7 +109,7 @@ namespace AccesoUPV.GUI.Static
             return false;
         }
 
-        public static async Task ConnectDrive(IAccesoUPVService service, ConnectionEventArgs e)
+        public static async Task ConnectDrive(IAccesoUPVService service, ConnectionEventArgs e, bool catchPasswordErrors = true)
         {
             NetworkDrive networkDrive = e.Connectable as NetworkDrive;
             try
@@ -110,7 +141,7 @@ namespace AccesoUPV.GUI.Static
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 OpenPreferences(service);
             }
-            catch (ArgumentNullException ex) when (ex.ParamName.Equals(nameof(networkDrive.Password)))
+            catch (ArgumentNullException ex) when (catchPasswordErrors && ex.ParamName.Equals(nameof(networkDrive.Password)))
             {
                 MessageBox.Show("No ha indicado ninguna contraseña. Indíquela en los ajustes.", "Falta contraseña",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -120,13 +151,13 @@ namespace AccesoUPV.GUI.Static
             {
                 /**
                  * We dont ask the user for the address, but the address depends on the username
-                 * (which is, in fact, asked to te user). So we assume the error is because of the username.
+                 * (which is, in fact, asked to the user). So we assume the error is because of the username.
                 */
                 MessageBox.Show("Nombre de usuario incorrecto.", "Usuario incorrecto",
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 OpenPreferences(service);
             }
-            catch (ArgumentException ex) when (ex.ParamName.Equals(nameof(networkDrive.Password)))
+            catch (ArgumentException ex) when (catchPasswordErrors && ex.ParamName.Equals(nameof(networkDrive.Password)))
             {
                 MessageBox.Show("Contraseña incorrecta.", "Contraseña incorrecta",
                     MessageBoxButton.OK, MessageBoxImage.Error);
