@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AccesoUPV.Library.Connectors.VPN;
+using System.Collections.Generic;
 using System.IO;
 
 namespace AccesoUPV.Library.Connectors.Drive
@@ -35,11 +36,15 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public static NetworkDrive<UPVDomain> GetDriveW(char drive = default, string user = null, UPVDomain domain = UPVDomain.Alumno)
         {
+            bool connectedViaEthernet = VPNFactory.UPVTest.GetValidInterface().NetworkInterfaceType == System.Net.NetworkInformation.NetworkInterfaceType.Ethernet;
+
             NetworkDrive<UPVDomain> driveW = new NetworkDrive<UPVDomain>(GetAddressW, UPVDomains, drive, user)
             {
                 Domain = domain,
                 Name = "Disco W",
                 NeedsUsername = true,
+                ExplicitUserArgument = connectedViaEthernet,
+                NeedsPassword = connectedViaEthernet
             };
 
             driveW.ProcessConnected += DriveW_ProcessConnected;

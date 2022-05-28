@@ -18,7 +18,14 @@ namespace AccesoUPV.Library.Connectors.VPN
 
         public string GetErrorMessage(string networkName) => $"La conexión no forma parte de la red \"{networkName}\" (Su IP no comienza con: {Prefix})";
 
-        public bool IsReachable(int _) => GetIPAddresses().Any(ip => ip.StartsWith(Prefix));
+        private bool IsValid(string ip) => ip.StartsWith(Prefix);
+
+        public NetworkInterface GetValidInterface() => GetNetworkInterfaces()
+            .Where(ni => ni.GetIPProperties().UnicastAddresses
+                .Any(ip => ip.Address.AddressFamily == AddressFamily.InterNetwork && IsValid(ip.Address.ToString()))
+            ).FirstOrDefault();
+
+        public bool IsReachable(int _) => GetIPAddresses().Any(IsValid);
 
         public Task<bool> IsReachableAsync(int timeout) => Task.Run(() => IsReachable(timeout));
 
@@ -47,6 +54,7 @@ namespace AccesoUPV.Library.Connectors.VPN
         }
 
         private IEnumerable<NetworkInterface> GetNetworkInterfaces() => NetworkInterface.GetAllNetworkInterfaces().Where(ni => ni.OperationalStatus == OperationalStatus.Up);
+
         private IEnumerable<string> GetIPAddresses() => GetNetworkInterfaces()
             .Select(ni =>
                 ni.GetIPProperties().UnicastAddresses
