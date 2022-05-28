@@ -77,7 +77,7 @@ namespace AccesoUPV.Library.Connectors.VPN
                     if (!IsReachable())
                     {
                         Disconnect();
-                        throw new ArgumentException($"La VPN no puede acceder al servidor: {Config.TestServer}");
+                        throw new ArgumentException(Config.Test.GetErrorMessage("UPV"));
                     }
                 }
                 catch (IOException)
@@ -107,7 +107,7 @@ namespace AccesoUPV.Library.Connectors.VPN
         public void Open() => Config.Open();
 
         #region Utility methods
-        public bool IsReachable() => Config.IsReachable(IsConnected ? ConnectedPingTimeout : DisconnectedPingTimeout);
+        public bool IsReachable() => Config.Test.IsReachable(IsConnected ? ConnectedPingTimeout : DisconnectedPingTimeout);
 
         public void UpdateConnectionStatus() => IsConnected = IsActuallyConnected;
 

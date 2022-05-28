@@ -232,7 +232,7 @@ namespace AccesoUPV.Library.Services
             if (isAnyWiFiConnectionUp)
             {
                 Utilities.ResetWiFiConnection(connectedWiFi);
-                bool reachable = VPN_UPV.Config.WaitUntilReachable(ConnectedWiFiTimeout);
+                bool reachable = VPN_UPV.Config.Test.WaitUntilReachable(ConnectedWiFiTimeout);
                 if (!reachable) throw new TimeoutException(ResetTimeoutMessage);
             }
 
@@ -247,7 +247,7 @@ namespace AccesoUPV.Library.Services
             if (isAnyWiFiConnectionUp)
             {
                 await Utilities.ResetWiFiConnectionAsync(connectedWiFi);
-                bool reachable = await VPN_UPV.Config.WaitUntilReachableAsync(ConnectedWiFiTimeout);
+                bool reachable = await VPN_UPV.Config.Test.WaitUntilReachableAsync(ConnectedWiFiTimeout);
                 if (!reachable) throw new TimeoutException(ResetTimeoutMessage);
             }
 

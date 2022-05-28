@@ -6,7 +6,7 @@ namespace AccesoUPV.Library.Connectors.VPN
     public static class VPNFactory
     {
         public const string
-            VPN_UPV = "vpn.upv.es", WEB_UPV = "www.upv.es";
+            VPN_UPV = "vpn.upv.es", WEB_UPV = "www.upv.es", IP_PREFIX_UPV = "158.42.";
         public const string
             VPN_DSIC = "r1-vpn.dsic.upv.es", PORTAL_DSIC = "portal-ng.dsic.cloud";
 
@@ -27,8 +27,8 @@ namespace AccesoUPV.Library.Connectors.VPN
             { "Force", true }
         };
 
-        private static readonly VPNConfig UPVConfig = new VPNConfig(VPN_UPV, WEB_UPV, UPVCreationParameters);
-        private static readonly VPNConfig DSICConfig = new VPNConfig(VPN_DSIC, PORTAL_DSIC, DSICCreationParameters);
+        private static readonly VPNConfig UPVConfig = new VPNConfig(VPN_UPV, WEB_UPV, new ConnectionTestByIP(IP_PREFIX_UPV), UPVCreationParameters);
+        private static readonly VPNConfig DSICConfig = new VPNConfig(VPN_DSIC, PORTAL_DSIC, new ConnectionTestByPing(PORTAL_DSIC), DSICCreationParameters);
 
         static VPNFactory()
         {
