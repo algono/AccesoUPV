@@ -26,6 +26,8 @@ namespace AccesoUPV.GUI.Static
                         if (string.IsNullOrEmpty(drive.Password))
                         {
                             drive.Password = Interaction.InputBox("Introduzca la contraseña de la UPV:", "Conectar Disco W");
+
+                            if (string.IsNullOrEmpty(drive.Password)) return;
                         }
                         try
                         {
