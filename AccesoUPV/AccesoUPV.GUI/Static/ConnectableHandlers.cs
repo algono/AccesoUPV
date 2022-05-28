@@ -109,7 +109,9 @@ namespace AccesoUPV.GUI.Static
             return false;
         }
 
-        public static async Task ConnectDrive(IAccesoUPVService service, ConnectionEventArgs e, bool catchPasswordErrors = true)
+        public static Task ConnectDrive(IAccesoUPVService service, ConnectionEventArgs e)
+            => ConnectDrive(service, e, true);
+        private static async Task ConnectDrive(IAccesoUPVService service, ConnectionEventArgs e, bool catchPasswordErrors)
         {
             NetworkDrive networkDrive = e.Connectable as NetworkDrive;
             try
