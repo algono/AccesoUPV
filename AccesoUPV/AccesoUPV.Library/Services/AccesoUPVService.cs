@@ -130,6 +130,8 @@ namespace AccesoUPV.Library.Services
         public void ClearSettings()
         {
             Settings.Default.Reset();
+
+            if (Disco_DSIC.AreCredentialsStored) PasswordHelper.DeletePassword(DriveFactory.DSICDrivesAddress);
         }
         #endregion
 

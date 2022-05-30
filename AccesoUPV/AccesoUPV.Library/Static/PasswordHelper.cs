@@ -53,7 +53,7 @@ namespace AccesoUPV.Library.Static
         /// <summary>
         /// Deletes the credentials associated to the passed <paramref name="target"/> (URL) from the Windows Credentials Manager.
         /// </summary>
-        private static void DeletePassword(string target)
+        public static void DeletePassword(string target)
         {
             using var cred = new Credential() { Target = target };
             cred.Delete();
