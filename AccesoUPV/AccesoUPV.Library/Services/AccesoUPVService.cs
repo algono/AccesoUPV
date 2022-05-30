@@ -80,8 +80,7 @@ namespace AccesoUPV.Library.Services
 
             Disco_W = DriveFactory.GetDriveW(wDriveLetter, User, (UPVDomain)Settings.Default.WDriveDomain);
 
-            string DSICDrivePassword = Settings.Default.DSICDrivePassword;
-            if (!string.IsNullOrEmpty(DSICDrivePassword)) DSICDrivePassword = PasswordHelper.Decrypt(DSICDrivePassword);
+            string DSICDrivePassword = PasswordHelper.GetPassword(DriveFactory.DSICDrivesAddress);
 
             char AsigDSICDriveLetter = DriveLetterTools.ValidOrDefault(Settings.Default.AsigDSICDriveLetter);
 
@@ -118,7 +117,15 @@ namespace AccesoUPV.Library.Services
             Settings.Default.WDriveDomain = (int)Disco_W.Domain;
 
             Settings.Default.DSICDriveLetter = Disco_DSIC.Letter;
-            Settings.Default.DSICDrivePassword = SavePasswords ? PasswordHelper.Encrypt(Disco_DSIC.Password) : null;
+
+            if (SavePasswords)
+            {
+                PasswordHelper.SavePassword(Disco_DSIC.FullUsername, Disco_DSIC.Password, DriveFactory.DSICDrivesAddress);
+            }
+            else
+            {
+                PasswordHelper.DeletePassword(DriveFactory.DSICDrivesAddress);
+            }
 
             Settings.Default.NotifyIcon = NotifyIcon;
 

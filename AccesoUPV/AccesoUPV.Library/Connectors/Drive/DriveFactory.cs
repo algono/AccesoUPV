@@ -61,12 +61,14 @@ namespace AccesoUPV.Library.Connectors.Drive
             }
         }
 
-        private static string GetAddressW(string username, DriveDomain domain) => $@"\\nasupv.upv.es\{domain.Folder}\{username[0]}\{username}";
+        public const string WAddress = "nasupv.upv.es";
+
+        private static string GetAddressW(string username, DriveDomain domain) => $@"\\{WAddress}\{domain.Folder}\{username[0]}\{username}";
         #endregion
 
         #region Disco DSIC
-        public const string DSICDrivesAdress = @"fileserver.dsic.upv.es";
-        public static readonly string DSICAsigAddress = $@"\\{DSICDrivesAdress}\asig";
+        public const string DSICDrivesAddress = @"fileserver.dsic.upv.es";
+        public static readonly string DSICAsigAddress = $@"\\{DSICDrivesAddress}\asig";
 
         public static readonly DriveDomain DSICDomain = new DriveDomain("DSIC");
 
@@ -76,7 +78,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         public static NetworkDrive GetDriveDSIC(char drive = default, string user = null, string password = null)
             => new NetworkDrive(GetAddressDSIC, drive, DSICDomain, user, password) { Name = "Disco DSIC", ExplicitUserArgument = true, NeedsPassword = true };
 
-        private static string GetAddressDSIC(string username, DriveDomain domain) => $@"\\{DSICDrivesAdress}\{username}";
+        private static string GetAddressDSIC(string username, DriveDomain domain) => $@"\\{DSICDrivesAddress}\{username}";
         #endregion
     }
 }

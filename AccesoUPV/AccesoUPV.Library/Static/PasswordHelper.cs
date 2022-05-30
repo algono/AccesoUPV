@@ -1,61 +1,42 @@
-﻿using System;
-using System.Text;
-using System.Security.Cryptography;
+﻿using CredentialManagement;
 
 namespace AccesoUPV.Library.Static
 {
     public static class PasswordHelper
     {
-        private static DataProtectionScope Scope => DataProtectionScope.CurrentUser;
-
         /// <summary>
-        /// Encrypts a given password and returns the encrypted data
-        /// as a base64 string.
+        /// Saves the passed credentials into the Windows Credential Manager.
+        /// If the <paramref name="password"/> is empty, it deletes the credentials instead.
         /// </summary>
-        /// <param name="plainText">An unencrypted string that needs
-        /// to be secured.</param>
-        /// <returns>A base64 encoded string that represents the encrypted
-        /// binary data.
-        /// </returns>
-        /// <remarks>This solution is not really secure as we are
-        /// keeping strings in memory. If runtime protection is essential,
-        /// <see cref="SecureString"/> should be used.</remarks>
-        /// <exception cref="ArgumentNullException">If <paramref name="plainText"/>
-        /// is a null reference.</exception>
-        public static string Encrypt(string plainText)
+        public static void SavePassword(string username, string password, string target)
         {
-            if (plainText == null) throw new ArgumentNullException("plainText");
+            if (string.IsNullOrEmpty(password))
+            {
+                DeletePassword(target);
+                return;
+            }
 
-            //encrypt data
-            var data = Encoding.Unicode.GetBytes(plainText);
-            byte[] encrypted = ProtectedData.Protect(data, null, Scope);
-
-            //return as base64 string
-            return Convert.ToBase64String(encrypted);
+            using var cred = new Credential(username, password, target, CredentialType.Generic) { PersistanceType = PersistanceType.Enterprise };
+            cred.Save();
         }
 
         /// <summary>
-        /// Decrypts a given string.
+        /// Gets the password associated to the passed <paramref name="target"/> (URL) from the Windows Credential Manager.
         /// </summary>
-        /// <param name="cipher">A base64 encoded string that was created
-        /// through the <see cref="Encrypt(string)"/> or
-        /// <see cref="Encrypt(SecureString)"/> extension methods.</param>
-        /// <returns>The decrypted string.</returns>
-        /// <remarks>Keep in mind that the decrypted string remains in memory
-        /// and makes your application vulnerable per se. If runtime protection
-        /// is essential, <see cref="SecureString"/> should be used.</remarks>
-        /// <exception cref="ArgumentNullException">If <paramref name="cipher"/>
-        /// is a null reference.</exception>
-        public static string Decrypt(string cipher)
+        public static string GetPassword(string target)
         {
-            if (cipher == null) throw new ArgumentNullException("cipher");
+            using var cred = new Credential() { Target = target };
+            cred.Load();
+            return cred.Password;
+        }
 
-            //parse base64 string
-            byte[] data = Convert.FromBase64String(cipher);
-
-            //decrypt data
-            byte[] decrypted = ProtectedData.Unprotect(data, null, Scope);
-            return Encoding.Unicode.GetString(decrypted);
+        /// <summary>
+        /// Deletes the credentials associated to the passed <paramref name="target"/> (URL) from the Windows Credential Manager.
+        /// </summary>
+        public static void DeletePassword(string target)
+        {
+            using var cred = new Credential() { Target = target };
+            cred.Delete();
         }
     }
 }

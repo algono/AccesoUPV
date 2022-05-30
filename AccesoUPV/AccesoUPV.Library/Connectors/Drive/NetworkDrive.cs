@@ -131,6 +131,8 @@ namespace AccesoUPV.Library.Connectors.Drive
         public bool NeedsPassword { get; set; }
         public bool YesToAll { get; set; }
 
+        public string FullUsername => Domain?.GetFullUsername(Username) ?? Username;
+
         public override bool IsConnected
         {
             get => ConnectedLetter != default;
@@ -229,7 +231,7 @@ namespace AccesoUPV.Library.Connectors.Drive
 
                 if (ExplicitUserArgument)
                 {
-                    NetInfo.Arguments += $" /USER:{Domain?.GetFullUsername(Username) ?? Username}";
+                    NetInfo.Arguments += $" /USER:{FullUsername}";
                 }
             }
 

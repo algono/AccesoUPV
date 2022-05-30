@@ -20,9 +20,6 @@
     <Setting Name="User" GenerateDefaultValueInCode="false" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="DSICDrivePassword" GenerateDefaultValueInCode="false" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="AsigDSICDriveLetter" Type="System.Char" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
