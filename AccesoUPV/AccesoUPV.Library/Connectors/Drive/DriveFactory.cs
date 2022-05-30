@@ -72,11 +72,11 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public static readonly DriveDomain DSICDomain = new DriveDomain("DSIC");
 
-        public static NetworkDrive GetAsigDriveDSIC(char drive = default, string user = null, string password = null)
-            => new NetworkDrive(DSICAsigAddress, drive, DSICDomain, user, password) { Name = "Asig DSIC", ExplicitUserArgument = true, NeedsPassword = true };
+        public static NetworkDrive GetAsigDriveDSIC(char drive = default, string user = null, bool isPasswordStored = false)
+            => new NetworkDrive(DSICAsigAddress, drive, DSICDomain, user) { Name = "Asig DSIC", ExplicitUserArgument = true, NeedsPassword = true, AreCredentialsStored = isPasswordStored };
 
-        public static NetworkDrive GetDriveDSIC(char drive = default, string user = null, string password = null)
-            => new NetworkDrive(GetAddressDSIC, drive, DSICDomain, user, password) { Name = "Disco DSIC", ExplicitUserArgument = true, NeedsPassword = true };
+        public static NetworkDrive GetDriveDSIC(char drive = default, string user = null, bool isPasswordStored = false)
+            => new NetworkDrive(GetAddressDSIC, drive, DSICDomain, user) { Name = "Disco DSIC", ExplicitUserArgument = true, NeedsPassword = true, AreCredentialsStored = isPasswordStored };
 
         private static string GetAddressDSIC(string username, DriveDomain domain) => $@"\\{DSICDrivesAddress}\{username}";
         #endregion

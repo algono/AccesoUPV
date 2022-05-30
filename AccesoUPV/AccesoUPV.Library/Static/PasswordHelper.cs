@@ -5,7 +5,7 @@ namespace AccesoUPV.Library.Static
     public static class PasswordHelper
     {
         /// <summary>
-        /// Saves the passed credentials into the Windows Credential Manager.
+        /// Saves the passed credentials into the Windows Credentials Manager.
         /// If the <paramref name="password"/> is empty, it deletes the credentials instead.
         /// </summary>
         public static void SavePassword(string username, string password, string target)
@@ -21,22 +21,21 @@ namespace AccesoUPV.Library.Static
         }
 
         /// <summary>
-        /// Gets the password associated to the passed <paramref name="target"/> (URL) from the Windows Credential Manager.
+        /// Deletes the credentials associated to the passed <paramref name="target"/> (URL) from the Windows Credentials Manager.
         /// </summary>
-        public static string GetPassword(string target)
-        {
-            using var cred = new Credential() { Target = target };
-            cred.Load();
-            return cred.Password;
-        }
-
-        /// <summary>
-        /// Deletes the credentials associated to the passed <paramref name="target"/> (URL) from the Windows Credential Manager.
-        /// </summary>
-        public static void DeletePassword(string target)
+        private static void DeletePassword(string target)
         {
             using var cred = new Credential() { Target = target };
             cred.Delete();
+        }
+
+        /// <summary>
+        /// Checks if the credentials associated to the passed <paramref name="target"/> (URL) exist within the Windows Credentials Manager.
+        /// </summary>
+        public static bool Exists(string target)
+        {
+            using var cred = new Credential() { Target = target };
+            return cred.Exists();
         }
     }
 }

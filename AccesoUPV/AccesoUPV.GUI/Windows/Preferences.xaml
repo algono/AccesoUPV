@@ -95,7 +95,7 @@
 
                     <userControls:VPNPreferences x:Name="VPNToDSICPrefs" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Title="Conexión VPN" VPN="{Binding ElementName=MyPreferences, Path=Service.VPN_DSIC}" />
                     <userControls:DrivePreferences x:Name="AsigDSICPrefs" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Title="Asig (M:)" Drive="{Binding ElementName=MyPreferences, Path=Service.Asig_DSIC}" PasswordOptionsVisibility="Collapsed" />
-                    <userControls:DrivePreferences x:Name="DiscoDSICPrefs" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Title="Homes (W:)" Drive="{Binding ElementName=MyPreferences, Path=Service.Disco_DSIC}" SavePasswords="{Binding ElementName=MyPreferences, Path=Service.SavePasswords, Mode=TwoWay}" />
+                    <userControls:DrivePreferences x:Name="DiscoDSICPrefs" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Title="Homes (W:)" Drive="{Binding ElementName=MyPreferences, Path=Service.Disco_DSIC}" />
                 </Grid>
             </TabItem>
         </TabControl>

@@ -11,7 +11,6 @@ namespace AccesoUPV.Library.Services
     {
         bool AreUninitializedSettings { get; }
         NetworkDrive Disco_DSIC { get; }
-        bool SavePasswords { get; set; }
         List<SettingsPropertyValue> UninitializedSettings { get; }
         string User { get; set; }
         VPN VPN_DSIC { get; }

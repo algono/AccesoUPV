@@ -25,12 +25,6 @@ namespace AccesoUPV.GUI.UserControls.Preferences
             set => SetValue(TitleProperty, value);
         }
 
-        public bool SavePasswords
-        {
-            get => (bool)GetValue(SavePasswordsProperty);
-            set => SetValue(SavePasswordsProperty, value);
-        }
-
         public Visibility PasswordOptionsVisibility
         {
             get => (Visibility)GetValue(PasswordOptionsVisibilityProperty);
@@ -42,11 +36,6 @@ namespace AccesoUPV.GUI.UserControls.Preferences
             DependencyProperty.Register("PasswordOptionsVisibility", typeof(Visibility), typeof(DrivePreferences), new PropertyMetadata(Visibility.Visible));
 
 
-
-        // Using a DependencyProperty as the backing store for SavePasswords.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SavePasswordsProperty =
-            DependencyProperty.Register("SavePasswords", typeof(bool), typeof(DrivePreferences), new PropertyMetadata(false));
-
         // Using a DependencyProperty as the backing store for Title.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TitleProperty =
             DependencyProperty.Register("Title", typeof(object), typeof(DrivePreferences), new PropertyMetadata());
@@ -55,6 +44,9 @@ namespace AccesoUPV.GUI.UserControls.Preferences
         public static readonly DependencyProperty DriveProperty =
             DependencyProperty.Register("Drive", typeof(NetworkDrive), typeof(DrivePreferences), new PropertyMetadata());
         #endregion
+
+        private const string DUMMY_PASSWORD = "--------";
+        private bool _passwordChanged;
 
         public DrivePreferences()
         {
@@ -72,8 +64,8 @@ namespace AccesoUPV.GUI.UserControls.Preferences
                 DriveBox.SelectedItem = driveLetter;
             }
 
-            PassBox.Password = Drive.Password;
-            SavePassCheckBox.IsChecked = SavePasswords;
+            if (Drive.AreCredentialsStored) PassBox.Password = DUMMY_PASSWORD;
+            PassBox.PasswordChanged += (_, __) => _passwordChanged = true;
         }
 
         private void LoadDriveBox()
@@ -89,8 +81,7 @@ namespace AccesoUPV.GUI.UserControls.Preferences
                 ? (char)DriveBox.SelectedItem
                 : default;
 
-            Drive.Password = PassBox.Password;
-            SavePasswords = SavePassCheckBox.IsChecked ?? false;
+            if (_passwordChanged) Drive.Password = PassBox.Password;
         }
 
         public void Clear()
@@ -98,7 +89,6 @@ namespace AccesoUPV.GUI.UserControls.Preferences
             DriveBox.ItemsSource = null;
             DriveCheckBox.IsChecked = null;
             ShowOnlyAvailableDrives.IsChecked = null;
-            SavePassCheckBox.IsChecked = null;
             PassBox.Clear();
         }
         #endregion

@@ -105,7 +105,7 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         private char letter;
         private bool letterWasAutoAssigned;
-        private bool needsUsername;
+        private bool needsUsername, needsPassword;
 
         public char Letter
         {
@@ -127,8 +127,9 @@ namespace AccesoUPV.Library.Connectors.Drive
         public string Username { get; set; }
         public string Password { get; set; }
         public bool ExplicitUserArgument { get; set; }
-        public bool NeedsUsername { get => needsUsername || ExplicitUserArgument; set => needsUsername = value; }
-        public bool NeedsPassword { get; set; }
+        public bool AreCredentialsStored { get; set; }
+        public bool NeedsUsername { get => !AreCredentialsStored && (needsUsername || ExplicitUserArgument); set => needsUsername = value; }
+        public bool NeedsPassword { get => !AreCredentialsStored && needsPassword; set => needsPassword = value; }
         public bool YesToAll { get; set; }
 
         public string FullUsername => Domain?.GetFullUsername(Username) ?? Username;
@@ -224,7 +225,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         {
             NetInfo.Arguments = $"use {DriveLetter} {Address}";
 
-            // The net use command doesnt allow to specify an user without a password
+            // The net use command doesn't allow to specify an user without a password
             if (NeedsPassword)
             {
                 NetInfo.Arguments += $" \"{Password}\"";

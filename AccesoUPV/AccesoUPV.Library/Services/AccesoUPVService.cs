@@ -45,7 +45,6 @@ namespace AccesoUPV.Library.Services
                 }
             }
         }
-        public bool SavePasswords { get; set; }
 
         public bool NotifyIcon { get; set; }
 
@@ -80,16 +79,15 @@ namespace AccesoUPV.Library.Services
 
             Disco_W = DriveFactory.GetDriveW(wDriveLetter, User, (UPVDomain)Settings.Default.WDriveDomain);
 
-            string DSICDrivePassword = PasswordHelper.GetPassword(DriveFactory.DSICDrivesAddress);
+            bool isDSICDrivePasswordStored = PasswordHelper.Exists(DriveFactory.DSICDrivesAddress);
 
             char AsigDSICDriveLetter = DriveLetterTools.ValidOrDefault(Settings.Default.AsigDSICDriveLetter);
 
-            Asig_DSIC = DriveFactory.GetAsigDriveDSIC(AsigDSICDriveLetter, User, DSICDrivePassword);
+            Asig_DSIC = DriveFactory.GetAsigDriveDSIC(AsigDSICDriveLetter, User, isDSICDrivePasswordStored);
 
             char DSICDriveLetter = DriveLetterTools.ValidOrDefault(Settings.Default.DSICDriveLetter);
 
-            Disco_DSIC = DriveFactory.GetDriveDSIC(DSICDriveLetter, User, DSICDrivePassword);
-            SavePasswords = !string.IsNullOrEmpty(Disco_DSIC.Password);
+            Disco_DSIC = DriveFactory.GetDriveDSIC(DSICDriveLetter, User, isDSICDrivePasswordStored);
 
             NotifyIcon = Settings.Default.NotifyIcon;
         }
@@ -118,14 +116,8 @@ namespace AccesoUPV.Library.Services
 
             Settings.Default.DSICDriveLetter = Disco_DSIC.Letter;
 
-            if (SavePasswords)
-            {
-                PasswordHelper.SavePassword(Disco_DSIC.FullUsername, Disco_DSIC.Password, DriveFactory.DSICDrivesAddress);
-            }
-            else
-            {
-                PasswordHelper.DeletePassword(DriveFactory.DSICDrivesAddress);
-            }
+            PasswordHelper.SavePassword(Disco_DSIC.FullUsername, Disco_DSIC.Password, DriveFactory.DSICDrivesAddress);
+            Disco_DSIC.AreCredentialsStored = !string.IsNullOrEmpty(Disco_DSIC.Password);
 
             Settings.Default.NotifyIcon = NotifyIcon;
 
