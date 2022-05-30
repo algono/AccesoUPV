@@ -79,6 +79,8 @@ namespace AccesoUPV.Library.Services
 
             Disco_W = DriveFactory.GetDriveW(wDriveLetter, User, (UPVDomain)Settings.Default.WDriveDomain);
 
+            Disco_W.AreCredentialsStored = PasswordHelper.Exists(DriveFactory.WAddress);
+
             bool isDSICDrivePasswordStored = PasswordHelper.Exists(DriveFactory.DSICDrivesAddress);
 
             char AsigDSICDriveLetter = DriveLetterTools.ValidOrDefault(Settings.Default.AsigDSICDriveLetter);
@@ -116,6 +118,7 @@ namespace AccesoUPV.Library.Services
 
             Settings.Default.DSICDriveLetter = Disco_DSIC.Letter;
 
+            Disco_W.AreCredentialsStored = PasswordHelper.SaveSecurePassword(Disco_W.FullUsername, Disco_W.SecurePassword, DriveFactory.WAddress);
             Disco_DSIC.AreCredentialsStored = PasswordHelper.SaveSecurePassword(Disco_DSIC.FullUsername, Disco_DSIC.SecurePassword, DriveFactory.DSICDrivesAddress);
 
             // Once the password has been saved, dispose it (might improve security)
