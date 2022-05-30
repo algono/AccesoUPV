@@ -37,7 +37,7 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public static NetworkDrive<UPVDomain> GetDriveW(char drive = default, string user = null, UPVDomain domain = UPVDomain.Alumno)
         {
-            bool connectedViaEthernet = VPNFactory.UPVTest.GetValidInterfaces().FirstOrDefault().NetworkInterfaceType == System.Net.NetworkInformation.NetworkInterfaceType.Ethernet;
+            bool connectedViaEthernet = VPNFactory.UPVTest.GetValidInterfaces().FirstOrDefault()?.NetworkInterfaceType == System.Net.NetworkInformation.NetworkInterfaceType.Ethernet;
 
             NetworkDrive<UPVDomain> driveW = new NetworkDrive<UPVDomain>(GetAddressW, UPVDomains, drive, user)
             {
