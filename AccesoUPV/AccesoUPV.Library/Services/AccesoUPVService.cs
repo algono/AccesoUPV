@@ -121,8 +121,11 @@ namespace AccesoUPV.Library.Services
             Disco_W.AreCredentialsStored = PasswordHelper.SaveSecurePassword(Disco_W.FullUsername, Disco_W.SecurePassword, DriveFactory.WAddress);
             Disco_DSIC.AreCredentialsStored = PasswordHelper.SaveSecurePassword(Disco_DSIC.FullUsername, Disco_DSIC.SecurePassword, DriveFactory.DSICDrivesAddress);
 
-            // Once the password has been saved, dispose it (might improve security)
-            Disco_DSIC.SecurePassword.Dispose();
+            // Once passwords have been saved, dispose them (might improve security)
+            Disco_W.SecurePassword?.Dispose();
+            Disco_W.SecurePassword = null;
+
+            Disco_DSIC.SecurePassword?.Dispose();
             Disco_DSIC.SecurePassword = null;
 
             Settings.Default.NotifyIcon = NotifyIcon;
