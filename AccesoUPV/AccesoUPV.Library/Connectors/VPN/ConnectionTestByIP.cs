@@ -20,12 +20,7 @@ namespace AccesoUPV.Library.Connectors.VPN
 
         private bool IsValid(string ip) => ip.StartsWith(Prefix);
 
-        public NetworkInterface GetValidInterface() => GetNetworkInterfaces()
-            .Where(ni => ni.GetIPProperties().UnicastAddresses
-                .Any(ip => ip.Address.AddressFamily == AddressFamily.InterNetwork && IsValid(ip.Address.ToString()))
-            ).FirstOrDefault();
-
-        public bool IsReachable(int _) => GetIPAddresses().Any(IsValid);
+        public bool IsReachable(int _) => GetConnectedIPAddresses().Any(IsValid);
 
         public Task<bool> IsReachableAsync(int timeout) => Task.Run(() => IsReachable(timeout));
 
@@ -53,9 +48,14 @@ namespace AccesoUPV.Library.Connectors.VPN
             return await Task.FromResult(false);
         }
 
-        private IEnumerable<NetworkInterface> GetNetworkInterfaces() => NetworkInterface.GetAllNetworkInterfaces().Where(ni => ni.OperationalStatus == OperationalStatus.Up);
+        public IEnumerable<NetworkInterface> GetValidInterfaces() => GetConnectedNetworkInterfaces()
+            .Where(ni => ni.GetIPProperties().UnicastAddresses
+                .Any(ip => ip.Address.AddressFamily == AddressFamily.InterNetwork && IsValid(ip.Address.ToString()))
+            );
 
-        private IEnumerable<string> GetIPAddresses() => GetNetworkInterfaces()
+        public static IEnumerable<NetworkInterface> GetConnectedNetworkInterfaces() => NetworkInterface.GetAllNetworkInterfaces().Where(ni => ni.OperationalStatus == OperationalStatus.Up);
+
+        private static IEnumerable<string> GetConnectedIPAddresses() => GetConnectedNetworkInterfaces()
             .Select(ni =>
                 ni.GetIPProperties().UnicastAddresses
                     .Where(ip => ip.Address.AddressFamily == AddressFamily.InterNetwork)

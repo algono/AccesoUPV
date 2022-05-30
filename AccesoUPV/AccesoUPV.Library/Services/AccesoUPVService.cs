@@ -7,8 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Services
@@ -63,7 +63,7 @@ namespace AccesoUPV.Library.Services
         private static readonly IEnumerable<PropertyInfo> connectablesInfo = typeof(AccesoUPVService).GetProperties().AsEnumerable().WherePropertiesAreOfType<IConnectable>();
         #endregion
 
-        private static readonly IReadOnlyList<string> UPVWiFiNetworks = new List<string> { "UPVNET", "eduroam", "UPV-IoT" };
+        private static readonly IReadOnlyCollection<string> UPVWiFiNetworks = new HashSet<string> { "UPVNET", "eduroam", "UPV-IoT" };
 
         public event EventHandler<ShutdownEventArgs> ShuttingDown;
 
@@ -224,34 +224,52 @@ namespace AccesoUPV.Library.Services
             "La UPV todavía no está disponible. Espere unos segundos, y vuelva a intentarlo.\n\n"
             + "Si sigue sin ser capaz de conectarse, reconecte la red WiFi manualmente.";
 
+        protected IEnumerable<NetworkInterface> GetConnectedUPVWiFiInterfaces()
+        {
+            if (VPN_UPV.Config.Test is ConnectionTestByIP test)
+            {
+                return test.GetValidWiFiInterfaces();
+            }
+            else
+            {
+                return ConnectionTestByIP.GetConnectedNetworkInterfaces().Where(x => UPVWiFiNetworks.Contains(x.Name));
+            }
+        }
+
         protected bool ResetUPVWifiConnection()
         {
-            string connectedWiFi = Utilities.IsAnyWiFiConnectionUp(UPVWiFiNetworks);
-            bool isAnyWiFiConnectionUp = !string.IsNullOrEmpty(connectedWiFi);
+            IEnumerable<NetworkInterface> wifiInterfaces = GetConnectedUPVWiFiInterfaces();
+            bool isAnyWiFiConnectionUp = wifiInterfaces.Any();
 
-            if (isAnyWiFiConnectionUp)
+            if (!isAnyWiFiConnectionUp) return false;
+            
+            foreach (var wifiInterface in wifiInterfaces)
             {
-                Utilities.ResetWiFiConnection(connectedWiFi);
-                bool reachable = VPN_UPV.Config.Test.WaitUntilReachable(ConnectedWiFiTimeout);
-                if (!reachable) throw new TimeoutException(ResetTimeoutMessage);
+                Utilities.ResetWiFiConnection(wifiInterface.Name);
             }
 
-            return isAnyWiFiConnectionUp;
+            bool reachable = VPN_UPV.Config.Test.WaitUntilReachable(ConnectedWiFiTimeout);
+            if (!reachable) throw new TimeoutException(ResetTimeoutMessage);
+
+            return true;
         }
 
         protected async Task<bool> ResetUPVWifiConnectionAsync()
         {
-            string connectedWiFi = await Utilities.IsAnyWiFiConnectionUpAsync(UPVWiFiNetworks);
-            bool isAnyWiFiConnectionUp = !string.IsNullOrEmpty(connectedWiFi);
+            IEnumerable<NetworkInterface> wifiInterfaces = GetConnectedUPVWiFiInterfaces();
+            bool isAnyWiFiConnectionUp = wifiInterfaces.Any();
 
-            if (isAnyWiFiConnectionUp)
+            if (!isAnyWiFiConnectionUp) return false;
+
+            foreach (var wifiInterface in wifiInterfaces)
             {
-                await Utilities.ResetWiFiConnectionAsync(connectedWiFi);
-                bool reachable = await VPN_UPV.Config.Test.WaitUntilReachableAsync(ConnectedWiFiTimeout);
-                if (!reachable) throw new TimeoutException(ResetTimeoutMessage);
+                await Utilities.ResetWiFiConnectionAsync(wifiInterface.Name);
             }
 
-            return isAnyWiFiConnectionUp;
+            bool reachable = await VPN_UPV.Config.Test.WaitUntilReachableAsync(ConnectedWiFiTimeout);
+            if (!reachable) throw new TimeoutException(ResetTimeoutMessage);
+
+            return true;
         }
         #endregion
 

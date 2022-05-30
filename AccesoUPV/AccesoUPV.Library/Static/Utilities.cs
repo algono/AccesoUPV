@@ -1,10 +1,12 @@
 ﻿using AccesoUPV.Library.Connectors;
+using AccesoUPV.Library.Connectors.VPN;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -137,12 +139,10 @@ namespace AccesoUPV.Library
 
         #region WiFi Connections
         private const string NETSH = "netsh";
-        private const string SHOW_INTERFACES = "wlan show interfaces";
         private const string DISCONNECT_WIFI = "wlan disconnect";
 
         private static ProcessStartInfo ConnectStartInfo(string connectionName) => ProcessConnector.CreateProcessInfo(NETSH, $"wlan connect {connectionName}");
         private static ProcessStartInfo DisconnectStartInfo => ProcessConnector.CreateProcessInfo(NETSH, DISCONNECT_WIFI);
-        private static ProcessStartInfo ShowInterfacesStartInfo => ProcessConnector.CreateProcessInfo(NETSH, SHOW_INTERFACES);
         
 
         public static void ResetWiFiConnection(string connectionName)
@@ -157,24 +157,10 @@ namespace AccesoUPV.Library
             await Process.Start(ConnectStartInfo(connectionName)).WaitAndCheckAsync();
         }
 
-        public static string IsAnyWiFiConnectionUp(IEnumerable<string> connectionNames)
+        public static IEnumerable<NetworkInterface> GetValidWiFiInterfaces(this ConnectionTestByIP test)
         {
-            ProcessEventArgs result = Process.Start(ShowInterfacesStartInfo).WaitAndCheck();
-
-            return HandleWiFiInterfaces(connectionNames, result);
+            return test.GetValidInterfaces().Where(x => x.NetworkInterfaceType == NetworkInterfaceType.Wireless80211);
         }
-
-        public static async Task<string> IsAnyWiFiConnectionUpAsync(IEnumerable<string> connectionNames)
-        {
-            ProcessEventArgs result = await Process.Start(ShowInterfacesStartInfo).WaitAndCheckAsync();
-
-            return HandleWiFiInterfaces(connectionNames, result);
-        }
-
-        private static string HandleWiFiInterfaces(IEnumerable<string> connectionNames, ProcessEventArgs proc)
-            => proc.Succeeded 
-                ? connectionNames.FirstOrDefault(connectionName => proc.Output.Contains(connectionName))
-                : null;
         #endregion
 
     }
