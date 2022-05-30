@@ -126,6 +126,7 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public string Username { get; set; }
         public string Password { get; set; }
+        public System.Security.SecureString SecurePassword { get; set; }
         public bool ExplicitUserArgument { get; set; }
         public bool AreCredentialsStored { get; set; }
         public bool NeedsUsername { get => !AreCredentialsStored && (needsUsername || ExplicitUserArgument); set => needsUsername = value; }

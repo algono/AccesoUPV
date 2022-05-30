@@ -81,7 +81,7 @@ namespace AccesoUPV.GUI.UserControls.Preferences
                 ? (char)DriveBox.SelectedItem
                 : default;
 
-            if (_passwordChanged) Drive.Password = PassBox.Password;
+            if (_passwordChanged) Drive.SecurePassword = PassBox.SecurePassword;
         }
 
         public void Clear()

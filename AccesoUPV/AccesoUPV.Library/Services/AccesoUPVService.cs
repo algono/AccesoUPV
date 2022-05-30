@@ -116,8 +116,11 @@ namespace AccesoUPV.Library.Services
 
             Settings.Default.DSICDriveLetter = Disco_DSIC.Letter;
 
-            PasswordHelper.SavePassword(Disco_DSIC.FullUsername, Disco_DSIC.Password, DriveFactory.DSICDrivesAddress);
-            Disco_DSIC.AreCredentialsStored = !string.IsNullOrEmpty(Disco_DSIC.Password);
+            Disco_DSIC.AreCredentialsStored = PasswordHelper.SaveSecurePassword(Disco_DSIC.FullUsername, Disco_DSIC.SecurePassword, DriveFactory.DSICDrivesAddress);
+
+            // Once the password has been saved, dispose it (might improve security)
+            Disco_DSIC.SecurePassword.Dispose();
+            Disco_DSIC.SecurePassword = null;
 
             Settings.Default.NotifyIcon = NotifyIcon;
 

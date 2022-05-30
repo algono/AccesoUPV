@@ -6,18 +6,48 @@ namespace AccesoUPV.Library.Static
     {
         /// <summary>
         /// Saves the passed credentials into the Windows Credentials Manager.
-        /// If the <paramref name="password"/> is empty, it deletes the credentials instead.
+        /// If <paramref name="password"/> is empty, it deletes the credentials instead.
+        /// <para></para>
+        /// <returns>Returns <see langword="true"/> if the credentials have been stored, and <see langword="false"/> if they have been deleted.</returns>
         /// </summary>
-        public static void SavePassword(string username, string password, string target)
+        public static bool SavePassword(string username, string password, string target)
         {
             if (string.IsNullOrEmpty(password))
             {
                 DeletePassword(target);
-                return;
+                return false;
             }
 
             using var cred = new Credential(username, password, target, CredentialType.Generic) { PersistanceType = PersistanceType.Enterprise };
             cred.Save();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Saves the passed credentials into the Windows Credentials Manager.
+        /// If <paramref name="securePassword"/> is empty, it deletes the credentials instead.
+        /// <para></para>
+        /// <returns>Returns <see langword="true"/> if the credentials have been stored, and <see langword="false"/> if they have been deleted.</returns>
+        /// </summary>
+        public static bool SaveSecurePassword(string username, System.Security.SecureString securePassword, string target)
+        {
+            if (securePassword == null || securePassword.Length == 0)
+            {
+                DeletePassword(target);
+                return false;
+            }
+
+            using var cred = new Credential(username)
+            {
+                SecurePassword = securePassword,
+                Target = target,
+                Type = CredentialType.Generic,
+                PersistanceType = PersistanceType.Enterprise
+            };
+            cred.Save();
+
+            return true;
         }
 
         /// <summary>
