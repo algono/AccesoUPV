@@ -19,6 +19,7 @@ namespace AccesoUPV.Library.Services
         NetworkDrive Asig_DSIC { get; }
         bool NotifyIcon { get; set; }
         bool StartMinimized { get; set; }
+        bool BalloonTipShown { get; set; }
 
         event EventHandler<ShutdownEventArgs> ShuttingDown;
 

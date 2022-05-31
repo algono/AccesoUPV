@@ -127,5 +127,17 @@ namespace AccesoUPV.Library.Properties {
                 this["StartMinimized"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool BalloonTipShown {
+            get {
+                return ((bool)(this["BalloonTipShown"]));
+            }
+            set {
+                this["BalloonTipShown"] = value;
+            }
+        }
     }
 }

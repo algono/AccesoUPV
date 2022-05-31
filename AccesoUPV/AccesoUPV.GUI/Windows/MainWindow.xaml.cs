@@ -301,7 +301,6 @@ namespace AccesoUPV.GUI.Windows
         }
 
         private WindowState storedWindowState = WindowState.Normal;
-        private bool showedBalloonTip = false;
         private void MetroWindow_StateChanged(object sender, EventArgs e)
         {
             if (_service.NotifyIcon && WindowState == WindowState.Minimized)
@@ -309,10 +308,10 @@ namespace AccesoUPV.GUI.Windows
                 Hide();
                 if (notifyIcon != null)
                 {
-                    if (!showedBalloonTip)
+                    if (!_service.BalloonTipShown)
                     {
                         notifyIcon.ShowBalloonTip(2000);
-                        showedBalloonTip = true;
+                        _service.BalloonTipShown = true;
                     }
                 }
                 else

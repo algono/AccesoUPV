@@ -51,6 +51,19 @@ namespace AccesoUPV.Library.Services
 
         #endregion
 
+        // Internal persistent flags
+        private bool _balloonTipShown;
+        public bool BalloonTipShown
+        {
+            get => _balloonTipShown;
+            set
+            {
+                _balloonTipShown = value;
+                Settings.Default.BalloonTipShown = value;
+                Settings.Default.Save();
+            }
+        }
+
         #region Settings Properties
         public bool AreUninitializedSettings => UninitializedSettings.Count > 0;
         public List<SettingsPropertyValue> UninitializedSettings { get; } = new List<SettingsPropertyValue>();
@@ -94,6 +107,7 @@ namespace AccesoUPV.Library.Services
 
             NotifyIcon = Settings.Default.NotifyIcon;
             StartMinimized = Settings.Default.StartMinimized;
+            _balloonTipShown = Settings.Default.BalloonTipShown;
         }
 
         #region Settings methods
@@ -132,6 +146,7 @@ namespace AccesoUPV.Library.Services
 
             Settings.Default.NotifyIcon = NotifyIcon;
             Settings.Default.StartMinimized = StartMinimized;
+            Settings.Default.BalloonTipShown = BalloonTipShown;
 
             Settings.Default.Save();
         }
@@ -198,7 +213,7 @@ namespace AccesoUPV.Library.Services
 
         private async Task ShutdownConnectable(IConnectable connectable, string name, IProgress<string> progress = null)
         {
-            progress?.Report($"Desconectando { name }");
+            progress?.Report($"Desconectando {name}");
             await connectable.DisconnectAsync();
         }
 
@@ -256,7 +271,7 @@ namespace AccesoUPV.Library.Services
             bool isAnyWiFiConnectionUp = wifiInterfaces.Any();
 
             if (!isAnyWiFiConnectionUp) return false;
-            
+
             foreach (var wifiInterface in wifiInterfaces)
             {
                 Utilities.ResetWiFiConnection(wifiInterface.Name);
