@@ -18,7 +18,7 @@ namespace AccesoUPV.Library.Static
                 return false;
             }
 
-            using var cred = new Credential(username, password, target, CredentialType.Generic) { PersistanceType = PersistanceType.Enterprise };
+            using var cred = new Credential(username, password, target, CredentialType.DomainPassword) { PersistanceType = PersistanceType.Enterprise };
             cred.Save();
 
             return true;
@@ -42,7 +42,7 @@ namespace AccesoUPV.Library.Static
             {
                 SecurePassword = securePassword,
                 Target = target,
-                Type = CredentialType.Generic,
+                Type = CredentialType.DomainPassword,
                 PersistanceType = PersistanceType.Enterprise
             };
             cred.Save();
