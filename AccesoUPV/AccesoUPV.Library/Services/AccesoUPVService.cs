@@ -137,6 +137,7 @@ namespace AccesoUPV.Library.Services
         {
             Settings.Default.Reset();
 
+            if (Disco_W.AreCredentialsStored) PasswordHelper.DeletePassword(DriveFactory.WAddress);
             if (Disco_DSIC.AreCredentialsStored) PasswordHelper.DeletePassword(DriveFactory.DSICDrivesAddress);
         }
         #endregion

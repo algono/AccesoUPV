@@ -4,6 +4,8 @@ namespace AccesoUPV.Library.Static
 {
     public static class PasswordHelper
     {
+        private const CredentialType CREDENTIAL_TYPE = CredentialType.DomainPassword;
+        
         /// <summary>
         /// Saves the passed credentials into the Windows Credentials Manager.
         /// If <paramref name="password"/> is empty, it deletes the credentials instead.
@@ -18,7 +20,7 @@ namespace AccesoUPV.Library.Static
                 return false;
             }
 
-            using var cred = new Credential(username, password, target, CredentialType.DomainPassword) { PersistanceType = PersistanceType.Enterprise };
+            using var cred = new Credential(username, password, target, CREDENTIAL_TYPE) { PersistanceType = PersistanceType.Enterprise };
             cred.Save();
 
             return true;
@@ -42,7 +44,7 @@ namespace AccesoUPV.Library.Static
             {
                 SecurePassword = securePassword,
                 Target = target,
-                Type = CredentialType.DomainPassword,
+                Type = CREDENTIAL_TYPE,
                 PersistanceType = PersistanceType.Enterprise
             };
             cred.Save();
@@ -55,7 +57,7 @@ namespace AccesoUPV.Library.Static
         /// </summary>
         public static void DeletePassword(string target)
         {
-            using var cred = new Credential() { Target = target };
+            using var cred = new Credential() { Target = target, Type = CREDENTIAL_TYPE };
             cred.Delete();
         }
 
@@ -64,7 +66,7 @@ namespace AccesoUPV.Library.Static
         /// </summary>
         public static bool Exists(string target)
         {
-            using var cred = new Credential() { Target = target };
+            using var cred = new Credential() { Target = target, Type = CREDENTIAL_TYPE };
             return cred.Exists();
         }
     }
