@@ -20,8 +20,10 @@ namespace AccesoUPV.Library.Static
                 return false;
             }
 
-            using var cred = new Credential(username, password, target, CREDENTIAL_TYPE) { PersistanceType = PersistanceType.Enterprise };
-            cred.Save();
+            using (var cred = new Credential(username, password, target, CREDENTIAL_TYPE) { PersistanceType = PersistanceType.Enterprise })
+            {
+                cred.Save();
+            }
 
             return true;
         }
@@ -40,14 +42,16 @@ namespace AccesoUPV.Library.Static
                 return false;
             }
 
-            using var cred = new Credential(username)
+            using (var cred = new Credential(username)
             {
                 SecurePassword = securePassword,
                 Target = target,
                 Type = CREDENTIAL_TYPE,
                 PersistanceType = PersistanceType.Enterprise
-            };
-            cred.Save();
+            })
+            {
+                cred.Save();
+            }
 
             return true;
         }
@@ -57,8 +61,10 @@ namespace AccesoUPV.Library.Static
         /// </summary>
         public static void DeletePassword(string target)
         {
-            using var cred = new Credential() { Target = target, Type = CREDENTIAL_TYPE };
-            cred.Delete();
+            using (var cred = new Credential() { Target = target, Type = CREDENTIAL_TYPE })
+            {
+                cred.Delete();
+            }
         }
 
         /// <summary>
@@ -66,8 +72,10 @@ namespace AccesoUPV.Library.Static
         /// </summary>
         public static bool Exists(string target)
         {
-            using var cred = new Credential() { Target = target, Type = CREDENTIAL_TYPE };
-            return cred.Exists();
+            using (var cred = new Credential() { Target = target, Type = CREDENTIAL_TYPE })
+            {
+                return cred.Exists();
+            }
         }
     }
 }
