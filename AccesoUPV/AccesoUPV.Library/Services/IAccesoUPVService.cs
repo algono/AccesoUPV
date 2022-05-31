@@ -18,6 +18,7 @@ namespace AccesoUPV.Library.Services
         NetworkDrive<UPVDomain> Disco_W { get; }
         NetworkDrive Asig_DSIC { get; }
         bool NotifyIcon { get; set; }
+        bool StartMinimized { get; set; }
 
         event EventHandler<ShutdownEventArgs> ShuttingDown;
 

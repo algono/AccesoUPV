@@ -47,6 +47,7 @@ namespace AccesoUPV.Library.Services
         }
 
         public bool NotifyIcon { get; set; }
+        public bool StartMinimized { get; set; }
 
         #endregion
 
@@ -92,6 +93,7 @@ namespace AccesoUPV.Library.Services
             Disco_DSIC = DriveFactory.GetDriveDSIC(DSICDriveLetter, User, isDSICDrivePasswordStored);
 
             NotifyIcon = Settings.Default.NotifyIcon;
+            StartMinimized = Settings.Default.StartMinimized;
         }
 
         #region Settings methods
@@ -129,6 +131,7 @@ namespace AccesoUPV.Library.Services
             Disco_DSIC.SecurePassword = null;
 
             Settings.Default.NotifyIcon = NotifyIcon;
+            Settings.Default.StartMinimized = StartMinimized;
 
             Settings.Default.Save();
         }

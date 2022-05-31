@@ -26,6 +26,9 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="20" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="10" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="20" />
             <RowDefinition Height="*" />
@@ -50,10 +53,11 @@
             <RadioButton Grid.Column="2" x:Name="DomainUPVNETRadio" GroupName="Dominio" Content="UPVNET" Tag="{x:Static drive:UPVDomain.UPVNET}" />
         </Grid>
 
-        <TextBlock Text="Ajustes generales" FontSize="16" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3" FontWeight="Bold" Foreground="Gray" Margin="0 0 0 20" />
-        <CheckBox x:Name="NotifyIconCheckBox" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3" Content="Minimizar a la bandeja del sistema" />
+        <TextBlock Text="Ajustes generales" FontSize="16" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3" FontWeight="Bold" Foreground="Gray" />
+        <CheckBox x:Name="NotifyIconCheckBox" Grid.Column="1" Grid.Row="8" Grid.ColumnSpan="3" Content="Minimizar a la bandeja del sistema" />
+        <CheckBox x:Name="StartMinimizedCheckBox" Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="3" Content="Minimizar aplicación al iniciar" />
 
-        <TabControl Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="3">
+        <TabControl Grid.Column="1" Grid.Row="12" Grid.ColumnSpan="3">
             <TabItem Header="UPV">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -100,7 +104,7 @@
             </TabItem>
         </TabControl>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="11" Grid.ColumnSpan="3">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="14" Grid.ColumnSpan="3">
             <Button x:Name="ResetButton" Content="Restablecer" Click="ResetButton_Click" />
             <Button x:Name="AcceptButton" Content="Aceptar" IsDefault="True" Margin="20 0 20 0" Click="AcceptButton_Click" />
             <Button x:Name="CancelButton" Content="Cancelar" IsCancel="True" />

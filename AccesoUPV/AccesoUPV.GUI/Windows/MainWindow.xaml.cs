@@ -55,6 +55,12 @@ namespace AccesoUPV.GUI.Windows
 
             Start startPage = new Start(service);
             ContentFrame.Navigate(startPage);
+
+            if (_service.StartMinimized)
+            {
+                WindowState = WindowState.Minimized;
+                Loaded += MetroWindow_StateChanged;
+            }
         }
 
         private event EventHandler UpdateConnectionStatus;

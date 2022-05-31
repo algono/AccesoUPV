@@ -97,6 +97,7 @@ namespace AccesoUPV.GUI.Windows
             }
 
             Service.NotifyIcon = NotifyIconCheckBox.IsChecked ?? false;
+            Service.StartMinimized = StartMinimizedCheckBox.IsChecked ?? false;
 
             Service.SaveChanges();
         }
