@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.1;netframework4.8</TargetFrameworks>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="Platforms\**\*.cs" />
+		<None Include="Platforms\**\*.cs" />
+	</ItemGroup>
+
+	<!-- WINDOWS -->
+	<ItemGroup Condition="$(TargetFramework.StartsWith('netf'))">
+		<Compile Include="Platforms\Windows\**\*.cs" />
+		<Content Include="Resources\UPV_Config.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+			<SpecificVersion>False</SpecificVersion>
+			<HintPath>..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Management.Automation\v4.0_3.0.0.0__31bf3856ad364e35\System.Management.Automation.dll</HintPath>
+		</Reference>
+
+		<Reference Include="CredentialManagement, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+			<HintPath>..\packages\CredentialManagement.1.0.2\lib\net35\CredentialManagement.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<!-- LINUX -->
+	<ItemGroup Condition="$(TargetFramework.StartsWith('nets'))">
+		<Compile Include="Platforms\Linux\**\*.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Resources\UPV_Config.xml" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="Resources\UPV_Config.xml">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+</Project>
