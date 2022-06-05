@@ -27,16 +27,9 @@
 	</ItemGroup>
 
 	<!-- LINUX -->
-	<ItemGroup Condition="$(TargetFramework.StartsWith('nets'))">
+	<ItemGroup Condition="!$(TargetFramework.StartsWith('netf'))">
 		<Compile Include="Platforms\Linux\**\*.cs" />
-	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="Resources\UPV_Config.xml" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Content Include="Resources\UPV_Config.xml">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
+    <None Remove="Resources\UPV_Config.xml" />
 	</ItemGroup>
 
 </Project>
