@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.1;netframework4.8</TargetFrameworks>
+		<TargetFrameworks>net6.0;netframework4.8</TargetFrameworks>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
@@ -16,10 +16,9 @@
 		<Content Include="Resources\UPV_Config.xml">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-		<Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-			<SpecificVersion>False</SpecificVersion>
-			<HintPath>..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Management.Automation\v4.0_3.0.0.0__31bf3856ad364e35\System.Management.Automation.dll</HintPath>
-		</Reference>
+    <Reference Include="System.Management.Automation">
+      <HintPath>C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Management.Automation\v4.0_3.0.0.0__31bf3856ad364e35\System.Management.Automation.dll</HintPath>
+    </Reference>
 
 		<Reference Include="CredentialManagement, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
 			<HintPath>..\packages\CredentialManagement.1.0.2\lib\net35\CredentialManagement.dll</HintPath>
@@ -30,6 +29,18 @@
 	<ItemGroup Condition="!$(TargetFramework.StartsWith('netf'))">
 		<Compile Include="Platforms\Linux\**\*.cs" />
     <None Remove="Resources\UPV_Config.xml" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Platforms\Linux\Connectors\VPN\VPN.cs" />
+	  <None Remove="Platforms\Windows\Connectors\VPN\VPN.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Include="Platforms\Windows\Connectors\VPN\VPN.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="Resources\UPV_Config.xml">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 
 </Project>

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace AccesoUPV.Library.Static
+﻿namespace AccesoUPV.Library.Static
 {
     public static partial class RemoteDesktop
     {

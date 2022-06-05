@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AccesoUPV.Library.Static
 {
-    public static class Utilities
+    public static partial class Utilities
     {
 
         #region Process
