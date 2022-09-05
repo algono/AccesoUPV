@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace AccesoUPV.Library.Connectors.Drive
@@ -10,6 +11,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         internal const string InvalidLetterMessage = "The letter has to be an alphabetical letter (A-Z).";
         internal const string InvalidDriveLetterMessage = "The drive letter has an invalid format. It should be a letter followed by a colon.";
 
+        /// <exception cref="ArgumentOutOfRangeException">If the letter is not valid.</exception>
         public static bool IsAvailable(char letter)
         {
             if (IsValid(letter))
@@ -35,25 +37,22 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public static char GetFirstAvailable()
         {
-            List<char> availableLetters = GetDriveLetters(onlyIfAvailable: true);
-            if (availableLetters.Count == 0) throw new NotAvailableDriveException();
+            char letter = GetDriveLetters(onlyIfAvailable: true).FirstOrDefault();
+            
+            if (letter == default) throw new NotAvailableDriveException();
 
-            return availableLetters[0];
+            return letter;
         }
 
-        public static List<char> GetDriveLetters(bool onlyIfAvailable = false)
+        public static IEnumerable<char> GetDriveLetters(bool onlyIfAvailable = false)
         {
-            List<char> letters = new List<char>();
-
             for (char letter = 'Z'; letter >= 'A'; letter--)
             {
                 if (!onlyIfAvailable || IsAvailable(letter))
                 {
-                    letters.Add(letter);
+                    yield return letter;
                 }
             }
-
-            return letters;
         }
 
         public static string ToDriveLetter(char letter)
