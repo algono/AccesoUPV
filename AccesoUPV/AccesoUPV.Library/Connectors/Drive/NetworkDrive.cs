@@ -219,7 +219,10 @@ namespace AccesoUPV.Library.Connectors.Drive
 
             if (!DriveLetterTools.IsValid(Letter))
             {
-                letter = DriveLetterTools.GetFirstAvailable(prioritize: DefaultLetter);
+                letter = DefaultLetter == default
+                    ? DriveLetterTools.GetFirstAvailable()
+                    : DriveLetterTools.GetFirstAvailable(prioritize: DefaultLetter);
+
                 letterWasAutoAssigned = true;
             }
         }
