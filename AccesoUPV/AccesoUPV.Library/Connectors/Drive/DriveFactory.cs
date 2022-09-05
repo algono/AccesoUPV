@@ -43,6 +43,7 @@ namespace AccesoUPV.Library.Connectors.Drive
             {
                 Domain = domain,
                 Name = "Disco W",
+                DefaultLetter = 'W',
                 NeedsUsername = true,
                 ExplicitUserArgument = connectedViaEthernet,
                 NeedsPassword = connectedViaEthernet

@@ -35,12 +35,20 @@ namespace AccesoUPV.Library.Connectors.Drive
         public static bool IsValid(string driveLetter)
             => Regex.IsMatch(driveLetter, DriveLetterPattern);
 
+        /// <exception cref="ArgumentOutOfRangeException">If any of the prioritized letters is not valid.</exception>
+        public static char GetFirstAvailable(params char[] prioritize)
+        {
+            char letter = prioritize.FirstOrDefault(IsAvailable);
+            
+            return letter == default ? GetFirstAvailable() : letter;
+        }
+
         public static char GetFirstAvailable()
         {
             char letter = GetDriveLetters(onlyIfAvailable: true).FirstOrDefault();
             
             if (letter == default) throw new NotAvailableDriveException();
-
+            
             return letter;
         }
 

@@ -143,6 +143,8 @@ namespace AccesoUPV.Library.Connectors.Drive
 
         public string Name { get; set; }
 
+        public char DefaultLetter { get; set; }
+
         private readonly ProcessStartInfo NetInfo = CreateProcessInfo("net.exe");
 
         public NetworkDrive(Func<string, DriveDomain, string> getAddress, char letter = default,
@@ -217,7 +219,7 @@ namespace AccesoUPV.Library.Connectors.Drive
 
             if (!DriveLetterTools.IsValid(Letter))
             {
-                letter = DriveLetterTools.GetFirstAvailable();
+                letter = DriveLetterTools.GetFirstAvailable(prioritize: DefaultLetter);
                 letterWasAutoAssigned = true;
             }
         }
