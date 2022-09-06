@@ -2,6 +2,7 @@
 using AccesoUPV.Library.Connectors.VPN;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using System.Linq;
 
 namespace AccesoUPV.UnitTests
 {

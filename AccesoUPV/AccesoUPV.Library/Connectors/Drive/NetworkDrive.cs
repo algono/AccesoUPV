@@ -182,20 +182,18 @@ namespace AccesoUPV.Library.Connectors.Drive
         #region Mapped Drives Static Methods
         public static IEnumerable<char> SelectAvailable(IEnumerable<char> drives)
         {
-            List<char> mappedDrives = GetMappedDrives();
+            HashSet<char> mappedDrives = GetMappedDrives().ToHashSet();
             return drives.Where((drive) => IsAvailable(drive, mappedDrives));
         }
 
         public static bool IsAvailable(char drive) => IsAvailable(drive, GetMappedDrives());
 
-        private static bool IsAvailable(char drive, List<char> mappedDrives)
+        private static bool IsAvailable(char drive, IEnumerable<char> mappedDrives)
             => !mappedDrives.Contains(drive)
                && DriveLetterTools.IsAvailable(drive);
 
-        public static List<char> GetMappedDrives()
+        public static IEnumerable<char> GetMappedDrives()
         {
-            List<char> drives = new List<char>();
-
             ProcessStartInfo info = CreateProcessInfo("net.exe");
             info.Arguments = "use";
             Process process = Process.Start(info);
@@ -204,10 +202,8 @@ namespace AccesoUPV.Library.Connectors.Drive
             for (int i = 0; i < splits.Length - 1; i++)
             {
                 string split = splits[i];
-                drives.Add(split[split.Length - 1]);
+                yield return split[split.Length - 1];
             }
-
-            return drives;
         }
         #endregion
 
