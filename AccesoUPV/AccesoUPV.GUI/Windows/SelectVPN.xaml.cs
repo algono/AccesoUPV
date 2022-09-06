@@ -84,9 +84,9 @@ namespace AccesoUPV.GUI.Windows
 
         private async Task LoadNameList()
         {
-            NameList = Server == null
+            NameList = (Server == null
                 ? await VPN.GetNameListAsync()
-                : await VPNConfig.FindNamesAsync(Server);
+                : await VPNConfig.FindNamesAsync(Server)).ToList();
         }
 
         private void ShowList()

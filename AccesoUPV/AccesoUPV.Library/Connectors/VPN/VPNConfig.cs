@@ -72,52 +72,49 @@ namespace AccesoUPV.Library.Connectors.VPN
 
         #region PS Selection methods
         #region Non-static
-        public List<PSObject> Find() => Find(Server);
+        public IEnumerable<PSObject> Find() => Find(Server);
 
         public bool Any() => Any(Server);
 
-        public List<string> FindNames() => FindNames(Server);
+        public IEnumerable<string> FindNames() => FindNames(Server);
 
-        public async Task<List<PSObject>> FindAsync() => await FindAsync(Server);
+        public async Task<IEnumerable<PSObject>> FindAsync() => await FindAsync(Server);
 
         public async Task<bool> AnyAsync() => await AnyAsync(Server);
 
-        public async Task<List<string>> FindNamesAsync() => await FindNamesAsync(Server);
+        public async Task<IEnumerable<string>> FindNamesAsync() => await FindNamesAsync(Server);
         #endregion
 
         #region Static
-        public static bool Any(string server) => Find(server).Count > 0;
+        public static bool Any(string server) => Find(server).Any();
 
-        public static List<string> FindNames(string server)
-            => Enumerable.Select(Find(server), vpn => vpn.GetName()).ToList();
+        public static IEnumerable<string> FindNames(string server)
+            => Find(server).Select(vpn => vpn.GetName());
 
-        public static List<PSObject> Find(string server)
+        public static IEnumerable<PSObject> Find(string server)
         {
             using (PowerShell shell = PowerShell.Create())
             {
                 shell.AddScript(GetFindScript(server));
-                List<PSObject> psOutput = shell.Invoke().ToList();
-                psOutput.RemoveAll(item => item == null);
-                return psOutput;
+                return shell.Invoke().Where(item => item != null);
             }
         }
 
-        public static async Task<bool> AnyAsync(string server) => (await FindAsync(server)).Count > 0;
+        public static async Task<bool> AnyAsync(string server) => (await FindAsync(server)).Any();
 
-        public static async Task<List<string>> FindNamesAsync(string server)
-            => Enumerable.Select((await FindAsync(server)), vpn => vpn.GetName()).ToList();
+        public static async Task<IEnumerable<string>> FindNamesAsync(string server)
+            => (await FindAsync(server)).Select(vpn => vpn.GetName());
 
-        public static Task<List<PSObject>> FindAsync(string server)
+        public static Task<IEnumerable<PSObject>> FindAsync(string server)
         {
             PowerShell shell = PowerShell.Create();
             shell.AddScript(GetFindScript(server));
 
             return new TaskFactory().FromAsync(shell.BeginInvoke(), (res) =>
             {
-                List<PSObject> psOutput = shell.EndInvoke(res).ToList();
+                IEnumerable<PSObject> psOutput = shell.EndInvoke(res);
                 shell.Dispose();
-                psOutput.RemoveAll(item => item == null);
-                return psOutput;
+                return psOutput.Where(item => item != null);
             });
         }
 
