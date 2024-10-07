@@ -68,7 +68,7 @@ namespace AccesoUPV.Library.Connectors.Drive
         #endregion
 
         #region Disco DSIC
-        public const string DSICDrivesAddress = @"fileserver.dsic.upv.es";
+        public const string DSICDrivesAddress = @"recursos.dsic.upv.es";
         public static readonly string DSICAsigAddress = $@"\\{DSICDrivesAddress}\asig";
 
         public static readonly DriveDomain DSICDomain = new DriveDomain("DSIC");
